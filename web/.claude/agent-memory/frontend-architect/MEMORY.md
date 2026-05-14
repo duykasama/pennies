@@ -1,0 +1,1 @@
+- [Import Type Style](feedback_import_style.md) — ESLint requires top-level `import type { }` — never inline `type` specifier inside a value import

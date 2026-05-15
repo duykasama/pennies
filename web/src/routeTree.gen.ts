@@ -14,6 +14,11 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExpensesIndexRouteImport } from './routes/expenses/index'
 import { Route as ExpensesAddRouteImport } from './routes/expenses/add'
+import { Route as AuthVerifyRouteImport } from './routes/auth/verify'
+import { Route as AuthVerifiedRouteImport } from './routes/auth/verified'
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
+import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
+import { Route as AuthCheckEmailRouteImport } from './routes/auth/check-email'
 
 const ExpensesRoute = ExpensesRouteImport.update({
   id: '/expenses',
@@ -40,17 +45,52 @@ const ExpensesAddRoute = ExpensesAddRouteImport.update({
   path: '/add',
   getParentRoute: () => ExpensesRoute,
 } as any)
+const AuthVerifyRoute = AuthVerifyRouteImport.update({
+  id: '/auth/verify',
+  path: '/auth/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthVerifiedRoute = AuthVerifiedRouteImport.update({
+  id: '/auth/verified',
+  path: '/auth/verified',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/auth/sign-up',
+  path: '/auth/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/auth/sign-in',
+  path: '/auth/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCheckEmailRoute = AuthCheckEmailRouteImport.update({
+  id: '/auth/check-email',
+  path: '/auth/check-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/expenses': typeof ExpensesRouteWithChildren
+  '/auth/check-email': typeof AuthCheckEmailRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/verified': typeof AuthVerifiedRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/expenses/add': typeof ExpensesAddRoute
   '/expenses/': typeof ExpensesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/auth/check-email': typeof AuthCheckEmailRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/verified': typeof AuthVerifiedRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/expenses/add': typeof ExpensesAddRoute
   '/expenses': typeof ExpensesIndexRoute
 }
@@ -59,19 +99,48 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/expenses': typeof ExpensesRouteWithChildren
+  '/auth/check-email': typeof AuthCheckEmailRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/verified': typeof AuthVerifiedRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/expenses/add': typeof ExpensesAddRoute
   '/expenses/': typeof ExpensesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/expenses' | '/expenses/add' | '/expenses/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/expenses'
+    | '/auth/check-email'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/auth/verified'
+    | '/auth/verify'
+    | '/expenses/add'
+    | '/expenses/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/expenses/add' | '/expenses'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/auth/check-email'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/auth/verified'
+    | '/auth/verify'
+    | '/expenses/add'
+    | '/expenses'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/expenses'
+    | '/auth/check-email'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/auth/verified'
+    | '/auth/verify'
     | '/expenses/add'
     | '/expenses/'
   fileRoutesById: FileRoutesById
@@ -80,6 +149,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   ExpensesRoute: typeof ExpensesRouteWithChildren
+  AuthCheckEmailRoute: typeof AuthCheckEmailRoute
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+  AuthVerifiedRoute: typeof AuthVerifiedRoute
+  AuthVerifyRoute: typeof AuthVerifyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -119,6 +193,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesAddRouteImport
       parentRoute: typeof ExpensesRoute
     }
+    '/auth/verify': {
+      id: '/auth/verify'
+      path: '/auth/verify'
+      fullPath: '/auth/verify'
+      preLoaderRoute: typeof AuthVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/verified': {
+      id: '/auth/verified'
+      path: '/auth/verified'
+      fullPath: '/auth/verified'
+      preLoaderRoute: typeof AuthVerifiedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-up': {
+      id: '/auth/sign-up'
+      path: '/auth/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/check-email': {
+      id: '/auth/check-email'
+      path: '/auth/check-email'
+      fullPath: '/auth/check-email'
+      preLoaderRoute: typeof AuthCheckEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -140,6 +249,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   ExpensesRoute: ExpensesRouteWithChildren,
+  AuthCheckEmailRoute: AuthCheckEmailRoute,
+  AuthSignInRoute: AuthSignInRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
+  AuthVerifiedRoute: AuthVerifiedRoute,
+  AuthVerifyRoute: AuthVerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

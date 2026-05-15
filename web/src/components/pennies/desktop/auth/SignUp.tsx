@@ -1,0 +1,63 @@
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { AuthShell, DesktopField, DesktopPrimaryBtn, DesktopGoogleBtn, OrDivider } from './shared'
+
+interface Props {
+  onSubmit: (name: string, email: string) => void
+  onGoogle: () => void
+  onSignIn: () => void
+}
+
+export default function DesktopSignUp({ onSubmit, onGoogle, onSignIn }: Props) {
+  const { t } = useTranslation()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [pw, setPw] = useState('')
+
+  return (
+    <AuthShell
+      title={t('auth.createAccount')}
+      sub={t('auth.createSub')}
+      footer={
+        <>
+          {t('auth.alreadyHaveAccount')}{' '}
+          <button
+            type="button"
+            onClick={onSignIn}
+            className="text-lagoon-deep font-bold bg-transparent border-0 cursor-pointer p-0"
+          >
+            {t('auth.signInBtn')}
+          </button>
+        </>
+      }
+    >
+      <DesktopField
+        label={t('auth.fullName')}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder={t('auth.namePlaceholder')}
+      />
+      <DesktopField
+        label={t('auth.email')}
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder={t('auth.emailPlaceholder')}
+      />
+      <DesktopField
+        label={t('auth.password')}
+        type="password"
+        value={pw}
+        onChange={(e) => setPw(e.target.value)}
+        placeholder={t('auth.passwordPlaceholder')}
+      />
+      <div className="mt-1">
+        <DesktopPrimaryBtn onClick={() => onSubmit(name, email)}>
+          {t('auth.createAccountBtn')}
+        </DesktopPrimaryBtn>
+      </div>
+      <OrDivider />
+      <DesktopGoogleBtn label={t('auth.signUpWithGoogle')} onClick={onGoogle} />
+    </AuthShell>
+  )
+}

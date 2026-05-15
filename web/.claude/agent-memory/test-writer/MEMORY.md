@@ -1,0 +1,1 @@
+- [TwoFactor focus testing pattern](feedback-twofactor-focus.md) — use `fireEvent.change` + `document.activeElement` for OTP input focus in jsdom; `userEvent` does not work for ref-based `.focus()` calls

@@ -1,0 +1,6 @@
+@Pennies.Auth_HostAddress = http://localhost:5080
+
+GET {{Pennies.Auth_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

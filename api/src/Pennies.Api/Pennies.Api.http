@@ -1,0 +1,6 @@
+@Pennies.Api_HostAddress = http://localhost:5100
+
+GET {{Pennies.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

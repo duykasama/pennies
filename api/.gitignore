@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.rsuser
+
+# Test results
+TestResults/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Publish
+publish/

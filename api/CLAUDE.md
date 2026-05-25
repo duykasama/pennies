@@ -17,17 +17,23 @@ dotnet test tests/Pennies.Application.Tests
 # Run a specific test by name filter
 dotnet test Pennies.slnx --filter "FullyQualifiedName~CreateExpense"
 
-# Run the API (requires PostgreSQL)
+# Run with Aspire (starts Postgres, migrations, both APIs, and frontend)
+dotnet run --project src/Pennies.AppHost
+
+# Run the main API standalone (requires Postgres)
 dotnet run --project src/Pennies.Api
 
-# EF Core migrations (run from solution root)
-dotnet ef migrations add <Name> --project src/Pennies.Infrastructure --startup-project src/Pennies.Api
-dotnet ef database update --project src/Pennies.Infrastructure --startup-project src/Pennies.Api
+# Run the auth service standalone (requires Postgres)
+dotnet run --project src/Pennies.Auth
+
+# EF Core migrations for Pennies.Auth (run from solution root)
+dotnet ef migrations add <Name> --project src/Pennies.Auth --startup-project src/Pennies.Auth.Migrations
+dotnet ef database update --project src/Pennies.Auth --startup-project src/Pennies.Auth.Migrations
 ```
 
 ## Architecture
 
-This is a Clean Architecture + CQRS solution for a personal finance / expense-tracking API. The dependency rule is strictly inward: nothing in `Domain` or `Application` may reference `Infrastructure` or `Api`.
+This is a Clean Architecture + CQRS solution split into two microservices sharing a JWT secret. The dependency rule is strictly inward: nothing in `Domain` or `Application` may reference `Infrastructure` or `Api`.
 
 ```
 Pennies.Api → Pennies.Application → Pennies.Domain
@@ -39,22 +45,27 @@ Pennies.Api → Pennies.Infrastructure → Pennies.Domain
 
 | Project | Role |
 |---|---|
-| `Pennies.Domain` | Entities, repository interfaces, `DomainException`. Uses `<FrameworkReference>` for `IdentityUser`. |
-| `Pennies.Application` | All CQRS slices (commands, queries, handlers, validators), DTOs, service interfaces, pipeline behaviors. |
-| `Pennies.Infrastructure` | `AppDbContext` (extends `IdentityDbContext<AppUser>`), EF configurations, repository implementations, `JwtTokenService`, `EmailService`, `DependencyInjection.cs`. |
+| `Pennies.Domain` | Entities, repository interfaces, `DomainException`, `Entity` base class (Id, CreatedAt, UpdatedAt). |
+| `Pennies.Application` | All CQRS slices, DTOs, `Result<T>`/`Error`, pipeline behaviors (LoggingBehavior → ValidationBehavior → handler). |
+| `Pennies.Infrastructure` | `AppDbContext`, EF entity configurations, repository implementations, `DependencyInjection.cs`. |
 | `Pennies.Api` | Minimal API endpoints, `ExceptionHandlingMiddleware`, `ResultExtensions`, `Program.cs`. |
+| `Pennies.Auth` | Separate auth microservice: ASP.NET Identity + EF Core, JWT issuance, email verification endpoints. |
+| `Pennies.Api.Migrations` | DbUp console app — SQL script migrations for the core API's Postgres database. |
+| `Pennies.Auth.Migrations` | EF Core migrations startup project for the auth database. |
+| `Pennies.AppHost` | .NET Aspire orchestrator — starts Postgres, runs both migration projects, then both APIs and the frontend. |
+| `Pennies.ServiceDefaults` | Shared Aspire defaults: OpenTelemetry, service discovery, HTTP resilience. |
 
 ### CQRS pattern
 
-Each feature lives in a self-contained folder under `Application/<Feature>/Commands/<Name>/` or `Application/<Feature>/Queries/<Name>/`. Every folder contains exactly three files: `*Command.cs` / `*Query.cs`, `*Handler.cs`, and `*Validator.cs`.
+Each feature lives in `Application/<Feature>/Commands/<Name>/` or `Application/<Feature>/Queries/<Name>/`. Every folder has exactly three files: `*Command.cs` / `*Query.cs`, `*Handler.cs`, and `*Validator.cs`.
 
-Commands and queries use `sealed record` and implement `IRequest<Result<T>>`. Handlers return `Result<T>` — never throw for expected failures.
+Commands and queries are `sealed record` implementing `IRequest<Result<T>>`. Handlers return `Result<T>` — never throw for expected failures.
 
 ```
 Application/Expenses/
   Commands/CreateExpense/  CreateExpenseCommand, CreateExpenseHandler, CreateExpenseValidator
   Commands/DeleteExpense/  ...
-  Queries/GetExpenses/     GetExpensesQuery, GetExpensesHandler
+  Queries/GetExpenses/     GetExpensesQuery, GetExpensesHandler, GetExpensesValidator
   Queries/GetExpenseById/  ...
   DTOs/ExpenseResponse.cs  (+ internal ToResponse() extension on the domain entity)
 ```
@@ -65,18 +76,35 @@ Application/Expenses/
 
 **MediatR pipeline** — `LoggingBehavior` → `ValidationBehavior` → handler. `ValidationBehavior` throws `FluentValidation.ValidationException` on failure; `ExceptionHandlingMiddleware` catches it and returns 422.
 
-**Authentication** — ASP.NET Core Identity (`UserManager<AppUser>`, `SignInManager<AppUser>`) handles user storage and password hashing. `JwtTokenService` issues JWTs independently; the API uses JWT Bearer auth only (no Identity cookies).
+**Authentication flow** — `Pennies.Auth` handles registration, email verification, and login, issuing JWTs (Subject = UserId, 1-hour expiry). `Pennies.Api` validates those JWTs via Bearer auth; the UserId is extracted from the Subject claim in each endpoint. Both services share the same `Jwt:Issuer`, `Jwt:Audience`, and `Jwt:Secret`.
 
-**Mapping** — no AutoMapper. Each DTO file contains an `internal static` extension method (e.g., `expense.ToResponse()`) co-located with the DTO.
+**Migrations** — Two strategies in use: `Pennies.Api` uses DbUp (plain SQL scripts in `Pennies.Api.Migrations/Scripts/`); `Pennies.Auth` uses EF Core code-first migrations with `Pennies.Auth.Migrations` as the startup project. Aspire runs both migration projects before starting the APIs.
 
-**DI registration** — Infrastructure registers everything via `builder.Services.AddInfrastructure(configuration)` in `Program.cs`. Application layer registers nothing — its handlers and validators are scanned from `typeof(AssemblyMarker).Assembly`.
+**Mapping** — No AutoMapper. Each DTO file has an `internal static` extension method (e.g., `expense.ToResponse()`) co-located with the DTO.
+
+**DI registration** — Infrastructure registers via `builder.Services.AddInfrastructure(configuration)` in `Program.cs`. Application handlers and validators are scanned from `typeof(AssemblyMarker).Assembly`.
+
+### Testing
+
+Tests use xUnit, NSubstitute (mocks), and FluentAssertions. Test projects mirror the source project they cover:
+
+```
+tests/
+  Pennies.Domain.Tests/
+  Pennies.Application.Tests/
+  Pennies.Auth.Tests/
+```
 
 ### Package management
 
-Packages are managed centrally via `Directory.Packages.props` — version numbers live only there. Add versions there before referencing a new package in any `.csproj`. `Directory.Build.props` provides `TargetFramework`, `Nullable`, and `ImplicitUsings` to all projects.
+Packages are managed centrally via `Directory.Packages.props` — version numbers live only there. Add a version entry there before referencing a new package in any `.csproj`. `Directory.Build.props` provides `TargetFramework` (net10.0), `Nullable`, and `ImplicitUsings` to all projects.
 
 ### Configuration
 
-`appsettings.json` expects:
-- `ConnectionStrings:Postgres` — Npgsql connection string
-- `Jwt:Issuer`, `Jwt:Audience`, `Jwt:Secret` — JWT settings used by both `JwtTokenService` and the Bearer token validation in `Program.cs`
+`Pennies.Api/appsettings.json`:
+- `ConnectionStrings:pennies` — Npgsql connection string for the main database
+- `Jwt:Issuer`, `Jwt:Audience`, `Jwt:Secret`
+
+`Pennies.Auth/appsettings.json`:
+- `ConnectionStrings:pennies-auth` — Npgsql connection string for the auth database
+- `Jwt:Issuer`, `Jwt:Audience`, `Jwt:Secret` — must match the main API's values

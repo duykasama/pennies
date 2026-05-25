@@ -5,7 +5,7 @@ import MobileDashboard from '#/components/pennies/mobile/Dashboard'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopDashboard from '#/components/pennies/desktop/Dashboard'
 
-export const Route = createFileRoute('/dashboard')({ component: DashboardPage })
+export const Route = createFileRoute('/_authenticated/dashboard')({ component: DashboardPage })
 
 function DashboardPage() {
   const expenses = useExpenses()

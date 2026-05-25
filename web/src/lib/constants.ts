@@ -7,6 +7,7 @@ export const ROUTES = {
   AUTH_CHECK_EMAIL: '/auth/check-email',
   AUTH_VERIFIED: '/auth/verified',
   AUTH_VERIFY: '/auth/verify',
+  AUTH_VERIFY_EMAIL: '/auth/verify-email',
 } as const
 
 export const SORT = {
@@ -19,3 +20,8 @@ export type SortOption = (typeof SORT)[keyof typeof SORT]
 export const FILTER = {
   ALL: 'all',
 } as const
+
+export const API_URLS = {
+  CORE: process.env['API_URL_CORE'],
+  AUTH: process.env['API_URL_AUTH'],
+}

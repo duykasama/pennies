@@ -7,9 +7,10 @@ import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query
 import TanstackQueryProvider, {
   getContext,
 } from './integrations/tanstack-query/root-provider'
+import type { SessionUser } from '#/lib/auth'
 
 export function getRouter() {
-  const context = getContext()
+  const context = { ...getContext(), user: null as SessionUser | null }
 
   const router = createTanStackRouter({
     routeTree,

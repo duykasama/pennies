@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { AuthShell, DesktopField, DesktopPrimaryBtn, DesktopGoogleBtn, OrDivider } from './shared'
 
 interface Props {
-  onSubmit: (email: string) => void
+  onSubmit: (email: string, password: string) => void
   onGoogle: () => void
   onSignUp: () => void
   onForgot: () => void
+  error?: string | null
 }
 
-export default function DesktopSignIn({ onSubmit, onGoogle, onSignUp, onForgot }: Props) {
+export default function DesktopSignIn({ onSubmit, onGoogle, onSignUp, onForgot, error }: Props) {
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
@@ -54,7 +55,10 @@ export default function DesktopSignIn({ onSubmit, onGoogle, onSignUp, onForgot }
           </button>
         }
       />
-      <DesktopPrimaryBtn onClick={() => onSubmit(email)}>{t('auth.signInBtn')}</DesktopPrimaryBtn>
+      {error && (
+        <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
+      )}
+      <DesktopPrimaryBtn onClick={() => onSubmit(email, pw)}>{t('auth.signInBtn')}</DesktopPrimaryBtn>
       <OrDivider />
       <DesktopGoogleBtn label={t('auth.signInWithGoogle')} onClick={onGoogle} />
     </AuthShell>

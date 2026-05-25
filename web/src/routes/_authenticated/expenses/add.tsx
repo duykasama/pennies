@@ -7,7 +7,7 @@ import MobileAddExpense from '#/components/pennies/mobile/AddExpense'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopAddExpense from '#/components/pennies/desktop/AddExpense'
 
-export const Route = createFileRoute('/expenses/add')({ component: AddExpensePage })
+export const Route = createFileRoute('/_authenticated/expenses/add')({ component: AddExpensePage })
 
 function AddExpensePage() {
   const navigate = useNavigate()

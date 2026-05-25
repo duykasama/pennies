@@ -8,6 +8,7 @@ const en = {
     dashboard: 'Dashboard',
     expenses: 'Expenses',
     addExpense: '+ Add Expense',
+    logout: 'Log out',
   },
 
   bottomNav: {

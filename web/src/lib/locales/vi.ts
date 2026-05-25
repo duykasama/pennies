@@ -10,6 +10,7 @@ const vi: Translations = {
     dashboard: 'Tổng quan',
     expenses: 'Chi tiêu',
     addExpense: '+ Thêm chi tiêu',
+    logout: 'Đăng xuất',
   },
 
   bottomNav: {

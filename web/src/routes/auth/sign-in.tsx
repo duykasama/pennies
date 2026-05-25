@@ -1,16 +1,30 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { useState } from 'react'
 import { ROUTES } from '#/lib/constants'
+import { loginFn } from '#/lib/auth'
 import MobileSignIn from '#/components/pennies/mobile/auth/SignIn'
 import DesktopSignIn from '#/components/pennies/desktop/auth/SignIn'
 
-export const Route = createFileRoute('/auth/sign-in')({ component: SignInPage })
+export const Route = createFileRoute('/auth/sign-in')({
+  beforeLoad: ({ context }) => {
+    if (context.user) throw redirect({ to: ROUTES.DASHBOARD })
+  },
+  component: SignInPage,
+})
 
 function SignInPage() {
   const navigate = useNavigate()
+  const [error, setError] = useState<string | null>(null)
 
-  function handleSubmit(email: string) {
-    const masked = email.replace(/^(.).*@/, (_, c) => `${c}***@`)
-    navigate({ to: ROUTES.AUTH_VERIFY, search: { email: masked } })
+  async function handleSubmit(email: string, password: string) {
+    setError(null)
+    try {
+      console.log('trying to log in')
+      await loginFn({ data: { email, password } })
+      navigate({ to: ROUTES.DASHBOARD })
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Sign in failed')
+    }
   }
 
   function handleGoogle() {
@@ -33,6 +47,7 @@ function SignInPage() {
           onGoogle={handleGoogle}
           onSignUp={handleSignUp}
           onForgot={handleForgot}
+          error={error}
         />
       </div>
       <div className="hidden md:block w-full min-h-screen font-sans text-sea-ink">
@@ -41,6 +56,7 @@ function SignInPage() {
           onGoogle={handleGoogle}
           onSignUp={handleSignUp}
           onForgot={handleForgot}
+          error={error}
         />
       </div>
     </>

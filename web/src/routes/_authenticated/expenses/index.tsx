@@ -8,7 +8,7 @@ import MobileExpenseList from '#/components/pennies/mobile/ExpenseList'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopExpenseList from '#/components/pennies/desktop/ExpenseList'
 
-export const Route = createFileRoute('/expenses/')({
+export const Route = createFileRoute('/_authenticated/expenses/')({
   validateSearch: (
     search: Record<string, unknown>,
   ): { filter: string; sort: SortOption; toast?: string } => ({

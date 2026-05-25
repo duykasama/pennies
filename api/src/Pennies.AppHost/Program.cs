@@ -1,7 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres("postgres")
-    .WithDataVolume()
+    //.WithDataVolume("pennies_data")
     .WithPgAdmin();
 
 var penniesDb   = postgres.AddDatabase("pennies");
@@ -15,12 +15,20 @@ builder.AddProject<Projects.Pennies_Auth_Migrations>("auth-migrations")
     .WithReference(penniesAuth)
     .WithExplicitStart();
 
-builder.AddProject<Projects.Pennies_Api>("pennies-api")
+var coreApi = builder.AddProject<Projects.Pennies_Api>("pennies-api")
     .WithReference(penniesDb)
     .WaitFor(penniesDb);
 
-builder.AddProject<Projects.Pennies_Auth>("auth")
+var authApi = builder.AddProject<Projects.Pennies_Auth>("auth")
     .WithReference(penniesAuth)
     .WaitFor(penniesAuth);
+
+builder.AddViteApp("web", "../../../web")
+    .WithBun()
+    .WithReference(coreApi)
+    .WithEnvironment("API_URL_CORE", coreApi.GetEndpoint("https"))
+    .WithReference(authApi)
+    .WithEnvironment("API_URL_AUTH", authApi.GetEndpoint("https"))
+    .WithExternalHttpEndpoints();
 
 builder.Build().Run();

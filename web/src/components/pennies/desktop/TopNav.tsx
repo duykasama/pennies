@@ -1,6 +1,7 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '#/lib/constants'
+import { logoutFn } from '#/lib/auth'
 import LanguagePicker from '#/components/pennies/LanguagePicker'
 import ThemePicker from '#/components/pennies/ThemePicker'
 
@@ -8,6 +9,7 @@ const linkBase = 'p-0 text-[14px] no-underline font-sans cursor-pointer'
 
 export default function TopNav() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   return (
     <nav className="h-[60px] bg-sea-ink text-white flex items-center px-12 gap-[22px]">
@@ -42,6 +44,16 @@ export default function TopNav() {
       >
         {t('nav.addExpense')}
       </Link>
+
+      <button
+        onClick={async () => {
+          await logoutFn()
+          navigate({ to: ROUTES.AUTH_SIGN_IN })
+        }}
+        className="h-9 px-[18px] border border-white/30 hover:bg-white/10 text-white rounded-p-sm font-bold text-[13px] cursor-pointer transition-colors font-sans"
+      >
+        {t('nav.logout')}
+      </button>
     </nav>
   )
 }

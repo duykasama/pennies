@@ -15,9 +15,12 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import { setTheme, applyThemeClass, themeInitScript, themeStore } from '#/lib/themeStore'
 import type { Theme } from '#/lib/themeStore'
+import { getSessionFn } from '#/lib/auth'
+import type { SessionUser } from '#/lib/auth'
 
 interface MyRouterContext {
   queryClient: QueryClient
+  user: SessionUser | null
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
@@ -29,6 +32,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
+  beforeLoad: async () => ({ user: await getSessionFn() }),
   shellComponent: RootDocument,
 })
 

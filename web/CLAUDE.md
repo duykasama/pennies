@@ -41,3 +41,12 @@ pnpm dlx shadcn@latest add <component>
 **Forms**: TanStack Form (`@tanstack/react-form`) with Zod for validation.
 
 **Devtools**: TanStack Devtools panel is mounted in `__root.tsx` in development and includes Router and Query devtools — do not remove.
+
+**Server functions**: Use `createServerFn` from `@tanstack/react-start` for server-only logic (auth, cookie access, backend API calls). The `tanstackStart()` Vite plugin handles the server/client split automatically — **never add `'use server'` to files using `createServerFn`**, it conflicts with the split mechanism and causes server function handlers to hang. Use `.inputValidator(zodSchema)` (not `.validator()`) to attach input validation. Server-only utilities (`getCookie`, `setCookie`, `deleteCookie`) come from `@tanstack/react-start/server`.
+
+**Authentication**: JWT stored in an httpOnly cookie (`auth_token`). Session server functions live in `src/lib/auth.ts`. Protected routes sit under the `_authenticated` pathless layout (`src/routes/_authenticated.tsx`), which redirects unauthenticated users to `/auth/sign-in`. The root `beforeLoad` in `__root.tsx` calls `getSessionFn()` to populate `user` into router context on every navigation.
+
+**Backend services** (separate .NET processes, not part of this repo):
+- Auth service: `http://localhost:5200` — `POST /auth/login`, `POST /auth/register`, `POST /auth/verify-email`, `POST /auth/resend-confirmation`
+- Expenses API: `http://localhost:5100` — `/expenses` endpoints, all require `Authorization: Bearer <token>`
+- URLs configured via `.env` (`AUTH_API_URL`, `PENNIES_API_URL`)

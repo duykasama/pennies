@@ -9,25 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ExpensesRouteImport } from './routes/expenses'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ExpensesIndexRouteImport } from './routes/expenses/index'
-import { Route as ExpensesAddRouteImport } from './routes/expenses/add'
+import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
 import { Route as AuthVerifyRouteImport } from './routes/auth/verify'
 import { Route as AuthVerifiedRouteImport } from './routes/auth/verified'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as AuthCheckEmailRouteImport } from './routes/auth/check-email'
+import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedExpensesIndexRouteImport } from './routes/_authenticated/expenses/index'
+import { Route as AuthenticatedExpensesAddRouteImport } from './routes/_authenticated/expenses/add'
 
-const ExpensesRoute = ExpensesRouteImport.update({
-  id: '/expenses',
-  path: '/expenses',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -35,15 +31,10 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExpensesIndexRoute = ExpensesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ExpensesRoute,
-} as any)
-const ExpensesAddRoute = ExpensesAddRouteImport.update({
-  id: '/add',
-  path: '/add',
-  getParentRoute: () => ExpensesRoute,
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+  id: '/auth/verify-email',
+  path: '/auth/verify-email',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthVerifyRoute = AuthVerifyRouteImport.update({
   id: '/auth/verify',
@@ -70,42 +61,68 @@ const AuthCheckEmailRoute = AuthCheckEmailRouteImport.update({
   path: '/auth/check-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedExpensesRoute = AuthenticatedExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedExpensesIndexRoute =
+  AuthenticatedExpensesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedExpensesRoute,
+  } as any)
+const AuthenticatedExpensesAddRoute =
+  AuthenticatedExpensesAddRouteImport.update({
+    id: '/add',
+    path: '/add',
+    getParentRoute: () => AuthenticatedExpensesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/expenses': typeof ExpensesRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/expenses': typeof AuthenticatedExpensesRouteWithChildren
   '/auth/check-email': typeof AuthCheckEmailRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/verified': typeof AuthVerifiedRoute
   '/auth/verify': typeof AuthVerifyRoute
-  '/expenses/add': typeof ExpensesAddRoute
-  '/expenses/': typeof ExpensesIndexRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/expenses/add': typeof AuthenticatedExpensesAddRoute
+  '/expenses/': typeof AuthenticatedExpensesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/check-email': typeof AuthCheckEmailRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/verified': typeof AuthVerifiedRoute
   '/auth/verify': typeof AuthVerifyRoute
-  '/expenses/add': typeof ExpensesAddRoute
-  '/expenses': typeof ExpensesIndexRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/expenses/add': typeof AuthenticatedExpensesAddRoute
+  '/expenses': typeof AuthenticatedExpensesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/expenses': typeof ExpensesRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/expenses': typeof AuthenticatedExpensesRouteWithChildren
   '/auth/check-email': typeof AuthCheckEmailRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/verified': typeof AuthVerifiedRoute
   '/auth/verify': typeof AuthVerifyRoute
-  '/expenses/add': typeof ExpensesAddRoute
-  '/expenses/': typeof ExpensesIndexRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/_authenticated/expenses/add': typeof AuthenticatedExpensesAddRoute
+  '/_authenticated/expenses/': typeof AuthenticatedExpensesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -118,6 +135,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/verified'
     | '/auth/verify'
+    | '/auth/verify-email'
     | '/expenses/add'
     | '/expenses/'
   fileRoutesByTo: FileRoutesByTo
@@ -129,47 +147,43 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/verified'
     | '/auth/verify'
+    | '/auth/verify-email'
     | '/expenses/add'
     | '/expenses'
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
-    | '/expenses'
+    | '/_authenticated'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/expenses'
     | '/auth/check-email'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/auth/verified'
     | '/auth/verify'
-    | '/expenses/add'
-    | '/expenses/'
+    | '/auth/verify-email'
+    | '/_authenticated/expenses/add'
+    | '/_authenticated/expenses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
-  ExpensesRoute: typeof ExpensesRouteWithChildren
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthCheckEmailRoute: typeof AuthCheckEmailRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   AuthVerifiedRoute: typeof AuthVerifiedRoute
   AuthVerifyRoute: typeof AuthVerifyRoute
+  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/expenses': {
-      id: '/expenses'
-      path: '/expenses'
-      fullPath: '/expenses'
-      preLoaderRoute: typeof ExpensesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -179,19 +193,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expenses/': {
-      id: '/expenses/'
-      path: '/'
-      fullPath: '/expenses/'
-      preLoaderRoute: typeof ExpensesIndexRouteImport
-      parentRoute: typeof ExpensesRoute
-    }
-    '/expenses/add': {
-      id: '/expenses/add'
-      path: '/add'
-      fullPath: '/expenses/add'
-      preLoaderRoute: typeof ExpensesAddRouteImport
-      parentRoute: typeof ExpensesRoute
+    '/auth/verify-email': {
+      id: '/auth/verify-email'
+      path: '/auth/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/auth/verify': {
       id: '/auth/verify'
@@ -228,32 +235,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCheckEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/expenses': {
+      id: '/_authenticated/expenses'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof AuthenticatedExpensesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/expenses/': {
+      id: '/_authenticated/expenses/'
+      path: '/'
+      fullPath: '/expenses/'
+      preLoaderRoute: typeof AuthenticatedExpensesIndexRouteImport
+      parentRoute: typeof AuthenticatedExpensesRoute
+    }
+    '/_authenticated/expenses/add': {
+      id: '/_authenticated/expenses/add'
+      path: '/add'
+      fullPath: '/expenses/add'
+      preLoaderRoute: typeof AuthenticatedExpensesAddRouteImport
+      parentRoute: typeof AuthenticatedExpensesRoute
+    }
   }
 }
 
-interface ExpensesRouteChildren {
-  ExpensesAddRoute: typeof ExpensesAddRoute
-  ExpensesIndexRoute: typeof ExpensesIndexRoute
+interface AuthenticatedExpensesRouteChildren {
+  AuthenticatedExpensesAddRoute: typeof AuthenticatedExpensesAddRoute
+  AuthenticatedExpensesIndexRoute: typeof AuthenticatedExpensesIndexRoute
 }
 
-const ExpensesRouteChildren: ExpensesRouteChildren = {
-  ExpensesAddRoute: ExpensesAddRoute,
-  ExpensesIndexRoute: ExpensesIndexRoute,
+const AuthenticatedExpensesRouteChildren: AuthenticatedExpensesRouteChildren = {
+  AuthenticatedExpensesAddRoute: AuthenticatedExpensesAddRoute,
+  AuthenticatedExpensesIndexRoute: AuthenticatedExpensesIndexRoute,
 }
 
-const ExpensesRouteWithChildren = ExpensesRoute._addFileChildren(
-  ExpensesRouteChildren,
+const AuthenticatedExpensesRouteWithChildren =
+  AuthenticatedExpensesRoute._addFileChildren(
+    AuthenticatedExpensesRouteChildren,
+  )
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRouteWithChildren
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedExpensesRoute: AuthenticatedExpensesRouteWithChildren,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
-  ExpensesRoute: ExpensesRouteWithChildren,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthCheckEmailRoute: AuthCheckEmailRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   AuthVerifiedRoute: AuthVerifiedRoute,
   AuthVerifyRoute: AuthVerifyRoute,
+  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

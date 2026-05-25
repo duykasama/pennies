@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { AuthHeader, AuthInput, PrimaryBtn, GoogleButton, OrDivider } from './shared'
 
 interface Props {
-  onSubmit: (email: string) => void
+  onSubmit: (email: string, password: string) => void
   onGoogle: () => void
   onSignUp: () => void
   onForgot: () => void
+  error?: string | null
 }
 
-export default function MobileSignIn({ onSubmit, onGoogle, onSignUp, onForgot }: Props) {
+export default function MobileSignIn({ onSubmit, onGoogle, onSignUp, onForgot, error }: Props) {
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
@@ -41,7 +42,10 @@ export default function MobileSignIn({ onSubmit, onGoogle, onSignUp, onForgot }:
             </button>
           }
         />
-        <PrimaryBtn onClick={() => onSubmit(email)}>{t('auth.signInBtn')}</PrimaryBtn>
+        {error && (
+          <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
+        )}
+        <PrimaryBtn onClick={() => onSubmit(email, pw)}>{t('auth.signInBtn')}</PrimaryBtn>
         <OrDivider />
         <GoogleButton label={t('auth.signInWithGoogle')} onClick={onGoogle} />
       </div>

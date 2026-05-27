@@ -1,34 +1,56 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("postgres")
-    //.WithDataVolume("pennies_data")
+var rabbit = builder.AddRabbitMQ("rabbitmq")
+    .WithManagementPlugin();
+
+var mailpit = builder.AddMailPit("mailpit");
+
+var postgresPassword = builder.AddParameter("postgres-password", secret: true);
+
+var postgres = builder.AddPostgres("postgres", password: postgresPassword)
+    .WithDataVolume("pennies_data")
     .WithPgAdmin();
 
-var penniesDb   = postgres.AddDatabase("pennies");
+var penniesDb = postgres.AddDatabase("pennies");
 var penniesAuth = postgres.AddDatabase("pennies-auth");
 
-builder.AddProject<Projects.Pennies_Api_Migrations>("api-migrations")
+var coreMigrations  = builder.AddProject<Projects.Pennies_Core_Migrations>("core-migrations");
+var authMigrations  = builder.AddProject<Projects.Pennies_Auth_Migrations>("auth-migrations");
+var worker          = builder.AddProject<Projects.Pennies_Worker>("pennies-worker");
+var coreApi         = builder.AddProject<Projects.Pennies_Core_Api>("pennies-core-api");
+var authApi         = builder.AddProject<Projects.Pennies_Auth_Api>("pennies-auth-api");
+var web             = builder.AddViteApp("web", "../../../web");
+
+coreMigrations
     .WithReference(penniesDb)
     .WithExplicitStart();
 
-builder.AddProject<Projects.Pennies_Auth_Migrations>("auth-migrations")
+authMigrations
     .WithReference(penniesAuth)
     .WithExplicitStart();
 
-var coreApi = builder.AddProject<Projects.Pennies_Api>("pennies-api")
+coreApi
     .WithReference(penniesDb)
     .WaitFor(penniesDb);
 
-var authApi = builder.AddProject<Projects.Pennies_Auth>("auth")
+authApi
     .WithReference(penniesAuth)
-    .WaitFor(penniesAuth);
+    .WaitFor(penniesAuth)
+    .WithReference(rabbit);
 
-builder.AddViteApp("web", "../../../web")
-    .WithBun()
+worker
+    .WithReference(rabbit)
+    .WaitFor(rabbit)
+    .WithReference(mailpit)
+    .WaitFor(mailpit);
+
+web
     .WithReference(coreApi)
     .WithEnvironment("API_URL_CORE", coreApi.GetEndpoint("https"))
     .WithReference(authApi)
     .WithEnvironment("API_URL_AUTH", authApi.GetEndpoint("https"))
-    .WithExternalHttpEndpoints();
+    .WithEnvironment("APP_URL", web.GetEndpoint("http"))
+    .WithExternalHttpEndpoints()
+    .WithBun();
 
 builder.Build().Run();

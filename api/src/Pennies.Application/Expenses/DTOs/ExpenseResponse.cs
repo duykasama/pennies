@@ -7,7 +7,7 @@ public sealed record ExpenseResponse(
     string Title,
     string? Description,
     decimal Amount,
-    string Category,
+    int Category,
     DateOnly Date,
     DateTime CreatedAt);
 
@@ -18,7 +18,7 @@ internal static class ExpenseMappings
             expense.Title,
             expense.Description,
             expense.Amount,
-            expense.Category.ToString(),
+            (int)expense.Category,
             expense.Date,
             expense.CreatedAt);
 }

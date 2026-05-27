@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pennies.Auth\Pennies.Auth.csproj" />
+    <ProjectReference Include="..\Pennies.Auth.Application\Pennies.Auth.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

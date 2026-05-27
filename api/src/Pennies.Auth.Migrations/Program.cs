@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Pennies.Auth.Persistence;
+using Pennies.Auth.Application.Persistence;
 using System.Text.Json;
 
 var connectionString =

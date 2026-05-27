@@ -3,10 +3,14 @@
     <Project Path="src/Pennies.Domain/Pennies.Domain.csproj" />
     <Project Path="src/Pennies.Application/Pennies.Application.csproj" />
     <Project Path="src/Pennies.Infrastructure/Pennies.Infrastructure.csproj" />
-    <Project Path="src/Pennies.Api/Pennies.Api.csproj" />
-    <Project Path="src/Pennies.Api.Migrations/Pennies.Api.Migrations.csproj" />
-    <Project Path="src/Pennies.Auth/Pennies.Auth.csproj" />
+    <Project Path="src/Pennies.Core.Api/Pennies.Core.Api.csproj" />
+    <Project Path="src/Pennies.Core.Migrations/Pennies.Core.Migrations.csproj" />
+    <Project Path="src/Pennies.Auth.Application/Pennies.Auth.Application.csproj" />
+    <Project Path="src/Pennies.Auth.Api/Pennies.Auth.Api.csproj" />
     <Project Path="src/Pennies.Auth.Migrations/Pennies.Auth.Migrations.csproj" />
+    <Project Path="src/Pennies.Messaging/Pennies.Messaging.csproj" />
+    <Project Path="src/Pennies.Messaging.RabbitMQ/Pennies.Messaging.RabbitMQ.csproj" />
+    <Project Path="src/Pennies.Worker/Pennies.Worker.csproj" />
     <Project Path="src/Pennies.AppHost/Pennies.AppHost.csproj" />
     <Project Path="src/Pennies.ServiceDefaults/Pennies.ServiceDefaults.csproj" />
   </Folder>

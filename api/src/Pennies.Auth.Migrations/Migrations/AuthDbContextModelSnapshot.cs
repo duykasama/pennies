@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Pennies.Auth.Persistence;
+using Pennies.Auth.Application.Persistence;
 
 #nullable disable
 
@@ -154,7 +154,7 @@ namespace Pennies.Auth.Migrations.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Pennies.Auth.Entities.AuthUser", b =>
+            modelBuilder.Entity("Pennies.Auth.Api.Entities.AuthUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -236,7 +236,7 @@ namespace Pennies.Auth.Migrations.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Pennies.Auth.Entities.AuthUser", null)
+                    b.HasOne("Pennies.Auth.Api.Entities.AuthUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -245,7 +245,7 @@ namespace Pennies.Auth.Migrations.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Pennies.Auth.Entities.AuthUser", null)
+                    b.HasOne("Pennies.Auth.Api.Entities.AuthUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -260,7 +260,7 @@ namespace Pennies.Auth.Migrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Pennies.Auth.Entities.AuthUser", null)
+                    b.HasOne("Pennies.Auth.Api.Entities.AuthUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -269,7 +269,7 @@ namespace Pennies.Auth.Migrations.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Pennies.Auth.Entities.AuthUser", null)
+                    b.HasOne("Pennies.Auth.Api.Entities.AuthUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

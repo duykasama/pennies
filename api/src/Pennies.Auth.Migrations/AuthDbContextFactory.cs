@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Pennies.Auth.Persistence;
+using Pennies.Auth.Application.Persistence;
 
 namespace Pennies.Auth.Migrations;
 

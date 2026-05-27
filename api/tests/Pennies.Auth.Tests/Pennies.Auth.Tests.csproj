@@ -19,7 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Pennies.Auth\Pennies.Auth.csproj" />
+    <ProjectReference Include="..\..\src\Pennies.Auth.Application\Pennies.Auth.Application.csproj" />
+    <ProjectReference Include="..\..\src\Pennies.Auth.Api\Pennies.Auth.Api.csproj" />
   </ItemGroup>
 
 </Project>

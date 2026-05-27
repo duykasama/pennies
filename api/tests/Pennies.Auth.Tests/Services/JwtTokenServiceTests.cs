@@ -2,8 +2,8 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using NSubstitute;
-using Pennies.Auth.Entities;
-using Pennies.Auth.Services;
+using Pennies.Auth.Application.Entities;
+using Pennies.Auth.Application.Services;
 
 namespace Pennies.Auth.Tests.Services;
 

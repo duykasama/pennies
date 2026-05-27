@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { formatVnd } from '#/lib/pennies'
+import { formatVnd, isoToday, isoStartOfWeek, isoStartOfMonth } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 
 interface SummaryCardsProps {
@@ -27,10 +27,17 @@ function SummaryTile({ label, amount, sub }: SummaryTileProps) {
 export default function SummaryCards({ expenses }: SummaryCardsProps) {
   const { t } = useTranslation()
 
-  const todayExpenses = expenses.filter((e) => e.date === 'today')
+  const today = isoToday()
+  const weekStart = isoStartOfWeek()
+  const monthStart = isoStartOfMonth()
+
+  const todayExpenses = expenses.filter((e) => e.date === today)
+  const weekExpenses = expenses.filter((e) => e.date >= weekStart && e.date <= today)
+  const monthExpenses = expenses.filter((e) => e.date >= monthStart && e.date <= today)
+
   const todayTotal = todayExpenses.reduce((s, e) => s + e.amount, 0)
-  const weekTotal = expenses.reduce((s, e) => s + e.amount, 0)
-  const monthTotal = weekTotal * 4
+  const weekTotal = weekExpenses.reduce((s, e) => s + e.amount, 0)
+  const monthTotal = monthExpenses.reduce((s, e) => s + e.amount, 0)
 
   return (
     <div className="grid grid-cols-3 gap-4 px-12 -mt-14 relative">

@@ -29,20 +29,40 @@ export const CATEGORIES: Category[] = [
 
 export const CAT_BY_ID = Object.fromEntries(CATEGORIES.map((c) => [c.id, c]))
 
-export const DATE_ORDER = ['today', 'yesterday', 'May 12', 'May 11', 'May 10']
+export const CATEGORY_TO_API: Record<string, number> = {
+  food: 1,
+  transport: 2,
+  shopping: 3,
+  fun: 4,
+  health: 5,
+  util: 6,
+  housing: 7,
+  other: 8,
+}
+
+export const CATEGORY_FROM_API: Record<number, string> = Object.fromEntries(
+  Object.entries(CATEGORY_TO_API).map(([k, v]) => [v, k]),
+)
+
+export function isoToday(): string {
+  return new Date().toISOString().slice(0, 10)
+}
+
+export function isoStartOfWeek(): string {
+  const d = new Date()
+  const day = d.getDay()
+  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1))
+  return d.toISOString().slice(0, 10)
+}
+
+export function isoStartOfMonth(): string {
+  const d = new Date()
+  d.setDate(1)
+  return d.toISOString().slice(0, 10)
+}
 
 export function formatVnd(n: number): string {
   const abs = Math.abs(n)
   const formatted = '₫' + abs.toLocaleString('vi-VN')
   return n < 0 ? '-' + formatted : formatted
 }
-
-export const SEED_EXPENSES: Expense[] = [
-  { id: 'e1', cat: 'food', title: 'Food & Drink', sub: 'Lunch · pho place', amount: -65000, date: 'today' },
-  { id: 'e2', cat: 'transport', title: 'Transport', sub: 'Grab to office', amount: -25000, date: 'today' },
-  { id: 'e3', cat: 'shopping', title: 'Shopping', sub: 'Bookstore', amount: -320000, date: 'today' },
-  { id: 'e4', cat: 'health', title: 'Health', sub: 'Pharmacy', amount: -85000, date: 'yesterday' },
-  { id: 'e5', cat: 'fun', title: 'Entertainment', sub: 'Cinema · two seats', amount: -180000, date: 'yesterday' },
-  { id: 'e6', cat: 'food', title: 'Food & Drink', sub: 'Coffee · banh mi', amount: -55000, date: 'May 12' },
-  { id: 'e7', cat: 'util', title: 'Utilities', sub: 'Electric · May', amount: -420000, date: 'May 12' },
-]

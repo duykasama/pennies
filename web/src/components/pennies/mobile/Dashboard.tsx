@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import type { Expense } from '#/lib/pennies'
+import { isoToday, isoStartOfWeek } from '#/lib/pennies'
 import { ROUTES } from '#/lib/constants'
 import Header from '#/components/pennies/mobile/Header'
 import SummaryCard from '#/components/pennies/mobile/SummaryCard'
@@ -13,9 +14,14 @@ interface DashboardProps {
 export default function Dashboard({ expenses }: DashboardProps) {
   const { t } = useTranslation()
 
-  const todayExpenses = expenses.filter((e) => e.date === 'today')
+  const today = isoToday()
+  const weekStart = isoStartOfWeek()
+
+  const todayExpenses = expenses.filter((e) => e.date === today)
+  const weekExpenses = expenses.filter((e) => e.date >= weekStart && e.date <= today)
+
   const todayTotal = todayExpenses.reduce((s, e) => s + e.amount, 0)
-  const weekTotal = expenses.reduce((s, e) => s + e.amount, 0)
+  const weekTotal = weekExpenses.reduce((s, e) => s + e.amount, 0)
 
   const recentExpenses = expenses.slice(0, 4)
 

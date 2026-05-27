@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { useExpenses } from '#/lib/penniesStore'
+import { getExpensesFn, mapApiExpense } from '#/lib/expenses'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
 import type { SortOption } from '#/lib/constants'
 import BottomNav from '#/components/pennies/mobile/BottomNav'
@@ -8,7 +9,10 @@ import MobileExpenseList from '#/components/pennies/mobile/ExpenseList'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopExpenseList from '#/components/pennies/desktop/ExpenseList'
 
+const expensesQuery = { queryKey: ['expenses'], queryFn: () => getExpensesFn() }
+
 export const Route = createFileRoute('/_authenticated/expenses/')({
+  loader: ({ context }) => context.queryClient.ensureQueryData(expensesQuery),
   validateSearch: (
     search: Record<string, unknown>,
   ): { filter: string; sort: SortOption; toast?: string } => ({
@@ -20,7 +24,8 @@ export const Route = createFileRoute('/_authenticated/expenses/')({
 })
 
 function ExpensesPage() {
-  const expenses = useExpenses()
+  const { data } = useSuspenseQuery(expensesQuery)
+  const expenses = data.map(mapApiExpense)
   const { filter, sort, toast } = Route.useSearch()
   const navigate = useNavigate()
   const [toastMsg, setToastMsg] = useState<string | null>(null)

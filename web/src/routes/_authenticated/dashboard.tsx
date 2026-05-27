@@ -1,14 +1,21 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useExpenses } from '#/lib/penniesStore'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { getExpensesFn, mapApiExpense } from '#/lib/expenses'
 import BottomNav from '#/components/pennies/mobile/BottomNav'
 import MobileDashboard from '#/components/pennies/mobile/Dashboard'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopDashboard from '#/components/pennies/desktop/Dashboard'
 
-export const Route = createFileRoute('/_authenticated/dashboard')({ component: DashboardPage })
+const expensesQuery = { queryKey: ['expenses'], queryFn: () => getExpensesFn() }
+
+export const Route = createFileRoute('/_authenticated/dashboard')({
+  loader: ({ context }) => context.queryClient.ensureQueryData(expensesQuery),
+  component: DashboardPage,
+})
 
 function DashboardPage() {
-  const expenses = useExpenses()
+  const { data } = useSuspenseQuery(expensesQuery)
+  const expenses = data.map(mapApiExpense)
 
   return (
     <div className="min-h-screen bg-bg-base">

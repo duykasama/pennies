@@ -5,26 +5,25 @@ import { verifyEmailFn } from '#/lib/auth'
 
 export const Route = createFileRoute('/auth/verify-email')({
   validateSearch: (search) => ({
-    userId: typeof search.userId === 'string' ? search.userId : '',
-    token: typeof search.token === 'string' ? search.token : '',
+    token: typeof search.t === 'string' ? search.t : '',
   }),
   component: VerifyEmailPage,
 })
 
 function VerifyEmailPage() {
-  const { userId, token } = Route.useSearch()
+  const { token } = Route.useSearch()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!userId || !token) {
+    if (!token) {
       setError('Invalid verification link.')
       return
     }
-    verifyEmailFn({ data: { userId, token } })
+    verifyEmailFn({ data: { token } })
       .then(() => navigate({ to: ROUTES.AUTH_VERIFIED }))
       .catch((e: unknown) => setError(e instanceof Error ? e.message : 'Verification failed'))
-  }, [userId, token, navigate])
+  }, [token, navigate])
 
   return (
     <div className="min-h-screen bg-bg-base flex items-center justify-center font-sans text-sea-ink">

@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { DATE_ORDER } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 import { SORT, FILTER } from '#/lib/constants'
 import type { SortOption } from '#/lib/constants'
@@ -23,29 +22,28 @@ export default function ExpenseList({
 }: ExpenseListProps) {
   const { t } = useTranslation()
 
+  const today = new Date().toISOString().slice(0, 10)
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+
+  function dateLabel(d: string) {
+    if (d === today) return t('dates.today')
+    if (d === yesterday) return t('dates.yesterday')
+    return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
+
   const filtered = filter === FILTER.ALL ? expenses : expenses.filter((e) => e.cat === filter)
 
   const sorted =
     sort === SORT.AMOUNT
       ? [...filtered].sort((a, b) => a.amount - b.amount)
-      : [...filtered].sort(
-          (a, b) => DATE_ORDER.indexOf(a.date) - DATE_ORDER.indexOf(b.date),
-        )
+      : [...filtered].sort((a, b) => b.date.localeCompare(a.date))
 
-  const dateLabels: Record<string, string> = {
-    today: t('dates.today'),
-    yesterday: t('dates.yesterday'),
-  }
-
-  // Group by date when sorting by date
   const groups: { date: string; items: Expense[] }[] = []
   if (sort === SORT.DATE) {
-    for (const date of DATE_ORDER) {
-      const items = sorted.filter((e) => e.date === date)
-      if (items.length > 0) groups.push({ date, items })
+    const uniqueDates = [...new Set(sorted.map((e) => e.date))].sort((a, b) => b.localeCompare(a))
+    for (const date of uniqueDates) {
+      groups.push({ date, items: sorted.filter((e) => e.date === date) })
     }
-    const remaining = sorted.filter((e) => !DATE_ORDER.includes(e.date))
-    if (remaining.length > 0) groups.push({ date: 'Other', items: remaining })
   }
 
   return (
@@ -62,7 +60,7 @@ export default function ExpenseList({
           ? groups.map((group) => (
               <div key={group.date}>
                 <p className="px-4 pt-2 pb-1 font-bold text-[11px] text-sea-ink-soft uppercase tracking-wide">
-                  — {dateLabels[group.date] ?? group.date}
+                  — {dateLabel(group.date)}
                 </p>
                 {group.items.map((exp) => (
                   <ExpenseRow key={exp.id} expense={exp} variant="desktop" />

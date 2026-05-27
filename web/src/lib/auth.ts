@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getCookie, setCookie, deleteCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
-import { API_URLS } from '#/lib/constants'
+import { API_URLS, ROUTES } from '#/lib/constants'
 
 export type SessionUser = { sub: string; email: string; displayName: string }
 
@@ -53,7 +53,10 @@ export const registerFn = createServerFn({ method: 'POST' })
     const res = await fetch(`${API_URLS.AUTH}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        confirmationBaseUrl: `${process.env['APP_URL']}${ROUTES.AUTH_VERIFY_EMAIL}`,
+      }),
     })
     const body = await res.json()
     if (!res.ok) throw new Error(body?.error ?? 'Registration failed')
@@ -61,7 +64,7 @@ export const registerFn = createServerFn({ method: 'POST' })
   })
 
 export const verifyEmailFn = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ userId: z.string(), token: z.string() }))
+  .inputValidator(z.object({ token: z.string() }))
   .handler(async ({ data }) => {
     const res = await fetch(`${API_URLS.AUTH}/auth/verify-email`, {
       method: 'POST',

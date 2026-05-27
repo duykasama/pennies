@@ -14,7 +14,7 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
   const [amountStr, setAmountStr] = useState('')
   const [desc, setDesc] = useState('')
   const [cat, setCat] = useState('food')
-  const [date, setDate] = useState('2026-05-14')
+  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [note, setNote] = useState('')
   const [errors, setErrors] = useState<{ amount?: string; desc?: string }>({})
 
@@ -38,7 +38,7 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
       title: CAT_BY_ID[cat].long,
       sub: desc.trim(),
       amount: -n,
-      date: 'today',
+      date,
     }
     onSave(exp)
   }

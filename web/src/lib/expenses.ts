@@ -12,6 +12,7 @@ export interface ApiExpense {
   amount: number
   category: number
   date: string
+  updatedAt: string
 }
 
 export function mapApiExpense(r: ApiExpense): Expense {
@@ -22,6 +23,7 @@ export function mapApiExpense(r: ApiExpense): Expense {
     sub: r.description ?? '',
     amount: r.amount,
     date: r.date,
+    updatedAt: r.updatedAt,
   }
 }
 
@@ -43,6 +45,7 @@ export const updateExpenseFn = createServerFn({ method: 'POST' })
       amount: z.number(),
       category: z.number(),
       date: z.string(),
+      updatedAt: z.string(),
     }),
   )
   .handler(async ({ data }): Promise<ApiExpense> => {

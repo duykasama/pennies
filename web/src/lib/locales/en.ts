@@ -27,6 +27,13 @@ const en = {
     vsLastWeekShort: 'vs last',
     onTrack: 'On track',
     expenses: 'expenses',
+    totalSpent: 'Total spent',
+    dailyAverage: 'Daily average',
+    topCategory: 'Top category',
+    overDays: 'over {{count}} days',
+    nothingInMonth: 'Nothing in {{month}}',
+    noExpensesThisMonth: 'No expenses tracked this month yet.',
+    monthExpenses: '{{month}} expenses',
   },
 
   expenses: {

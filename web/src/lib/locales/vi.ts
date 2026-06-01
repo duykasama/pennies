@@ -29,6 +29,13 @@ const vi: Translations = {
     vsLastWeekShort: 'tuần trước',
     onTrack: 'Ổn định',
     expenses: 'chi tiêu',
+    totalSpent: 'Tổng chi tiêu',
+    dailyAverage: 'Trung bình ngày',
+    topCategory: 'Danh mục hàng đầu',
+    overDays: 'trong {{count}} ngày',
+    nothingInMonth: 'Không có gì trong {{month}}',
+    noExpensesThisMonth: 'Chưa có chi tiêu nào trong tháng này.',
+    monthExpenses: 'Chi tiêu tháng {{month}}',
   },
 
   expenses: {

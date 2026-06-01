@@ -63,6 +63,7 @@ function ExpenseDetailPage() {
         amount: exp.amount,
         category: CATEGORY_TO_API[exp.cat] ?? 8,
         date: exp.date,
+        updatedAt: exp.updatedAt,
       },
     })
     await queryClient.invalidateQueries({ queryKey: ['expenses'] })

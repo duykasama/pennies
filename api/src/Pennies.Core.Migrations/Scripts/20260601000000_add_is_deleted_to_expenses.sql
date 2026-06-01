@@ -1,0 +1,2 @@
+ALTER TABLE "Expenses"
+    ADD COLUMN IF NOT EXISTS "IsDeleted" boolean NOT NULL DEFAULT FALSE;

@@ -1,94 +1,74 @@
 import { useTranslation } from 'react-i18next'
-import {
-  formatVnd,
-  isoToday,
-  isoStartOfWeek,
-  isoStartOfMonth,
-} from '#/lib/pennies'
+import { formatVnd, CAT_BY_ID, daysElapsed, calcMonthTotal, calcTopCategory, expenseMonth } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 
 interface SummaryCardsProps {
   expenses: Expense[]
+  month: string
 }
 
 interface SummaryTileProps {
   label: string
-  amount: number
-  sub: string
+  value: string
+  sub?: string
+  subColor?: string
 }
 
-function SummaryTile({ label, amount, sub }: SummaryTileProps) {
+function SummaryTile({ label, value, sub, subColor = 'text-lagoon-deep' }: SummaryTileProps) {
   return (
-    <div className="bg-white rounded-p-md p-5 shadow-card min-h-[96px] flex flex-col gap-2">
-      <p className="font-medium text-[12px] leading-none text-sea-ink-soft">
-        {label}
-      </p>
-      <p className="font-bold text-[28px] leading-none text-sea-ink tabular-nums">
-        {formatVnd(amount)}
-      </p>
-      <p className="font-medium text-[12px] leading-none text-lagoon-deep">
-        {sub}
-      </p>
+    <div className="bg-white rounded-p-md p-5 shadow-card min-h-[104px] flex flex-col gap-2">
+      <p className="font-medium text-[12px] leading-none text-sea-ink-soft">{label}</p>
+      <p className="font-bold text-[28px] leading-none text-sea-ink tabular-nums">{value}</p>
+      {sub && <p className={`font-medium text-[12px] leading-none ${subColor}`}>{sub}</p>}
     </div>
   )
 }
 
-function weekVsLabel(current: number, last: number, suffix: string): string {
-  if (current === 0 && last === 0) return `= ${suffix}`
-  if (last === 0) return `↑ ${suffix}`
-  const pct = Math.round(((current - last) / last) * 100)
-  if (pct === 0) return `= ${suffix}`
-  return pct > 0 ? `↑ ${pct}% ${suffix}` : `↓ ${Math.abs(pct)}% ${suffix}`
-}
-
-export default function SummaryCards({ expenses }: SummaryCardsProps) {
+export default function SummaryCards({ expenses, month }: SummaryCardsProps) {
   const { t } = useTranslation()
 
-  const today = isoToday()
-  const weekStart = isoStartOfWeek()
-  const monthStart = isoStartOfMonth()
+  const inMonth = expenses.filter((e) => expenseMonth(e) === month)
+  const total = inMonth.reduce((s, e) => s + e.amount, 0)
+  const days = daysElapsed(month)
+  const dailyAvg = inMonth.length ? -Math.round(Math.abs(total) / days / 1000) * 1000 : 0
 
-  const lastWeekEndDate = new Date(weekStart)
-  lastWeekEndDate.setDate(lastWeekEndDate.getDate() - 1)
-  const lastWeekEnd = lastWeekEndDate.toISOString().slice(0, 10)
-
-  const lastWeekStartDate = new Date(weekStart)
-  lastWeekStartDate.setDate(lastWeekStartDate.getDate() - 7)
-  const lastWeekStart = lastWeekStartDate.toISOString().slice(0, 10)
-
-  const todayExpenses = expenses.filter((e) => e.date === today)
-  const weekExpenses = expenses.filter(
-    (e) => e.date >= weekStart && e.date <= today,
-  )
-  const lastWeekExpenses = expenses.filter(
-    (e) => e.date >= lastWeekStart && e.date <= lastWeekEnd,
-  )
-  const monthExpenses = expenses.filter(
-    (e) => e.date >= monthStart && e.date <= today,
-  )
-
-  const todayTotal = todayExpenses.reduce((s, e) => s + e.amount, 0)
-  const weekTotal = weekExpenses.reduce((s, e) => s + e.amount, 0)
-  const lastWeekTotal = lastWeekExpenses.reduce((s, e) => s + e.amount, 0)
-  const monthTotal = monthExpenses.reduce((s, e) => s + e.amount, 0)
+  const top = calcTopCategory(expenses, month)
+  const topCat = top ? CAT_BY_ID[top.cat] : null
 
   return (
     <div className="grid grid-cols-3 gap-4 px-12 -mt-14 relative">
       <SummaryTile
-        label={t('dashboard.today')}
-        amount={todayTotal}
-        sub={`${todayExpenses.length} ${t('dashboard.expenses')}`}
+        label={t('dashboard.totalSpent')}
+        value={formatVnd(total)}
+        sub={`${inMonth.length} ${t('dashboard.expenses')}`}
       />
       <SummaryTile
-        label={t('dashboard.thisWeek')}
-        amount={weekTotal}
-        sub={weekVsLabel(weekTotal, lastWeekTotal, t('dashboard.vsLastWeek'))}
+        label={t('dashboard.dailyAverage')}
+        value={formatVnd(dailyAvg)}
+        sub={t('dashboard.overDays', { count: days })}
       />
-      <SummaryTile
-        label={t('dashboard.thisMonth')}
-        amount={monthTotal}
-        sub={t('dashboard.onTrack')}
-      />
+      {/* Top category — custom layout */}
+      <div className="bg-white rounded-p-md p-5 shadow-card min-h-[104px] flex flex-col gap-2">
+        <p className="font-medium text-[12px] leading-none text-sea-ink-soft">{t('dashboard.topCategory')}</p>
+        {topCat ? (
+          <>
+            <div className="flex items-center gap-2.5">
+              <span
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[16px] leading-none"
+                style={{ background: topCat.dot }}
+              >
+                {topCat.emoji}
+              </span>
+              <span className="font-bold text-[22px] leading-none text-sea-ink">{topCat.label}</span>
+            </div>
+            <p className="font-medium text-[12px] leading-none text-lagoon-deep tabular-nums">
+              {formatVnd(top!.amount)}
+            </p>
+          </>
+        ) : (
+          <p className="font-bold text-[22px] leading-none text-sea-ink-muted">—</p>
+        )}
+      </div>
     </div>
   )
 }

@@ -9,7 +9,8 @@ public sealed record ExpenseResponse(
     decimal Amount,
     int Category,
     DateOnly Date,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    DateTime UpdatedAt);
 
 internal static class ExpenseMappings
 {
@@ -20,5 +21,6 @@ internal static class ExpenseMappings
             expense.Amount,
             (int)expense.Category,
             expense.Date,
-            expense.CreatedAt);
+            expense.CreatedAt,
+            expense.UpdatedAt);
 }

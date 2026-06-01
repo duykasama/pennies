@@ -22,6 +22,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedExpensesIndexRouteImport } from './routes/_authenticated/expenses/index'
 import { Route as AuthOAuthGoogleRouteImport } from './routes/auth/o-auth/google'
 import { Route as AuthenticatedExpensesAddRouteImport } from './routes/_authenticated/expenses/add'
+import { Route as AuthenticatedExpensesExpenseIdRouteImport } from './routes/_authenticated/expenses/$expenseId'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -89,6 +90,12 @@ const AuthenticatedExpensesAddRoute =
     path: '/add',
     getParentRoute: () => AuthenticatedExpensesRoute,
   } as any)
+const AuthenticatedExpensesExpenseIdRoute =
+  AuthenticatedExpensesExpenseIdRouteImport.update({
+    id: '/$expenseId',
+    path: '/$expenseId',
+    getParentRoute: () => AuthenticatedExpensesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/auth/verified': typeof AuthVerifiedRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/expenses/$expenseId': typeof AuthenticatedExpensesExpenseIdRoute
   '/expenses/add': typeof AuthenticatedExpensesAddRoute
   '/auth/o-auth/google': typeof AuthOAuthGoogleRoute
   '/expenses/': typeof AuthenticatedExpensesIndexRoute
@@ -113,6 +121,7 @@ export interface FileRoutesByTo {
   '/auth/verified': typeof AuthVerifiedRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/expenses/$expenseId': typeof AuthenticatedExpensesExpenseIdRoute
   '/expenses/add': typeof AuthenticatedExpensesAddRoute
   '/auth/o-auth/google': typeof AuthOAuthGoogleRoute
   '/expenses': typeof AuthenticatedExpensesIndexRoute
@@ -129,6 +138,7 @@ export interface FileRoutesById {
   '/auth/verified': typeof AuthVerifiedRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/_authenticated/expenses/$expenseId': typeof AuthenticatedExpensesExpenseIdRoute
   '/_authenticated/expenses/add': typeof AuthenticatedExpensesAddRoute
   '/auth/o-auth/google': typeof AuthOAuthGoogleRoute
   '/_authenticated/expenses/': typeof AuthenticatedExpensesIndexRoute
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/auth/verified'
     | '/auth/verify'
     | '/auth/verify-email'
+    | '/expenses/$expenseId'
     | '/expenses/add'
     | '/auth/o-auth/google'
     | '/expenses/'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/auth/verified'
     | '/auth/verify'
     | '/auth/verify-email'
+    | '/expenses/$expenseId'
     | '/expenses/add'
     | '/auth/o-auth/google'
     | '/expenses'
@@ -173,6 +185,7 @@ export interface FileRouteTypes {
     | '/auth/verified'
     | '/auth/verify'
     | '/auth/verify-email'
+    | '/_authenticated/expenses/$expenseId'
     | '/_authenticated/expenses/add'
     | '/auth/o-auth/google'
     | '/_authenticated/expenses/'
@@ -283,15 +296,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedExpensesAddRouteImport
       parentRoute: typeof AuthenticatedExpensesRoute
     }
+    '/_authenticated/expenses/$expenseId': {
+      id: '/_authenticated/expenses/$expenseId'
+      path: '/$expenseId'
+      fullPath: '/expenses/$expenseId'
+      preLoaderRoute: typeof AuthenticatedExpensesExpenseIdRouteImport
+      parentRoute: typeof AuthenticatedExpensesRoute
+    }
   }
 }
 
 interface AuthenticatedExpensesRouteChildren {
+  AuthenticatedExpensesExpenseIdRoute: typeof AuthenticatedExpensesExpenseIdRoute
   AuthenticatedExpensesAddRoute: typeof AuthenticatedExpensesAddRoute
   AuthenticatedExpensesIndexRoute: typeof AuthenticatedExpensesIndexRoute
 }
 
 const AuthenticatedExpensesRouteChildren: AuthenticatedExpensesRouteChildren = {
+  AuthenticatedExpensesExpenseIdRoute: AuthenticatedExpensesExpenseIdRoute,
   AuthenticatedExpensesAddRoute: AuthenticatedExpensesAddRoute,
   AuthenticatedExpensesIndexRoute: AuthenticatedExpensesIndexRoute,
 }

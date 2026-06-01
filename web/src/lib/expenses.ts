@@ -34,6 +34,40 @@ export const getExpensesFn = createServerFn().handler(async (): Promise<ApiExpen
   return res.json()
 })
 
+export const updateExpenseFn = createServerFn({ method: 'POST' })
+  .inputValidator(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      description: z.string().nullable(),
+      amount: z.number(),
+      category: z.number(),
+      date: z.string(),
+    }),
+  )
+  .handler(async ({ data }): Promise<ApiExpense> => {
+    const { id, ...body } = data
+    const token = getCookie('auth_token')
+    const res = await fetch(`${API_URLS.CORE}/expenses/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body),
+    })
+    if (!res.ok) throw new Error('Failed to update expense')
+    return res.json()
+  })
+
+export const deleteExpenseFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ id: z.string() }))
+  .handler(async ({ data }) => {
+    const token = getCookie('auth_token')
+    const res = await fetch(`${API_URLS.CORE}/expenses/${data.id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) throw new Error('Failed to delete expense')
+  })
+
 export const createExpenseFn = createServerFn({ method: 'POST' })
   .inputValidator(
     z.object({

@@ -11,6 +11,7 @@ interface ExpenseListProps {
   setFilter: (f: string) => void
   sort: SortOption
   setSort: (s: SortOption) => void
+  onOpenExpense?: (exp: Expense) => void
 }
 
 export default function ExpenseList({
@@ -19,6 +20,7 @@ export default function ExpenseList({
   setFilter,
   sort,
   setSort,
+  onOpenExpense,
 }: ExpenseListProps) {
   const { t } = useTranslation()
 
@@ -63,11 +65,11 @@ export default function ExpenseList({
                   — {dateLabel(group.date)}
                 </p>
                 {group.items.map((exp) => (
-                  <ExpenseRow key={exp.id} expense={exp} variant="desktop" />
+                  <ExpenseRow key={exp.id} expense={exp} variant="desktop" onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined} />
                 ))}
               </div>
             ))
-          : sorted.map((exp) => <ExpenseRow key={exp.id} expense={exp} variant="desktop" />)}
+          : sorted.map((exp) => <ExpenseRow key={exp.id} expense={exp} variant="desktop" onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined} />)}
       </div>
     </div>
   )

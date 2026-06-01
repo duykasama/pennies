@@ -6,9 +6,10 @@ import { cn } from '#/lib/utils'
 interface ExpenseRowProps {
   expense: Expense
   variant?: 'mobile' | 'desktop'
+  onClick?: () => void
 }
 
-export default function ExpenseRow({ expense, variant = 'mobile' }: ExpenseRowProps) {
+export default function ExpenseRow({ expense, variant = 'mobile', onClick }: ExpenseRowProps) {
   const { t } = useTranslation()
   const cat = CAT_BY_ID[expense.cat]
   const isDesktop = variant === 'desktop'
@@ -21,8 +22,11 @@ export default function ExpenseRow({ expense, variant = 'mobile' }: ExpenseRowPr
 
   return (
     <div
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
       className={cn(
-        'mx-4 mb-2 px-3.5 py-3.5 bg-white rounded-p-md shadow-card hover:bg-foam transition-colors duration-150 cursor-pointer',
+        'mx-4 mb-2 px-3.5 py-3.5 bg-white rounded-p-md shadow-card transition-colors duration-150',
+        onClick && 'hover:bg-foam cursor-pointer',
         isDesktop
           ? 'grid grid-cols-[32px_1fr_220px_140px] gap-4 items-center'
           : 'grid grid-cols-[28px_1fr_auto] gap-3 items-center',

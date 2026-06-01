@@ -27,11 +27,14 @@ public static class ExpenseEndpoints
         return app;
     }
 
-    private static async Task<IResult> GetExpenses(ClaimsPrincipal user, ISender mediator)
+    private static async Task<IResult> GetExpenses(
+        ClaimsPrincipal user, ISender mediator,
+        int pageIndex = 1, int pageSize = 20,
+        int? month = null, int? year = null)
     {
         var userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var result = await mediator.Send(new GetExpensesQuery(userId));
-        return result.ToHttpResult();
+        return (await mediator.Send(new GetExpensesQuery(userId, month, year, pageIndex, pageSize)))
+            .ToHttpResult();
     }
 
     private static async Task<IResult> GetExpenseById(Guid id, ClaimsPrincipal user, ISender mediator)

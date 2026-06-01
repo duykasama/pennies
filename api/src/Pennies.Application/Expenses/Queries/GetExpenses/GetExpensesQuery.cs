@@ -4,4 +4,9 @@ using Pennies.Application.Expenses.DTOs;
 
 namespace Pennies.Application.Expenses.Queries.GetExpenses;
 
-public sealed record GetExpensesQuery(string UserId) : IRequest<Result<IReadOnlyList<ExpenseResponse>>>;
+public sealed record GetExpensesQuery(
+    string UserId,
+    int? Month,
+    int? Year,
+    int PageIndex,
+    int PageSize) : IRequest<Result<PagedResponse<ExpenseResponse>>>;

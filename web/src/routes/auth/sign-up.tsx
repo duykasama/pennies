@@ -1,7 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { ROUTES } from '#/lib/constants'
-import { registerFn } from '#/lib/auth'
+import { registerFn, getGoogleAuthUrlFn } from '#/lib/auth'
 import MobileSignUp from '#/components/pennies/mobile/auth/SignUp'
 import DesktopSignUp from '#/components/pennies/desktop/auth/SignUp'
 
@@ -26,8 +26,9 @@ function SignUpPage() {
     }
   }
 
-  function handleGoogle() {
-    navigate({ to: ROUTES.AUTH_VERIFIED })
+  async function handleGoogle() {
+    const url = await getGoogleAuthUrlFn()
+    window.location.href = url
   }
 
   function handleSignIn() {

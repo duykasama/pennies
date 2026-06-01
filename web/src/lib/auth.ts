@@ -76,6 +76,42 @@ export const verifyEmailFn = createServerFn({ method: 'POST' })
     return body as { message: string }
   })
 
+export const getGoogleAuthUrlFn = createServerFn().handler(async (): Promise<string> => {
+  const redirectUri = `${process.env['APP_URL']}${ROUTES.AUTH_GOOGLE_CALLBACK}`
+  const res = await fetch(
+    `${API_URLS.AUTH}/auth/google/url?redirectUri=${encodeURIComponent(redirectUri)}`,
+  )
+  if (!res.ok) throw new Error('Failed to get Google auth URL')
+  const url = await res.json()
+  return url
+})
+
+export const googleLoginFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ code: z.string() }))
+  .handler(async ({ data }): Promise<SessionUser> => {
+    const redirectUri = `${process.env['APP_URL']}${ROUTES.AUTH_GOOGLE_CALLBACK}`
+    const res = await fetch(`${API_URLS.AUTH}/auth/google/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: data.code, redirectUri }),
+    })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body?.error ?? 'Google authentication failed')
+    }
+    const { accessToken } = await res.json()
+    setCookie('auth_token', accessToken, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60,
+      path: '/',
+    })
+    const [, b64] = accessToken.split('.')
+    const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
+    return { sub: payload.sub, email: payload.email, displayName: payload.displayName }
+  })
+
 export const resendConfirmationFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ email: z.string() }))
   .handler(async ({ data }) => {

@@ -8,6 +8,7 @@ export const ROUTES = {
   AUTH_VERIFIED: '/auth/verified',
   AUTH_VERIFY: '/auth/verify',
   AUTH_VERIFY_EMAIL: '/auth/verify-email',
+  AUTH_GOOGLE_CALLBACK: '/auth/o-auth/google',
 } as const
 
 export const SORT = {

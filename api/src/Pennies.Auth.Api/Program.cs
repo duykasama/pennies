@@ -7,6 +7,7 @@ using Pennies.Auth.Application.Common.Behaviors;
 using Pennies.Auth.Application.Entities;
 using Pennies.Auth.Application.Persistence;
 using Pennies.Auth.Application.Services;
+using Pennies.Auth.Application.Settings;
 using Pennies.Auth.Api.Endpoints;
 using Pennies.Auth.Api.Middleware;
 using Pennies.Auth.Api.Services;
@@ -43,6 +44,8 @@ builder.Services.AddValidatorsFromAssembly(typeof(AssemblyMarker).Assembly);
 
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IEmailConfirmationTokenService, EmailConfirmationTokenService>();
+builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection(GoogleAuthSettings.SectionName));
+builder.Services.AddHttpClient<IGoogleOAuthService, GoogleOAuthService>();
 builder.Services.AddMessaging(builder.Configuration.GetConnectionString("rabbitmq")!);
 
 var app = builder.Build();

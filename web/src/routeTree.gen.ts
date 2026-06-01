@@ -20,6 +20,7 @@ import { Route as AuthCheckEmailRouteImport } from './routes/auth/check-email'
 import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedExpensesIndexRouteImport } from './routes/_authenticated/expenses/index'
+import { Route as AuthOAuthGoogleRouteImport } from './routes/auth/o-auth/google'
 import { Route as AuthenticatedExpensesAddRouteImport } from './routes/_authenticated/expenses/add'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -77,6 +78,11 @@ const AuthenticatedExpensesIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedExpensesRoute,
   } as any)
+const AuthOAuthGoogleRoute = AuthOAuthGoogleRouteImport.update({
+  id: '/auth/o-auth/google',
+  path: '/auth/o-auth/google',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedExpensesAddRoute =
   AuthenticatedExpensesAddRouteImport.update({
     id: '/add',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/auth/verify': typeof AuthVerifyRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/expenses/add': typeof AuthenticatedExpensesAddRoute
+  '/auth/o-auth/google': typeof AuthOAuthGoogleRoute
   '/expenses/': typeof AuthenticatedExpensesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/auth/verify': typeof AuthVerifyRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/expenses/add': typeof AuthenticatedExpensesAddRoute
+  '/auth/o-auth/google': typeof AuthOAuthGoogleRoute
   '/expenses': typeof AuthenticatedExpensesIndexRoute
 }
 export interface FileRoutesById {
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/auth/verify': typeof AuthVerifyRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/_authenticated/expenses/add': typeof AuthenticatedExpensesAddRoute
+  '/auth/o-auth/google': typeof AuthOAuthGoogleRoute
   '/_authenticated/expenses/': typeof AuthenticatedExpensesIndexRoute
 }
 export interface FileRouteTypes {
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/auth/verify'
     | '/auth/verify-email'
     | '/expenses/add'
+    | '/auth/o-auth/google'
     | '/expenses/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/auth/verify'
     | '/auth/verify-email'
     | '/expenses/add'
+    | '/auth/o-auth/google'
     | '/expenses'
   id:
     | '__root__'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/auth/verify'
     | '/auth/verify-email'
     | '/_authenticated/expenses/add'
+    | '/auth/o-auth/google'
     | '/_authenticated/expenses/'
   fileRoutesById: FileRoutesById
 }
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   AuthVerifiedRoute: typeof AuthVerifiedRoute
   AuthVerifyRoute: typeof AuthVerifyRoute
   AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
+  AuthOAuthGoogleRoute: typeof AuthOAuthGoogleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -256,6 +269,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedExpensesIndexRouteImport
       parentRoute: typeof AuthenticatedExpensesRoute
     }
+    '/auth/o-auth/google': {
+      id: '/auth/o-auth/google'
+      path: '/auth/o-auth/google'
+      fullPath: '/auth/o-auth/google'
+      preLoaderRoute: typeof AuthOAuthGoogleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/expenses/add': {
       id: '/_authenticated/expenses/add'
       path: '/add'
@@ -304,6 +324,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthVerifiedRoute: AuthVerifiedRoute,
   AuthVerifyRoute: AuthVerifyRoute,
   AuthVerifyEmailRoute: AuthVerifyEmailRoute,
+  AuthOAuthGoogleRoute: AuthOAuthGoogleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

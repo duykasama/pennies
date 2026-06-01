@@ -9,6 +9,12 @@ import tailwindcss from '@tailwindcss/vite'
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()],
+  server: {
+    port: 3000,
+    allowedHosts: [
+      'vast-nearly-krill.ngrok-free.app'
+    ]
+  }
 })
 
 export default config

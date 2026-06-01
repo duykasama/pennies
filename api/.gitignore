@@ -19,3 +19,7 @@ packages/
 
 # Publish
 publish/
+
+# Local secrets / environment overrides
+appsettings.Development.json
+appsettings.*.json

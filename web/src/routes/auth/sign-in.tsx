@@ -1,7 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { ROUTES } from '#/lib/constants'
-import { loginFn } from '#/lib/auth'
+import { loginFn, getGoogleAuthUrlFn } from '#/lib/auth'
 import MobileSignIn from '#/components/pennies/mobile/auth/SignIn'
 import DesktopSignIn from '#/components/pennies/desktop/auth/SignIn'
 
@@ -27,8 +27,10 @@ function SignInPage() {
     }
   }
 
-  function handleGoogle() {
-    navigate({ to: ROUTES.DASHBOARD })
+  async function handleGoogle() {
+    const url = await getGoogleAuthUrlFn()
+    console.log('url:', url)
+    window.location.href = url
   }
 
   function handleSignUp() {

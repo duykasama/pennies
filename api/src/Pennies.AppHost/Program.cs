@@ -51,6 +51,7 @@ web
     .WithEnvironment("API_URL_AUTH", authApi.GetEndpoint("https"))
     .WithEnvironment("APP_URL", web.GetEndpoint("http"))
     .WithExternalHttpEndpoints()
+    .WithHttpEndpoint(port: 3000)
     .WithBun();
 
 builder.Build().Run();

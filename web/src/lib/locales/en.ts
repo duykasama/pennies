@@ -40,6 +40,15 @@ const en = {
     noExpensesInFilter: 'No expenses in this filter.',
   },
 
+  editExpense: {
+    title: 'Edit Expense',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    update: 'Update',
+    amountError: 'Amount must be greater than 0',
+    descriptionError: 'Add a short description',
+  },
+
   addExpense: {
     title: 'Add Expense',
     back: '← Back',

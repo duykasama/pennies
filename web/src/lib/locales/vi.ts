@@ -42,6 +42,15 @@ const vi: Translations = {
     noExpensesInFilter: 'Không có chi tiêu trong bộ lọc này.',
   },
 
+  editExpense: {
+    title: 'Sửa chi tiêu',
+    cancel: 'Hủy',
+    delete: 'Xóa',
+    update: 'Cập nhật',
+    amountError: 'Số tiền phải lớn hơn 0',
+    descriptionError: 'Vui lòng nhập mô tả ngắn',
+  },
+
   addExpense: {
     title: 'Thêm chi tiêu',
     back: '← Quay lại',

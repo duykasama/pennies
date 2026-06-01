@@ -23,9 +23,9 @@ i18n
     fallbackLng: 'en',
     supportedLngs: ['en', 'vi'],
     detection: {
-      order: ['localStorage'],
-      caches: ['localStorage'],
-      lookupLocalStorage: 'locale',
+      order: ['cookie'],
+      caches: ['cookie'],
+      lookupCookie: 'locale',
     },
     interpolation: { escapeValue: false },
   })

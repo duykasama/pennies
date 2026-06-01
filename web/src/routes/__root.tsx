@@ -1,4 +1,4 @@
-import '#/lib/i18n'
+import i18n from '#/lib/i18n'
 import { useEffect } from 'react'
 import {
   HeadContent,
@@ -16,6 +16,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { setTheme, applyThemeClass, themeInitScript, themeStore } from '#/lib/themeStore'
 import type { Theme } from '#/lib/themeStore'
 import { getSessionFn } from '#/lib/auth'
+import { getLocaleFn, getThemeFn } from '#/lib/locale'
 import type { SessionUser } from '#/lib/auth'
 
 interface MyRouterContext {
@@ -32,7 +33,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
-  beforeLoad: async () => ({ user: await getSessionFn() }),
+  beforeLoad: async () => {
+    const [user, locale, theme] = await Promise.all([getSessionFn(), getLocaleFn(), getThemeFn()])
+    if (i18n.language !== locale) await i18n.changeLanguage(locale)
+    themeStore.setState(() => ({ theme }))
+    return { user }
+  },
   shellComponent: RootDocument,
 })
 

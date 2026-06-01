@@ -17,6 +17,7 @@ export function setTheme(theme: Theme) {
   themeStore.setState(() => ({ theme }))
   if (typeof window === 'undefined') return
   localStorage.setItem('theme', theme)
+  document.cookie = `theme=${theme}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`
   applyThemeClass(theme)
 }
 

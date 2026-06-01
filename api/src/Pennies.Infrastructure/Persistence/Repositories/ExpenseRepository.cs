@@ -6,11 +6,11 @@ namespace Pennies.Infrastructure.Persistence.Repositories;
 internal sealed class ExpenseRepository(AppDbContext dbContext) : IExpenseRepository
 {
     public async Task<Expense?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await dbContext.Expenses.FindAsync([id], cancellationToken);
+        await dbContext.Expenses.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted, cancellationToken);
 
     public async Task<IReadOnlyList<Expense>> ListByUserAsync(string userId, CancellationToken cancellationToken = default) =>
         await dbContext.Expenses
-            .Where(e => e.UserId == userId)
+            .Where(e => e.UserId == userId && !e.IsDeleted)
             .OrderByDescending(e => e.Date)
             .ToListAsync(cancellationToken);
 
@@ -28,7 +28,9 @@ internal sealed class ExpenseRepository(AppDbContext dbContext) : IExpenseReposi
 
     public async Task DeleteAsync(Expense expense, CancellationToken cancellationToken = default)
     {
-        dbContext.Expenses.Remove(expense);
+        expense.IsDeleted = true;
+        expense.UpdatedAt = DateTime.UtcNow;
+        dbContext.Expenses.Update(expense);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

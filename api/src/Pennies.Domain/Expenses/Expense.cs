@@ -10,4 +10,5 @@ public class Expense : Entity
     public decimal Amount { get; set; }
     public ExpenseCategory Category { get; set; }
     public DateOnly Date { get; set; }
+    public bool IsDeleted { get; set; }
 }

@@ -26,5 +26,8 @@ internal sealed class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
 
         builder.Property(e => e.UserId)
             .IsRequired();
+
+        builder.Property(e => e.IsDeleted)
+            .IsRequired();
     }
 }

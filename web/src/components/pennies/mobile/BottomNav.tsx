@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { ROUTES } from '#/lib/constants'
+import { ROUTES, FILTER, SORT } from '#/lib/constants'
 import { logoutFn } from '#/lib/auth'
 
 const tabBase =
@@ -24,6 +24,7 @@ export default function BottomNav() {
 
       <Link
         to={ROUTES.EXPENSES}
+        search={{ filter: FILTER.ALL, sort: SORT.DATE }}
         activeProps={{ className: `${tabBase} font-bold text-lagoon` }}
         inactiveProps={{ className: `${tabBase} font-medium text-sea-ink-soft` }}
       >

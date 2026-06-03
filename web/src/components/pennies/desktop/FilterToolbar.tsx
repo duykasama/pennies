@@ -44,7 +44,7 @@ export default function FilterToolbar({ filter, setFilter, sort, setSort }: Filt
               : 'bg-white text-sea-ink border-hairline hover:bg-foam',
           )}
         >
-          {cat.emoji} {t(`categories.${cat.id}.label`)}
+          {cat.emoji} {(t as (k: string) => string)(`categories.${cat.id}.label`)}
         </button>
       ))}
 

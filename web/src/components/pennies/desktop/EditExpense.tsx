@@ -91,7 +91,7 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
                 style={{ background: c.dot, color: c.ink }}
               >
                 <span>{c.emoji}</span>
-                <span>{t(`categories.${c.id}.long`)}</span>
+                <span>{(t as (k: string) => string)(`categories.${c.id}.long`)}</span>
               </button>
             ))}
           </div>

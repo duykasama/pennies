@@ -27,21 +27,21 @@ describe('applyThemeClass', () => {
   })
 
   it('adds .dark for theme="system" when system is dark', () => {
-    window.matchMedia = (query: string) => ({
+    window.matchMedia = ((query: string) => ({
       matches: true,
       media: query,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-    })
+    })) as unknown as typeof window.matchMedia
     applyThemeClass('system')
     expect(document.documentElement.classList.contains('dark')).toBe(true)
     // restore default mock
-    window.matchMedia = (query: string) => ({
+    window.matchMedia = ((query: string) => ({
       matches: false,
       media: query,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-    })
+    })) as unknown as typeof window.matchMedia
   })
 })
 

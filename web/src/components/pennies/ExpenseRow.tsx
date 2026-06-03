@@ -46,7 +46,7 @@ export default function ExpenseRow({ expense, variant = 'mobile', onClick }: Exp
       {/* Title + sub */}
       <div className="min-w-0">
         <p className="font-bold text-[14px] leading-none text-sea-ink truncate">
-          {t(`categories.${expense.cat}.long`)}
+          {(t as (k: string) => string)(`categories.${expense.cat}.long`)}
         </p>
         <p className="mt-1 font-medium text-[12px] leading-none text-sea-ink-soft truncate">{expense.sub}</p>
       </div>

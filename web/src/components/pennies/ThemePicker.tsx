@@ -4,7 +4,7 @@ import { Sun, Moon, Monitor } from 'lucide-react'
 import { useTheme, setTheme } from '#/lib/themeStore'
 import type { Theme } from '#/lib/themeStore'
 
-const THEMES: { value: Theme; icon: React.ElementType; labelKey: string }[] = [
+const THEMES: { value: Theme; icon: React.ElementType; labelKey: 'theme.light' | 'theme.dark' | 'theme.system' }[] = [
   { value: 'light', icon: Sun, labelKey: 'theme.light' },
   { value: 'dark', icon: Moon, labelKey: 'theme.dark' },
   { value: 'system', icon: Monitor, labelKey: 'theme.system' },

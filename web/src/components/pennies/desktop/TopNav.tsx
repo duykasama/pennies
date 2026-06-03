@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { ROUTES } from '#/lib/constants'
+import { ROUTES, FILTER, SORT } from '#/lib/constants'
 import { logoutFn } from '#/lib/auth'
 import LanguagePicker from '#/components/pennies/LanguagePicker'
 import ThemePicker from '#/components/pennies/ThemePicker'
@@ -28,6 +28,7 @@ export default function TopNav() {
 
       <Link
         to={ROUTES.EXPENSES}
+        search={{ filter: FILTER.ALL, sort: SORT.DATE }}
         activeProps={{ className: `${linkBase} font-bold text-white` }}
         inactiveProps={{ className: `${linkBase} font-medium text-white/55 hover:text-lagoon-mist` }}
       >

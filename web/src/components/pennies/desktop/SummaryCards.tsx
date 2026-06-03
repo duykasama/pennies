@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { formatVnd, CAT_BY_ID, daysElapsed, calcMonthTotal, calcTopCategory, expenseMonth } from '#/lib/pennies'
+import { formatVnd, CAT_BY_ID, daysElapsed, calcTopCategory, expenseMonth } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 
 interface SummaryCardsProps {

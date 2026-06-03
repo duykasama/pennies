@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getCookie, setCookie, deleteCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
-import { API_URLS, ROUTES } from '#/lib/constants'
+import { API_URL, ROUTES } from '#/lib/constants'
 
 export type SessionUser = { sub: string; email: string; displayName: string }
 
@@ -21,13 +21,15 @@ export const getSessionFn = createServerFn().handler(async (): Promise<SessionUs
 export const loginFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ email: z.string(), password: z.string() }))
   .handler(async ({ data }): Promise<SessionUser> => {
-    const res = await fetch(`${API_URLS.AUTH}/auth/login`, {
+    console.log('url:', `${API_URL}/auth/login`)
+    const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: data.email, password: data.password }),
     })
     if (!res.ok) {
       const body = await res.json().catch(() => ({}))
+      console.log('error:', res.ok)
       throw new Error(body?.error ?? 'Invalid credentials')
     }
     const { accessToken } = await res.json()
@@ -50,7 +52,7 @@ export const logoutFn = createServerFn({ method: 'POST' }).handler(async () => {
 export const registerFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ displayName: z.string(), email: z.string(), password: z.string() }))
   .handler(async ({ data }) => {
-    const res = await fetch(`${API_URLS.AUTH}/auth/register`, {
+    const res = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -66,7 +68,7 @@ export const registerFn = createServerFn({ method: 'POST' })
 export const verifyEmailFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ token: z.string() }))
   .handler(async ({ data }) => {
-    const res = await fetch(`${API_URLS.AUTH}/auth/verify-email`, {
+    const res = await fetch(`${API_URL}/auth/verify-email`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -79,7 +81,7 @@ export const verifyEmailFn = createServerFn({ method: 'POST' })
 export const getGoogleAuthUrlFn = createServerFn().handler(async (): Promise<string> => {
   const redirectUri = `${process.env['APP_URL']}${ROUTES.AUTH_GOOGLE_CALLBACK}`
   const res = await fetch(
-    `${API_URLS.AUTH}/auth/google/url?redirectUri=${encodeURIComponent(redirectUri)}`,
+    `${API_URL}/auth/google/url?redirectUri=${encodeURIComponent(redirectUri)}`,
   )
   if (!res.ok) throw new Error('Failed to get Google auth URL')
   const url = await res.json()
@@ -90,7 +92,7 @@ export const googleLoginFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ code: z.string() }))
   .handler(async ({ data }): Promise<SessionUser> => {
     const redirectUri = `${process.env['APP_URL']}${ROUTES.AUTH_GOOGLE_CALLBACK}`
-    const res = await fetch(`${API_URLS.AUTH}/auth/google/login`, {
+    const res = await fetch(`${API_URL}/auth/google/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: data.code, redirectUri }),
@@ -115,7 +117,7 @@ export const googleLoginFn = createServerFn({ method: 'POST' })
 export const resendConfirmationFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ email: z.string() }))
   .handler(async ({ data }) => {
-    const res = await fetch(`${API_URLS.AUTH}/auth/resend-confirmation`, {
+    const res = await fetch(`${API_URL}/auth/resend-confirmation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

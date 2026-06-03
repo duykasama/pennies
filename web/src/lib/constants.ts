@@ -22,7 +22,4 @@ export const FILTER = {
   ALL: 'all',
 } as const
 
-export const API_URLS = {
-  CORE: process.env['API_URL_CORE'],
-  AUTH: process.env['API_URL_AUTH'],
-}
+export const API_URL = process.env['API_URL']

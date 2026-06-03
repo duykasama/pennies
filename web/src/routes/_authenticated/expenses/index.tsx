@@ -1,14 +1,23 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { mapApiExpense } from '#/lib/expenses'
+import { getExpensesFn, mapApiExpense } from '#/lib/expenses'
 import type { Expense } from '#/lib/pennies'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
 import type { SortOption } from '#/lib/constants'
-import { expensesQuery, ExpensesPageLayout } from './-shared'
+import { ExpensesPageLayout } from './-shared'
+
+const listQueryOptions = {
+  queryKey: ['expenses', 'list'],
+  queryFn: ({ pageParam }: { pageParam: number }) =>
+    getExpensesFn({ data: { pageIndex: pageParam } }),
+  initialPageParam: 1,
+  getNextPageParam: (lastPage: Awaited<ReturnType<typeof getExpensesFn>>) =>
+    lastPage.pageIndex < lastPage.totalPages ? lastPage.pageIndex + 1 : undefined,
+}
 
 export const Route = createFileRoute('/_authenticated/expenses/')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(expensesQuery),
+  loader: ({ context }) => context.queryClient.prefetchInfiniteQuery(listQueryOptions),
   validateSearch: (
     search: Record<string, unknown>,
   ): { filter: string; sort: SortOption; toast?: string } => ({
@@ -20,8 +29,8 @@ export const Route = createFileRoute('/_authenticated/expenses/')({
 })
 
 function ExpensesPage() {
-  const { data } = useSuspenseQuery(expensesQuery)
-  const expenses = data.map(mapApiExpense)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(listQueryOptions)
+  const expenses = data?.pages.flatMap((p) => p.items.map(mapApiExpense)) ?? []
   const { filter, sort, toast } = Route.useSearch()
   const navigate = useNavigate()
   const [toastMsg, setToastMsg] = useState<string | null>(null)
@@ -59,6 +68,9 @@ function ExpensesPage() {
       onUpdate={async () => {}}
       onDelete={async () => {}}
       toastMsg={toastMsg}
+      onLoadMore={fetchNextPage}
+      hasMore={hasNextPage}
+      isLoadingMore={isFetchingNextPage}
     />
   )
 }

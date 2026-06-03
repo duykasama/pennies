@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES, CAT_BY_ID } from '#/lib/pennies'
-import type { Expense } from '#/lib/pennies'
+import { CATEGORIES } from '#/lib/pennies'
+import type { ExpenseCreate } from '#/lib/pennies'
 import { cn } from '#/lib/utils'
 
 interface AddExpenseProps {
   onCancel: () => void
-  onSave: (exp: Expense) => void
+  onSave: (exp: ExpenseCreate) => void
 }
 
 export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
@@ -32,11 +32,11 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
       return
     }
 
-    const exp: Expense = {
+    const exp: ExpenseCreate = {
       id: 'e' + crypto.randomUUID().slice(0, 6),
       cat,
-      title: CAT_BY_ID[cat].long,
-      sub: desc.trim(),
+      title: desc.trim(),
+      sub: note.trim(),
       amount: -n,
       date,
     }
@@ -121,7 +121,7 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
                   style={{ background: c.dot, color: c.ink }}
                 >
                   <span>{c.emoji}</span>
-                  <span>{t(`categories.${c.id}.long`)}</span>
+                  <span>{(t as (k: string) => string)(`categories.${c.id}.long`)}</span>
                 </button>
               ))}
             </div>

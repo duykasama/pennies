@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { formatVnd } from '#/lib/pennies'
 import { CATEGORY_TO_API } from '#/lib/pennies'
-import type { Expense } from '#/lib/pennies'
+import type { ExpenseCreate } from '#/lib/pennies'
 import { createExpenseFn } from '#/lib/expenses'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
 import MobileAddExpense from '#/components/pennies/mobile/AddExpense'
@@ -14,7 +14,7 @@ function AddExpensePage() {
   const navigate = useNavigate()
   const { queryClient } = Route.useRouteContext()
 
-  async function handleSave(exp: Expense) {
+  async function handleSave(exp: ExpenseCreate) {
     await createExpenseFn({
       data: {
         title: exp.title,

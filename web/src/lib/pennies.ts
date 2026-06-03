@@ -17,6 +17,8 @@ export interface Expense {
   updatedAt: string
 }
 
+export type ExpenseCreate = Omit<Expense, 'updatedAt'>
+
 export const CATEGORIES: Category[] = [
   { id: 'food', label: 'Food', long: 'Food & Drink', emoji: '🍴', dot: 'var(--cat-food)', ink: 'var(--cat-food-ink)' },
   { id: 'transport', label: 'Transport', long: 'Transport', emoji: '🚌', dot: 'var(--cat-transport)', ink: 'var(--cat-transport-ink)' },
@@ -63,8 +65,8 @@ export function isoStartOfMonth(): string {
 }
 
 const MONTH_NAMES = [
-  'January','February','March','April','May','June',
-  'July','August','September','October','November','December',
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
 ]
 
 export function isoCurrentMonth(): string {

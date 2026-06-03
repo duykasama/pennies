@@ -6,16 +6,19 @@ import MobileDashboard from '#/components/pennies/mobile/Dashboard'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopDashboard from '#/components/pennies/desktop/Dashboard'
 
-const expensesQuery = { queryKey: ['expenses'], queryFn: () => getExpensesFn() }
+const dashboardQuery = {
+  queryKey: ['expenses', 'all'],
+  queryFn: () => getExpensesFn({ data: { pageSize: 100 } }),
+}
 
 export const Route = createFileRoute('/_authenticated/dashboard')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(expensesQuery),
+  loader: ({ context }) => context.queryClient.ensureQueryData(dashboardQuery),
   component: DashboardPage,
 })
 
 function DashboardPage() {
-  const { data } = useSuspenseQuery(expensesQuery)
-  const expenses = data.map(mapApiExpense)
+  const { data } = useSuspenseQuery(dashboardQuery)
+  const expenses = data.items.map(mapApiExpense)
 
   return (
     <div className="min-h-screen bg-bg-base">

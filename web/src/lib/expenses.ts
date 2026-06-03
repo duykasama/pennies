@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
-import { API_URLS } from '#/lib/constants'
+import { API_URL } from '#/lib/constants'
 import { CATEGORY_FROM_API } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 
@@ -13,6 +13,14 @@ export interface ApiExpense {
   category: number
   date: string
   updatedAt: string
+}
+
+export interface PaginatedExpenses {
+  items: ApiExpense[]
+  pageIndex: number
+  pageSize: number
+  totalCount: number
+  totalPages: number
 }
 
 export function mapApiExpense(r: ApiExpense): Expense {
@@ -27,14 +35,40 @@ export function mapApiExpense(r: ApiExpense): Expense {
   }
 }
 
-export const getExpensesFn = createServerFn().handler(async (): Promise<ApiExpense[]> => {
-  const token = getCookie('auth_token')
-  const res = await fetch(`${API_URLS.CORE}/expenses`, {
-    headers: { Authorization: `Bearer ${token}` },
+export const getExpensesFn = createServerFn()
+  .inputValidator(
+    z.object({
+      pageIndex: z.number().optional(),
+      pageSize: z.number().optional(),
+      month: z.number().optional(),
+      year: z.number().optional(),
+    }),
+  )
+  .handler(async ({ data }): Promise<PaginatedExpenses> => {
+    const token = getCookie('auth_token')
+    const params = new URLSearchParams()
+    if (data.pageIndex !== undefined) params.set('pageIndex', String(data.pageIndex))
+    if (data.pageSize !== undefined) params.set('pageSize', String(data.pageSize))
+    if (data.month !== undefined) params.set('month', String(data.month))
+    if (data.year !== undefined) params.set('year', String(data.year))
+    const qs = params.toString()
+    const res = await fetch(`${API_URL}/expenses${qs ? `?${qs}` : ''}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) throw new Error('Failed to fetch expenses')
+    return res.json()
   })
-  if (!res.ok) throw new Error('Failed to fetch expenses')
-  return res.json()
-})
+
+export const getExpenseFn = createServerFn()
+  .inputValidator(z.object({ id: z.string() }))
+  .handler(async ({ data }): Promise<ApiExpense> => {
+    const token = getCookie('auth_token')
+    const res = await fetch(`${API_URL}/expenses/${data.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) throw new Error('Failed to fetch expense')
+    return res.json()
+  })
 
 export const updateExpenseFn = createServerFn({ method: 'POST' })
   .inputValidator(
@@ -51,7 +85,7 @@ export const updateExpenseFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }): Promise<ApiExpense> => {
     const { id, ...body } = data
     const token = getCookie('auth_token')
-    const res = await fetch(`${API_URLS.CORE}/expenses/${id}`, {
+    const res = await fetch(`${API_URL}/expenses/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(body),
@@ -64,7 +98,7 @@ export const deleteExpenseFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string() }))
   .handler(async ({ data }) => {
     const token = getCookie('auth_token')
-    const res = await fetch(`${API_URLS.CORE}/expenses/${data.id}`, {
+    const res = await fetch(`${API_URL}/expenses/${data.id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -83,7 +117,7 @@ export const createExpenseFn = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }): Promise<ApiExpense> => {
     const token = getCookie('auth_token')
-    const res = await fetch(`${API_URLS.CORE}/expenses`, {
+    const res = await fetch(`${API_URL}/expenses`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(data),

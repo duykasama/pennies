@@ -1,14 +1,11 @@
 import type { Expense } from '#/lib/pennies'
 import type { SortOption } from '#/lib/constants'
-import { getExpensesFn } from '#/lib/expenses'
 import BottomNav from '#/components/pennies/mobile/BottomNav'
 import MobileExpenseList from '#/components/pennies/mobile/ExpenseList'
 import MobileEditExpense from '#/components/pennies/mobile/EditExpense'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopExpenseList from '#/components/pennies/desktop/ExpenseList'
 import DesktopEditExpense from '#/components/pennies/desktop/EditExpense'
-
-export const expensesQuery = { queryKey: ['expenses'], queryFn: () => getExpensesFn() }
 
 interface ExpensesPageLayoutProps {
   expenses: Expense[]
@@ -22,6 +19,9 @@ interface ExpensesPageLayoutProps {
   onUpdate: (exp: Expense) => Promise<void>
   onDelete: (id: string) => Promise<void>
   toastMsg: string | null
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isLoadingMore?: boolean
 }
 
 export function ExpensesPageLayout({
@@ -36,6 +36,9 @@ export function ExpensesPageLayout({
   onUpdate,
   onDelete,
   toastMsg,
+  onLoadMore,
+  hasMore,
+  isLoadingMore,
 }: ExpensesPageLayoutProps) {
   return (
     <div className="min-h-screen bg-bg-base">
@@ -49,6 +52,9 @@ export function ExpensesPageLayout({
           sort={sort}
           setSort={setSort}
           onOpenExpense={onOpenExpense}
+          onLoadMore={onLoadMore}
+          hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
         />
         {editingExpense && (
           <MobileEditExpense
@@ -76,6 +82,9 @@ export function ExpensesPageLayout({
           sort={sort}
           setSort={setSort}
           onOpenExpense={onOpenExpense}
+          onLoadMore={onLoadMore}
+          hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
         />
         {editingExpense && (
           <DesktopEditExpense

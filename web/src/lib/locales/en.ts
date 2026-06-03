@@ -45,6 +45,7 @@ const en = {
     emptyTitle: 'No expenses yet',
     emptyMessage: 'Track your first expense today.',
     noExpensesInFilter: 'No expenses in this filter.',
+    loadingMore: 'Loading more...',
   },
 
   editExpense: {

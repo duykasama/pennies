@@ -1,16 +1,32 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useInfiniteQuery, useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { mapApiExpense, updateExpenseFn, deleteExpenseFn } from '#/lib/expenses'
+import { getExpenseFn, getExpensesFn, mapApiExpense, updateExpenseFn, deleteExpenseFn } from '#/lib/expenses'
 import { CATEGORY_TO_API, formatVnd } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
 import type { SortOption } from '#/lib/constants'
-import { expensesQuery, ExpensesPageLayout } from './-shared'
+import { ExpensesPageLayout } from './-shared'
+
+const listQueryOptions = {
+  queryKey: ['expenses', 'list'],
+  queryFn: ({ pageParam }: { pageParam: number }) =>
+    getExpensesFn({ data: { pageIndex: pageParam } }),
+  initialPageParam: 1,
+  getNextPageParam: (lastPage: Awaited<ReturnType<typeof getExpensesFn>>) =>
+    lastPage.pageIndex < lastPage.totalPages ? lastPage.pageIndex + 1 : undefined,
+}
 
 export const Route = createFileRoute('/_authenticated/expenses/$expenseId')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(expensesQuery),
+  loader: async ({ context, params }) => {
+    await Promise.all([
+      context.queryClient.prefetchInfiniteQuery(listQueryOptions),
+      context.queryClient.ensureQueryData({
+        queryKey: ['expense', params.expenseId],
+        queryFn: () => getExpenseFn({ data: { id: params.expenseId } }),
+      }),
+    ])
+  },
   validateSearch: (
     search: Record<string, unknown>,
   ): { filter: string; sort: SortOption; toast?: string } => ({
@@ -24,19 +40,17 @@ export const Route = createFileRoute('/_authenticated/expenses/$expenseId')({
 function ExpenseDetailPage() {
   const { t } = useTranslation()
   const { expenseId } = Route.useParams()
-  const { data } = useSuspenseQuery(expensesQuery)
-  const expenses = data.map(mapApiExpense)
-  const expense = expenses.find((e) => e.id === expenseId) ?? null
+  const { data: listData, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(listQueryOptions)
+  const expenses = listData?.pages.flatMap((p) => p.items.map(mapApiExpense)) ?? []
+  const { data: singleExpense } = useSuspenseQuery({
+    queryKey: ['expense', expenseId],
+    queryFn: () => getExpenseFn({ data: { id: expenseId } }),
+  })
+  const expense = mapApiExpense(singleExpense)
   const { filter, sort } = Route.useSearch()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [toastMsg, setToastMsg] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!expense) {
-      navigate({ to: ROUTES.EXPENSES, search: { filter, sort }, replace: true })
-    }
-  }, [expense])
+  const toastMsg = null
 
   function setFilter(f: string) {
     navigate({ to: '/expenses/$expenseId', params: { expenseId }, search: { filter: f, sort } })
@@ -95,6 +109,9 @@ function ExpenseDetailPage() {
       onUpdate={handleUpdate}
       onDelete={handleDelete}
       toastMsg={toastMsg}
+      onLoadMore={fetchNextPage}
+      hasMore={hasNextPage}
+      isLoadingMore={isFetchingNextPage}
     />
   )
 }

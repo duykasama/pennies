@@ -47,6 +47,7 @@ const vi: Translations = {
     emptyTitle: 'Chưa có chi tiêu',
     emptyMessage: 'Bắt đầu theo dõi chi tiêu của bạn ngay hôm nay.',
     noExpensesInFilter: 'Không có chi tiêu trong bộ lọc này.',
+    loadingMore: 'Đang tải thêm...',
   },
 
   editExpense: {

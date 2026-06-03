@@ -19,7 +19,6 @@ function SignInPage() {
   async function handleSubmit(email: string, password: string) {
     setError(null)
     try {
-      console.log('trying to log in')
       await loginFn({ data: { email, password } })
       navigate({ to: ROUTES.DASHBOARD })
     } catch (e) {
@@ -29,7 +28,6 @@ function SignInPage() {
 
   async function handleGoogle() {
     const url = await getGoogleAuthUrlFn()
-    console.log('url:', url)
     window.location.href = url
   }
 

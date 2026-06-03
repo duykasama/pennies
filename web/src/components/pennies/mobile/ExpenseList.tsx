@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CATEGORIES } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
@@ -15,6 +16,9 @@ interface ExpenseListProps {
   sort: SortOption
   setSort: (s: SortOption) => void
   onOpenExpense?: (exp: Expense) => void
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isLoadingMore?: boolean
 }
 
 export default function ExpenseList({
@@ -24,7 +28,23 @@ export default function ExpenseList({
   sort,
   setSort,
   onOpenExpense,
+  onLoadMore,
+  hasMore,
+  isLoadingMore,
 }: ExpenseListProps) {
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!onLoadMore || !hasMore) return
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) onLoadMore() },
+      { threshold: 0.1 },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [onLoadMore, hasMore])
   const { t } = useTranslation()
 
   const today = new Date().toISOString().slice(0, 10)
@@ -70,7 +90,7 @@ export default function ExpenseList({
           {displayCategories.map((cat) => (
             <FilterChip
               key={cat.id}
-              label={t(`categories.${cat.id}.label`)}
+              label={(t as (k: string) => string)(`categories.${cat.id}.label`)}
               emoji={cat.emoji}
               active={filter === cat.id}
               accent="lagoon"
@@ -130,6 +150,13 @@ export default function ExpenseList({
               </div>
             ))
           : sorted.map((exp) => <ExpenseRow key={exp.id} expense={exp} variant="mobile" onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined} />)}
+
+        <div ref={sentinelRef} className="h-1" />
+        {isLoadingMore && (
+          <p className="py-4 text-center font-medium text-[12px] text-sea-ink-soft">
+            {t('expenses.loadingMore')}
+          </p>
+        )}
       </div>
     </>
   )

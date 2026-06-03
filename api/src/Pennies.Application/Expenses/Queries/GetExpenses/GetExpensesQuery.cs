@@ -1,5 +1,6 @@
 using MediatR;
 using Pennies.Application.Common;
+using Pennies.Application.Common.Caching;
 using Pennies.Application.Expenses.DTOs;
 
 namespace Pennies.Application.Expenses.Queries.GetExpenses;
@@ -9,4 +10,10 @@ public sealed record GetExpensesQuery(
     int? Month,
     int? Year,
     int PageIndex,
-    int PageSize) : IRequest<Result<PagedResponse<ExpenseResponse>>>;
+    int PageSize) : IRequest<Result<PagedResponse<ExpenseResponse>>>, ICacheableQuery
+{
+    public string CacheKey =>
+        $"expenses:{UserId}:list:m={Month ?? 0}:y={Year ?? 0}:p={PageIndex}:s={PageSize}";
+
+    public TimeSpan? Expiration => null;
+}

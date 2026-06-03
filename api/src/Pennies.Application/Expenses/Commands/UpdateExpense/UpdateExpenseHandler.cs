@@ -1,11 +1,12 @@
 using MediatR;
 using Pennies.Application.Common;
+using Pennies.Application.Common.Caching;
 using Pennies.Application.Expenses.DTOs;
 using Pennies.Domain.Expenses;
 
 namespace Pennies.Application.Expenses.Commands.UpdateExpense;
 
-internal sealed class UpdateExpenseHandler(IExpenseRepository repository)
+internal sealed class UpdateExpenseHandler(IExpenseRepository repository, ICacheInvalidator cacheInvalidator)
     : IRequestHandler<UpdateExpenseCommand, Result<ExpenseResponse>>
 {
     public async Task<Result<ExpenseResponse>> Handle(UpdateExpenseCommand command, CancellationToken cancellationToken)
@@ -28,6 +29,8 @@ internal sealed class UpdateExpenseHandler(IExpenseRepository repository)
         expense.UpdatedAt = DateTime.UtcNow;
 
         await repository.UpdateAsync(expense, cancellationToken);
+        await cacheInvalidator.InvalidateAsync($"expenses:{command.UserId}:list:*", cancellationToken);
+        await cacheInvalidator.InvalidateAsync($"expenses:{command.UserId}:item:{command.ExpenseId}", cancellationToken);
         return Result.Success(expense.ToResponse());
     }
 }

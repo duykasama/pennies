@@ -13,9 +13,11 @@ public sealed class LoggingBehavior<TRequest, TResponse>(ILogger<TRequest> logge
         CancellationToken cancellationToken)
     {
         var name = typeof(TRequest).Name;
-        logger.LogInformation("Handling {RequestName}", name);
+        var start = DateTime.UtcNow;
+        logger.LogInformation("[{Time:O}] Handling {RequestName}", start, name);
         var response = await next(cancellationToken);
-        logger.LogInformation("Handled {RequestName}", name);
+        var elapsed = DateTime.UtcNow - start;
+        logger.LogInformation("[{Time:O}] Handled {RequestName} in {ElapsedMs}ms", DateTime.UtcNow, name, elapsed.TotalMilliseconds);
         return response;
     }
 }

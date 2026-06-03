@@ -1,11 +1,12 @@
 using MediatR;
 using Pennies.Application.Common;
+using Pennies.Application.Common.Caching;
 using Pennies.Application.Expenses.DTOs;
 using Pennies.Domain.Expenses;
 
 namespace Pennies.Application.Expenses.Commands.CreateExpense;
 
-internal sealed class CreateExpenseHandler(IExpenseRepository repository)
+internal sealed class CreateExpenseHandler(IExpenseRepository repository, ICacheInvalidator cacheInvalidator)
     : IRequestHandler<CreateExpenseCommand, Result<ExpenseResponse>>
 {
     public async Task<Result<ExpenseResponse>> Handle(
@@ -26,6 +27,7 @@ internal sealed class CreateExpenseHandler(IExpenseRepository repository)
         };
 
         await repository.AddAsync(expense, cancellationToken);
+        await cacheInvalidator.InvalidateAsync($"expenses:{request.UserId}:list:*", cancellationToken);
         return Result.Success(expense.ToResponse());
     }
 }

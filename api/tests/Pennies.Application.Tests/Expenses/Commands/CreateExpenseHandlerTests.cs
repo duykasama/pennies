@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
+using Pennies.Application.Common.Caching;
 using Pennies.Application.Expenses.Commands.CreateExpense;
 using Pennies.Domain.Expenses;
 
@@ -8,11 +9,12 @@ namespace Pennies.Application.Tests.Expenses.Commands;
 public class CreateExpenseHandlerTests
 {
     private readonly IExpenseRepository _repository = Substitute.For<IExpenseRepository>();
+    private readonly ICacheInvalidator _cacheInvalidator = Substitute.For<ICacheInvalidator>();
     private readonly CreateExpenseHandler _sut;
 
     public CreateExpenseHandlerTests()
     {
-        _sut = new CreateExpenseHandler(_repository);
+        _sut = new CreateExpenseHandler(_repository, _cacheInvalidator);
     }
 
     [Fact]
@@ -28,6 +30,17 @@ public class CreateExpenseHandlerTests
         result.Value.Category.Should().Be((int)command.Category);
         result.Value.Date.Should().Be(command.Date);
         await _repository.Received(1).AddAsync(Arg.Any<Expense>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Handle_ValidCommand_InvalidatesListCache()
+    {
+        var command = ValidCommand();
+
+        await _sut.Handle(command, CancellationToken.None);
+
+        await _cacheInvalidator.Received(1)
+            .InvalidateAsync($"expenses:{command.UserId}:list:*", Arg.Any<CancellationToken>());
     }
 
     private static CreateExpenseCommand ValidCommand() => new(

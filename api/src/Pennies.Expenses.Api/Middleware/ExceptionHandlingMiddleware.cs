@@ -1,7 +1,7 @@
 using FluentValidation;
 using Pennies.Domain.Common;
 
-namespace Pennies.Core.Api.Middleware;
+namespace Pennies.Expenses.Api.Middleware;
 
 public sealed class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
 {

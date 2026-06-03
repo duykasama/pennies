@@ -1,6 +1,6 @@
 using Pennies.Application.Common;
 
-namespace Pennies.Core.Api.Extensions;
+namespace Pennies.Expenses.Api.Extensions;
 
 public static class ResultExtensions
 {

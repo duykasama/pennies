@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Pennies.Application;
 using Pennies.Application.Common.Behaviors;
-using Pennies.Core.Api.Endpoints;
-using Pennies.Core.Api.Middleware;
+using Pennies.Expenses.Api.Endpoints;
+using Pennies.Expenses.Api.Middleware;
 using Pennies.Infrastructure;
 using Scalar.AspNetCore;
 
@@ -20,11 +20,13 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly);
     cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    cfg.AddOpenBehavior(typeof(CachingBehavior<,>));
     cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
 });
 builder.Services.AddValidatorsFromAssembly(typeof(AssemblyMarker).Assembly);
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.AddCaching();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opts =>

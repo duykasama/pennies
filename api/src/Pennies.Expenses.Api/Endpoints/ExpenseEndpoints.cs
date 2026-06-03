@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using MediatR;
-using Pennies.Core.Api.Extensions;
+using Pennies.Expenses.Api.Extensions;
 using Pennies.Application.Expenses.Commands.CreateExpense;
 using Pennies.Application.Expenses.Commands.DeleteExpense;
 using Pennies.Application.Expenses.Commands.UpdateExpense;
@@ -8,7 +8,7 @@ using Pennies.Application.Expenses.Queries.GetExpenseById;
 using Pennies.Application.Expenses.Queries.GetExpenses;
 using Pennies.Domain.Expenses;
 
-namespace Pennies.Core.Api.Endpoints;
+namespace Pennies.Expenses.Api.Endpoints;
 
 public static class ExpenseEndpoints
 {

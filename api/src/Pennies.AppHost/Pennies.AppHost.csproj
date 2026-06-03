@@ -9,15 +9,17 @@
     <PackageReference Include="Aspire.Hosting.JavaScript" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+    <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.Mailpit" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pennies.Core.Api\Pennies.Core.Api.csproj" />
-    <ProjectReference Include="..\Pennies.Core.Migrations\Pennies.Core.Migrations.csproj" />
+    <ProjectReference Include="..\Pennies.Expenses.Api\Pennies.Expenses.Api.csproj" />
+    <ProjectReference Include="..\Pennies.Expenses.Migrations\Pennies.Expenses.Migrations.csproj" />
     <ProjectReference Include="..\Pennies.Auth.Api\Pennies.Auth.Api.csproj" />
     <ProjectReference Include="..\Pennies.Auth.Migrations\Pennies.Auth.Migrations.csproj" />
     <ProjectReference Include="..\Pennies.Worker\Pennies.Worker.csproj" />
+    <ProjectReference Include="..\Pennies.Gateway\Pennies.Gateway.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,8 +3,8 @@
     <Project Path="src/Pennies.Domain/Pennies.Domain.csproj" />
     <Project Path="src/Pennies.Application/Pennies.Application.csproj" />
     <Project Path="src/Pennies.Infrastructure/Pennies.Infrastructure.csproj" />
-    <Project Path="src/Pennies.Core.Api/Pennies.Core.Api.csproj" />
-    <Project Path="src/Pennies.Core.Migrations/Pennies.Core.Migrations.csproj" />
+    <Project Path="src/Pennies.Expenses.Api/Pennies.Expenses.Api.csproj" />
+    <Project Path="src/Pennies.Expenses.Migrations/Pennies.Expenses.Migrations.csproj" />
     <Project Path="src/Pennies.Auth.Application/Pennies.Auth.Application.csproj" />
     <Project Path="src/Pennies.Auth.Api/Pennies.Auth.Api.csproj" />
     <Project Path="src/Pennies.Auth.Migrations/Pennies.Auth.Migrations.csproj" />
@@ -13,6 +13,7 @@
     <Project Path="src/Pennies.Worker/Pennies.Worker.csproj" />
     <Project Path="src/Pennies.AppHost/Pennies.AppHost.csproj" />
     <Project Path="src/Pennies.ServiceDefaults/Pennies.ServiceDefaults.csproj" />
+    <Project Path="src/Pennies.Gateway/Pennies.Gateway.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Pennies.Domain.Tests/Pennies.Domain.Tests.csproj" />

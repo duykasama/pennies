@@ -5,6 +5,8 @@ var rabbit = builder.AddRabbitMQ("rabbitmq")
 
 var mailpit = builder.AddMailPit("mailpit");
 
+var redis = builder.AddRedis("redis");
+
 var postgresPassword = builder.AddParameter("postgres-password", secret: true);
 
 var postgres = builder.AddPostgres("postgres", password: postgresPassword)
@@ -14,14 +16,15 @@ var postgres = builder.AddPostgres("postgres", password: postgresPassword)
 var penniesDb = postgres.AddDatabase("pennies");
 var penniesAuth = postgres.AddDatabase("pennies-auth");
 
-var coreMigrations  = builder.AddProject<Projects.Pennies_Core_Migrations>("core-migrations");
-var authMigrations  = builder.AddProject<Projects.Pennies_Auth_Migrations>("auth-migrations");
-var worker          = builder.AddProject<Projects.Pennies_Worker>("pennies-worker");
-var coreApi         = builder.AddProject<Projects.Pennies_Core_Api>("pennies-core-api");
-var authApi         = builder.AddProject<Projects.Pennies_Auth_Api>("pennies-auth-api");
-var web             = builder.AddViteApp("web", "../../../web");
+var expensesMigrations  = builder.AddProject<Projects.Pennies_Expenses_Migrations>("expenses-migrations");
+var authMigrations      = builder.AddProject<Projects.Pennies_Auth_Migrations>("auth-migrations");
+var worker              = builder.AddProject<Projects.Pennies_Worker>("pennies-worker");
+var expensesApi         = builder.AddProject<Projects.Pennies_Expenses_Api>("pennies-expenses-api");
+var authApi             = builder.AddProject<Projects.Pennies_Auth_Api>("pennies-auth-api");
+var gateway             = builder.AddProject<Projects.Pennies_Gateway>("pennies-gateway");
+var web                 = builder.AddViteApp("web", "../../../web");
 
-coreMigrations
+expensesMigrations
     .WithReference(penniesDb)
     .WithExplicitStart();
 
@@ -29,14 +32,22 @@ authMigrations
     .WithReference(penniesAuth)
     .WithExplicitStart();
 
-coreApi
+expensesApi
     .WithReference(penniesDb)
-    .WaitFor(penniesDb);
+    .WaitFor(penniesDb)
+    .WithReference(redis)
+    .WaitFor(redis);
 
 authApi
     .WithReference(penniesAuth)
     .WaitFor(penniesAuth)
     .WithReference(rabbit);
+
+gateway
+    .WithReference(expensesApi)
+    .WaitFor(expensesApi)
+    .WithReference(authApi)
+    .WaitFor(authApi);
 
 worker
     .WithReference(rabbit)
@@ -45,10 +56,8 @@ worker
     .WaitFor(mailpit);
 
 web
-    .WithReference(coreApi)
-    .WithEnvironment("API_URL_CORE", coreApi.GetEndpoint("https"))
-    .WithReference(authApi)
-    .WithEnvironment("API_URL_AUTH", authApi.GetEndpoint("https"))
+    .WithReference(gateway)
+    .WithEnvironment("API_URL", gateway.GetEndpoint("http"))
     .WithEnvironment("APP_URL", web.GetEndpoint("http"))
     .WithExternalHttpEndpoints()
     .WithHttpEndpoint(port: 3000)

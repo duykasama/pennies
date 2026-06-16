@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { API_URL, ROUTES } from '#/lib/constants'
 
 export type SessionUser = { sub: string; email: string; displayName: string }
+export type UserProfile = SessionUser
 
 export const getSessionFn = createServerFn().handler(async (): Promise<SessionUser | null> => {
   const token = getCookie('auth_token')
@@ -124,5 +125,107 @@ export const resendConfirmationFn = createServerFn({ method: 'POST' })
     })
     const body = await res.json()
     if (!res.ok) throw new Error(body?.error ?? 'Failed to resend')
+    return body
+  })
+
+export const getProfileFn = createServerFn().handler(async (): Promise<SessionUser> => {
+  const token = getCookie('auth_token')
+  if (!token) throw new Error('Not authenticated')
+  const res = await fetch(`${API_URL}/auth/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body?.error ?? 'Failed to load profile')
+  }
+  return res.json() as Promise<SessionUser>
+})
+
+export const updateAccountFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ displayName: z.string().min(1) }))
+  .handler(async ({ data }) => {
+    const token = getCookie('auth_token')
+    if (!token) throw new Error('Not authenticated')
+    const res = await fetch(`${API_URL}/auth/profile/display-name`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(data),
+    })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(body?.error ?? 'Update failed')
+    return body
+  })
+
+export const requestEmailUpdateFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ email: z.string().email() }))
+  .handler(async ({ data }) => {
+    const token = getCookie('auth_token')
+    if (!token) throw new Error('Not authenticated')
+    const res = await fetch(`${API_URL}/auth/request-email-update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ newEmail: data.email }),
+    })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(body?.error ?? 'Request failed')
+    return body
+  })
+
+export const confirmEmailUpdateFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ code: z.string().min(1) }))
+  .handler(async ({ data }) => {
+    const token = getCookie('auth_token')
+    if (!token) throw new Error('Not authenticated')
+    const res = await fetch(`${API_URL}/auth/confirm-email-update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(data),
+    })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(body?.error ?? 'Confirmation failed')
+    return body
+  })
+
+export const changePasswordFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ current: z.string().min(1), next: z.string().min(8) }))
+  .handler(async ({ data }) => {
+    const token = getCookie('auth_token')
+    if (!token) throw new Error('Not authenticated')
+    const res = await fetch(`${API_URL}/auth/change-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ currentPassword: data.current, newPassword: data.next }),
+    })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(body?.error ?? 'Password change failed')
+    return body
+  })
+
+export const forgotPasswordFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ email: z.string().email() }))
+  .handler(async ({ data }) => {
+    const res = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...data,
+        resetBaseUrl: `${process.env['APP_URL']}${ROUTES.AUTH_RESET_PASSWORD}`,
+      }),
+    })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(body?.error ?? 'Request failed')
+    return body
+  })
+
+export const resetPasswordFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ token: z.string().min(1), newPassword: z.string().min(8) }))
+  .handler(async ({ data }) => {
+    const res = await fetch(`${API_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(body?.error ?? 'Reset failed')
     return body
   })

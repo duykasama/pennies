@@ -6,9 +6,11 @@ interface HeaderProps {
   variant: 'mark' | 'title' | 'back'
   title?: string
   onBack?: () => void
+  onAccount?: () => void
+  userInitials?: string
 }
 
-export default function Header({ variant, title, onBack }: HeaderProps) {
+export default function Header({ variant, title, onBack, onAccount, userInitials }: HeaderProps) {
   const { t } = useTranslation()
 
   return (
@@ -45,6 +47,16 @@ export default function Header({ variant, title, onBack }: HeaderProps) {
       <div className="flex items-center gap-3">
         <ThemePicker variant="header" />
         <LanguagePicker variant="header" />
+        {variant === 'mark' && onAccount && (
+          <button
+            type="button"
+            onClick={onAccount}
+            aria-label="Account"
+            className="w-[30px] h-[30px] rounded-full bg-lagoon text-white font-bold text-[12px] leading-none flex items-center justify-center border-0 cursor-pointer active:scale-95 transition-transform"
+          >
+            {userInitials || 'A'}
+          </button>
+        )}
       </div>
     </header>
   )

@@ -1,15 +1,25 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { ROUTES, FILTER, SORT } from '#/lib/constants'
-import { logoutFn } from '#/lib/auth'
+import { useUser } from '#/hooks/useUser'
 import LanguagePicker from '#/components/pennies/LanguagePicker'
 import ThemePicker from '#/components/pennies/ThemePicker'
 
 const linkBase = 'p-0 text-[14px] no-underline font-sans cursor-pointer'
+const avatarBase =
+  'w-9 h-9 ml-1 rounded-full bg-lagoon text-white font-bold text-[13px] leading-none flex items-center justify-center cursor-pointer transition-all active:scale-95 no-underline'
 
 export default function TopNav() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const user = useUser()
+  const initials =
+    user?.displayName
+      ?.trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase() || 'A'
 
   return (
     <nav className="h-[60px] bg-sea-ink text-white flex items-center px-12 gap-[22px]">
@@ -46,15 +56,14 @@ export default function TopNav() {
         {t('nav.addExpense')}
       </Link>
 
-      <button
-        onClick={async () => {
-          await logoutFn()
-          navigate({ to: ROUTES.AUTH_SIGN_IN })
-        }}
-        className="h-9 px-[18px] border border-white/30 hover:bg-white/10 text-white rounded-p-sm font-bold text-[13px] cursor-pointer transition-colors font-sans"
+      <Link
+        to={ROUTES.ACCOUNT}
+        aria-label="Account"
+        activeProps={{ className: `${avatarBase} ring-2 ring-white/70` }}
+        inactiveProps={{ className: avatarBase }}
       >
-        {t('nav.logout')}
-      </button>
+        {initials}
+      </Link>
     </nav>
   )
 }

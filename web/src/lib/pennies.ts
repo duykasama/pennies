@@ -135,3 +135,104 @@ export function formatVnd(n: number): string {
   const formatted = '₫' + abs.toLocaleString('vi-VN')
   return n < 0 ? '-' + formatted : formatted
 }
+
+// ─── Period summary helpers ──────────────────────────────────────────────────
+
+function pDate(s: string): Date {
+  const [y, m, d] = s.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
+export interface PeriodSummary {
+  today: number
+  todayCount: number
+  week: number
+  weekCount: number
+  weekDelta: number | null   // % change vs last week; negative = spent less
+  month: number
+  monthCount: number
+  monthKey: string           // 'YYYY-MM'
+  year: number
+  yearCount: number
+  yearMonths: number         // distinct months with spend in current year
+  yearNum: number
+}
+
+/**
+ * Compute Today / This week (Mon–Sun) / This month / This year totals.
+ * Uses the `date` field (ISO yyyy-mm-dd) of each expense.
+ * `todayIso` defaults to the real today; pass a fixed date in tests.
+ */
+export function periodSummary(expenses: Expense[], todayIso?: string): PeriodSummary {
+  const iso = todayIso ?? isoToday()
+  const t = pDate(iso)
+  const dow = (t.getDay() + 6) % 7          // Monday = 0
+  const weekStart = new Date(t); weekStart.setDate(t.getDate() - dow)
+  const weekEnd   = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6)
+  const lwStart   = new Date(weekStart); lwStart.setDate(weekStart.getDate() - 7)
+  const lwEnd     = new Date(weekStart); lwEnd.setDate(weekStart.getDate() - 1)
+  const y = t.getFullYear(), m = t.getMonth()
+
+  const inRange = (dateStr: string, a: Date, b: Date) => {
+    const d = pDate(dateStr); return d >= a && d <= b
+  }
+  const sum = (arr: Expense[]) => arr.reduce((s, e) => s + e.amount, 0)
+
+  const todayE = expenses.filter(e => e.date.slice(0, 10) === iso)
+  const weekE  = expenses.filter(e => inRange(e.date.slice(0, 10), weekStart, weekEnd))
+  const lweekE = expenses.filter(e => inRange(e.date.slice(0, 10), lwStart, lwEnd))
+  const monthE = expenses.filter(e => {
+    const d = pDate(e.date.slice(0, 10))
+    return d.getFullYear() === y && d.getMonth() === m
+  })
+  const yearE  = expenses.filter(e => pDate(e.date.slice(0, 10)).getFullYear() === y)
+
+  const pct = (cur: number, prev: number): number | null =>
+    (prev && prev !== 0)
+      ? Math.round((Math.abs(cur) - Math.abs(prev)) / Math.abs(prev) * 100)
+      : null
+
+  return {
+    today: sum(todayE),   todayCount: todayE.length,
+    week:  sum(weekE),    weekCount:  weekE.length,  weekDelta: pct(sum(weekE), sum(lweekE)),
+    month: sum(monthE),   monthCount: monthE.length, monthKey: `${y}-${String(m + 1).padStart(2, '0')}`,
+    year:  sum(yearE),    yearCount:  yearE.length,
+    yearMonths: new Set(yearE.map(e => e.date.slice(0, 7))).size,
+    yearNum: y,
+  }
+}
+
+/**
+ * Category rollup for a subset of expenses →
+ * [{ cat, label, emoji, dot, amount, pct }] sorted by magnitude descending.
+ * Derives label/emoji/dot from CAT_BY_ID since the Expense model doesn't carry them.
+ */
+export interface CatBreakdownItem {
+  cat: string
+  label: string
+  emoji: string
+  dot: string
+  amount: number
+  pct: number
+}
+
+export function catBreakdown(expenses: Expense[]): CatBreakdownItem[] {
+  const sums: Record<string, number> = {}
+  for (const e of expenses) {
+    sums[e.cat] = (sums[e.cat] || 0) + e.amount
+  }
+  const total = Object.values(sums).reduce((s, v) => s + v, 0) || 1
+  return Object.entries(sums)
+    .map(([cat, amount]) => {
+      const c = CAT_BY_ID[cat]
+      return {
+        cat,
+        label: c?.label ?? cat,
+        emoji: c?.emoji ?? '·',
+        dot:   c?.dot   ?? 'var(--cat-other)',
+        amount,
+        pct: Math.abs(amount) / Math.abs(total),
+      }
+    })
+    .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
+}

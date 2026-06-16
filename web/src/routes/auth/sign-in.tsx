@@ -36,7 +36,7 @@ function SignInPage() {
   }
 
   function handleForgot() {
-    navigate({ to: ROUTES.AUTH_CHECK_EMAIL, search: { email: '' } })
+    navigate({ to: ROUTES.AUTH_FORGOT_PASSWORD })
   }
 
   return (

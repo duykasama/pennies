@@ -1,6 +1,9 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var rabbit = builder.AddRabbitMQ("rabbitmq")
+var rabbitUsername = builder.AddParameter("rabbit-username");
+var rabbitPassword = builder.AddParameter("rabbit-password", secret: true);
+
+var rabbit = builder.AddRabbitMQ("rabbitmq", rabbitUsername, rabbitPassword)
     .WithManagementPlugin();
 
 var mailpit = builder.AddMailPit("mailpit");

@@ -5,6 +5,8 @@ using Pennies.Application.Expenses.Commands.CreateExpense;
 using Pennies.Application.Expenses.Commands.DeleteExpense;
 using Pennies.Application.Expenses.Commands.UpdateExpense;
 using Pennies.Application.Expenses.Queries.GetExpenseById;
+using Pennies.Application.Expenses.Queries.GetExpenseCategories;
+using Pennies.Application.Expenses.Queries.GetExpenseFrequencies;
 using Pennies.Application.Expenses.Queries.GetExpenses;
 using Pennies.Domain.Expenses;
 
@@ -23,6 +25,10 @@ public static class ExpenseEndpoints
         group.MapPost("/", CreateExpense);
         group.MapDelete("/{id:guid}", DeleteExpense);
         group.MapPut("/{id:guid}", UpdateExpense);
+
+        var lookupGroup = app.MapGroup("/expenses").WithTags("Expenses");
+        lookupGroup.MapGet("/categories", GetCategories);
+        lookupGroup.MapGet("/frequencies", GetFrequencies);
 
         return app;
     }
@@ -77,6 +83,21 @@ public static class ExpenseEndpoints
             request.Title, request.Description, request.Amount,
             request.Category, request.Date, request.UpdatedAt);
         return (await mediator.Send(command)).ToHttpResult();
+    }
+
+    private static async Task<IResult> GetCategories(HttpContext ctx, ISender mediator, string? lang = null) =>
+        (await mediator.Send(new GetExpenseCategoriesQuery { Language = lang ?? ParseAcceptLanguage(ctx) }))
+            .ToHttpResult();
+
+    private static async Task<IResult> GetFrequencies(HttpContext ctx, ISender mediator, string? lang = null) =>
+        (await mediator.Send(new GetExpenseFrequenciesQuery { Language = lang ?? ParseAcceptLanguage(ctx) }))
+            .ToHttpResult();
+
+    private static string? ParseAcceptLanguage(HttpContext ctx)
+    {
+        var header = ctx.Request.Headers.AcceptLanguage.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(header)) return null;
+        return header.Split(',')[0].Split(';')[0].Trim();
     }
 }
 

@@ -20,6 +20,7 @@ public static class DependencyInjection
             opts.UseNpgsql(configuration.GetConnectionString("pennies")));
 
         services.AddScoped<IExpenseRepository, ExpenseRepository>();
+        services.AddScoped<IExpenseLookupRepository, ExpenseLookupRepository>();
 
         return services;
     }

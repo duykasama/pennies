@@ -11,4 +11,5 @@ public class Expense : Entity
     public ExpenseCategory Category { get; set; }
     public DateOnly Date { get; set; }
     public bool IsDeleted { get; set; }
+    public int? Frequency { get; set; }
 }

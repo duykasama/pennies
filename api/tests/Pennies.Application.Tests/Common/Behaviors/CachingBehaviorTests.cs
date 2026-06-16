@@ -34,8 +34,9 @@ public class CachingBehaviorTests
     [Fact]
     public async Task Handle_CacheHit_ReturnsDeserializedValueWithoutCallingNext()
     {
+        var category = new CategoryResponse(1, "Food", "🍔");
         var expected = Result<ExpenseResponse>.Success(new ExpenseResponse(
-            Guid.NewGuid(), "Groceries", null, -50m, 1, DateOnly.FromDateTime(DateTime.UtcNow), DateTime.UtcNow, DateTime.UtcNow));
+            Guid.NewGuid(), "Groceries", null, -50m, category, null, DateOnly.FromDateTime(DateTime.UtcNow), DateTime.UtcNow, DateTime.UtcNow));
         var cachedBytes = JsonSerializer.SerializeToUtf8Bytes(expected, JsonOptions);
 
         _cache.GetAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -45,7 +46,7 @@ public class CachingBehaviorTests
         RequestHandlerDelegate<Result<ExpenseResponse>> next = _ =>
         {
             nextCalled = true;
-            return Task.FromResult(Result<ExpenseResponse>.Success(new ExpenseResponse(Guid.NewGuid(), "Other", null, -1m, 1, DateOnly.MinValue, DateTime.MinValue, DateTime.MinValue)));
+            return Task.FromResult(Result<ExpenseResponse>.Success(new ExpenseResponse(Guid.NewGuid(), "Other", null, -1m, category, null, DateOnly.MinValue, DateTime.MinValue, DateTime.MinValue)));
         };
 
         var result = await _sut.Handle(new TestCacheableQuery(), next, CancellationToken.None);
@@ -59,7 +60,7 @@ public class CachingBehaviorTests
     public async Task Handle_CacheMiss_CallsNextAndStoresResult()
     {
         var response = Result<ExpenseResponse>.Success(new ExpenseResponse(
-            Guid.NewGuid(), "Groceries", null, -50m, 1, DateOnly.FromDateTime(DateTime.UtcNow), DateTime.UtcNow, DateTime.UtcNow));
+            Guid.NewGuid(), "Groceries", null, -50m, new CategoryResponse(1, "Food", "🍔"), null, DateOnly.FromDateTime(DateTime.UtcNow), DateTime.UtcNow, DateTime.UtcNow));
 
         _cache.GetAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns((byte[]?)null);

@@ -20,14 +20,14 @@ internal sealed class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
         builder.Property(e => e.Amount)
             .HasPrecision(18, 2);
 
-        builder.Property(e => e.Category)
-            .HasConversion<string>()
-            .HasMaxLength(50);
-
         builder.Property(e => e.UserId)
             .IsRequired();
 
         builder.Property(e => e.IsDeleted)
             .IsRequired();
+
+        builder.Property(e => e.Category)
+            .HasConversion<int>();
+
     }
 }

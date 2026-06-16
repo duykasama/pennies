@@ -8,11 +8,16 @@ namespace Pennies.Application.Tests.Expenses.Queries;
 public class GetExpensesHandlerTests
 {
     private readonly IExpenseRepository _repository = Substitute.For<IExpenseRepository>();
+    private readonly IExpenseLookupRepository _lookupRepository = Substitute.For<IExpenseLookupRepository>();
     private readonly GetExpensesHandler _sut;
 
     public GetExpensesHandlerTests()
     {
-        _sut = new GetExpensesHandler(_repository);
+        _lookupRepository.GetCategoriesAsync(Arg.Any<string?>(), Arg.Any<CancellationToken>())
+            .Returns(Array.Empty<ExpenseCategoryLookup>() as IReadOnlyList<ExpenseCategoryLookup>);
+        _lookupRepository.GetFrequenciesAsync(Arg.Any<string?>(), Arg.Any<CancellationToken>())
+            .Returns(Array.Empty<ExpenseFrequencyLookup>() as IReadOnlyList<ExpenseFrequencyLookup>);
+        _sut = new GetExpensesHandler(_repository, _lookupRepository);
     }
 
     [Fact]

@@ -6,7 +6,8 @@ namespace Pennies.Infrastructure.Persistence.Repositories;
 internal sealed class ExpenseRepository(AppDbContext dbContext) : IExpenseRepository
 {
     public async Task<Expense?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await dbContext.Expenses.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted, cancellationToken);
+        await dbContext.Expenses
+            .FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted, cancellationToken);
 
     public async Task<(IReadOnlyList<Expense> Items, int TotalCount)> ListByUserAsync(
         string userId, int? month, int? year, int pageIndex, int pageSize,

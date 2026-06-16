@@ -9,12 +9,17 @@ namespace Pennies.Application.Tests.Expenses.Commands;
 public class UpdateExpenseHandlerTests
 {
     private readonly IExpenseRepository _repository = Substitute.For<IExpenseRepository>();
+    private readonly IExpenseLookupRepository _lookupRepository = Substitute.For<IExpenseLookupRepository>();
     private readonly ICacheInvalidator _cacheInvalidator = Substitute.For<ICacheInvalidator>();
     private readonly UpdateExpenseHandler _sut;
 
     public UpdateExpenseHandlerTests()
     {
-        _sut = new UpdateExpenseHandler(_repository, _cacheInvalidator);
+        _lookupRepository.GetCategoriesAsync(Arg.Any<string?>(), Arg.Any<CancellationToken>())
+            .Returns(Array.Empty<ExpenseCategoryLookup>() as IReadOnlyList<ExpenseCategoryLookup>);
+        _lookupRepository.GetFrequenciesAsync(Arg.Any<string?>(), Arg.Any<CancellationToken>())
+            .Returns(Array.Empty<ExpenseFrequencyLookup>() as IReadOnlyList<ExpenseFrequencyLookup>);
+        _sut = new UpdateExpenseHandler(_repository, _lookupRepository, _cacheInvalidator);
     }
 
     [Fact]

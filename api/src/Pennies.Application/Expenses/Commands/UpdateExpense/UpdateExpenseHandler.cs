@@ -6,7 +6,10 @@ using Pennies.Domain.Expenses;
 
 namespace Pennies.Application.Expenses.Commands.UpdateExpense;
 
-internal sealed class UpdateExpenseHandler(IExpenseRepository repository, ICacheInvalidator cacheInvalidator)
+internal sealed class UpdateExpenseHandler(
+    IExpenseRepository repository,
+    IExpenseLookupRepository lookupRepository,
+    ICacheInvalidator cacheInvalidator)
     : IRequestHandler<UpdateExpenseCommand, Result<ExpenseResponse>>
 {
     public async Task<Result<ExpenseResponse>> Handle(UpdateExpenseCommand command, CancellationToken cancellationToken)
@@ -31,6 +34,12 @@ internal sealed class UpdateExpenseHandler(IExpenseRepository repository, ICache
         await repository.UpdateAsync(expense, cancellationToken);
         await cacheInvalidator.InvalidateAsync($"expenses:{command.UserId}:list:*", cancellationToken);
         await cacheInvalidator.InvalidateAsync($"expenses:{command.UserId}:item:{command.ExpenseId}", cancellationToken);
-        return Result.Success(expense.ToResponse());
+
+        var categories = (await lookupRepository.GetCategoriesAsync(null, cancellationToken))
+            .ToDictionary(c => c.Id);
+        var frequencies = (await lookupRepository.GetFrequenciesAsync(null, cancellationToken))
+            .ToDictionary(f => f.Id);
+
+        return Result.Success(expense.ToResponse(categories, frequencies));
     }
 }

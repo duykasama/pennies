@@ -1,8 +1,13 @@
+using System.Text;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Pennies.Auth.Application;
+using Pennies.Auth.Application.Common;
 using Pennies.Auth.Application.Common.Behaviors;
 using Pennies.Auth.Application.Entities;
 using Pennies.Auth.Application.Persistence;
@@ -46,7 +51,33 @@ builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<IEmailConfirmationTokenService, EmailConfirmationTokenService>();
 builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection(GoogleAuthSettings.SectionName));
 builder.Services.AddHttpClient<IGoogleOAuthService, GoogleOAuthService>();
+builder.Services.AddScoped<IPasswordResetTokenService, PasswordResetTokenService>();
+builder.Services.Configure<EmailUpdateSettings>(builder.Configuration.GetSection(EmailUpdateSettings.SectionName));
 builder.Services.AddMessaging(builder.Configuration.GetConnectionString("rabbitmq")!);
+
+builder.Services.AddAuthentication()
+    .AddJwtBearer(opts =>
+    {
+        opts.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)),
+        };
+    });
+// AddIdentity sets DefaultAuthenticateScheme/DefaultChallengeScheme to its cookie scheme.
+// PostConfigure runs after all Configure calls, overriding them to JWT Bearer.
+builder.Services.PostConfigure<AuthenticationOptions>(opts =>
+{
+    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+});
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -58,6 +89,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapAuthEndpoints();
 app.MapDefaultEndpoints();

@@ -26,6 +26,8 @@ builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<ExpenseCreatedConsumer>();
     x.AddConsumer<SendConfirmationEmailConsumer>();
+    x.AddConsumer<SendPasswordResetEmailConsumer>();
+    x.AddConsumer<SendEmailUpdateCodeConsumer>();
 
     x.UsingRabbitMq((ctx, cfg) =>
     {
@@ -53,6 +55,30 @@ builder.Services.AddMassTransit(x =>
                     intervalDelta: TimeSpan.FromSeconds(5)));
 
             e.ConfigureConsumer<SendConfirmationEmailConsumer>(ctx);
+        });
+
+        cfg.ReceiveEndpoint("send-password-reset-email", e =>
+        {
+            e.UseMessageRetry(r =>
+                r.Exponential(
+                    retryLimit: 5,
+                    minInterval: TimeSpan.FromSeconds(1),
+                    maxInterval: TimeSpan.FromMinutes(1),
+                    intervalDelta: TimeSpan.FromSeconds(5)));
+
+            e.ConfigureConsumer<SendPasswordResetEmailConsumer>(ctx);
+        });
+
+        cfg.ReceiveEndpoint("send-email-update-code", e =>
+        {
+            e.UseMessageRetry(r =>
+                r.Exponential(
+                    retryLimit: 5,
+                    minInterval: TimeSpan.FromSeconds(1),
+                    maxInterval: TimeSpan.FromMinutes(1),
+                    intervalDelta: TimeSpan.FromSeconds(5)));
+
+            e.ConfigureConsumer<SendEmailUpdateCodeConsumer>(ctx);
         });
     });
 });

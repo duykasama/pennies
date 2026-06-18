@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { formatVnd } from '#/lib/pennies'
-import { CATEGORY_TO_API } from '#/lib/pennies'
 import type { ExpenseCreate } from '#/lib/pennies'
 import { createExpenseFn } from '#/lib/expenses'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
@@ -20,7 +19,7 @@ function AddExpensePage() {
         title: exp.title,
         description: exp.sub || null,
         amount: exp.amount,
-        category: CATEGORY_TO_API[exp.cat] ?? 8,
+        category: exp.cat,
         date: exp.date,
       },
     })

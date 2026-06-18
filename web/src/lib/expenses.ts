@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { getCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
 import { API_URL } from '#/lib/constants'
-import { CATEGORY_FROM_API } from '#/lib/pennies'
+import type { ApiCategory } from '#/lib/categories'
 import type { Expense } from '#/lib/pennies'
 
 export interface ApiExpense {
@@ -10,7 +10,7 @@ export interface ApiExpense {
   title: string
   description: string | null
   amount: number
-  category: number
+  category: ApiCategory
   date: string
   updatedAt: string
 }
@@ -26,7 +26,7 @@ export interface PaginatedExpenses {
 export function mapApiExpense(r: ApiExpense): Expense {
   return {
     id: r.id,
-    cat: CATEGORY_FROM_API[r.category] ?? 'other',
+    cat: r.category.id,
     title: r.title,
     sub: r.description ?? '',
     amount: r.amount,

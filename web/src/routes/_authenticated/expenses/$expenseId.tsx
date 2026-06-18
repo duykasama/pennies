@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useInfiniteQuery, useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getExpenseFn, getExpensesFn, mapApiExpense, updateExpenseFn, deleteExpenseFn } from '#/lib/expenses'
-import { CATEGORY_TO_API, formatVnd } from '#/lib/pennies'
+import { formatVnd } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
 import type { SortOption } from '#/lib/constants'
@@ -75,7 +75,7 @@ function ExpenseDetailPage() {
         title: exp.title,
         description: exp.sub || null,
         amount: exp.amount,
-        category: CATEGORY_TO_API[exp.cat] ?? 8,
+        category: exp.cat,
         date: exp.date,
         updatedAt: exp.updatedAt,
       },

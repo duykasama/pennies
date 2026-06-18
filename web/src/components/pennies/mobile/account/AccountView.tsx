@@ -57,9 +57,6 @@ export default function MobileAccountView({ user, onBack }: Props) {
           <Avatar displayName={user.displayName} size={72} />
           <div className="mt-3.5 font-sans font-bold text-[20px] leading-tight text-sea-ink">{user.displayName}</div>
           <div className="mt-2 font-sans font-medium text-[13px] leading-tight text-sea-ink-soft">{user.email}</div>
-          <div className="mt-2 font-sans font-medium text-[11px] leading-tight text-sea-ink-muted">
-            {t('account.planFree')} plan
-          </div>
         </div>
 
         <SectionCard

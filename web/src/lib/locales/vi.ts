@@ -45,6 +45,8 @@ const vi: Translations = {
     whereItWent: 'Chi vào đâu · {{month}}',
     noSpendingThisMonth: 'Chưa có chi tiêu nào trong tháng này.',
     avgPerMonth: 'tb / tháng',
+    avgPerMonthValue: 'tb {{value}} / tháng',
+    soFarThisMonth: 'từ đầu tháng',
   },
 
   expenses: {
@@ -120,6 +122,7 @@ const vi: Translations = {
     signInWithGoogle: 'Đăng nhập bằng Google',
     openMailApp: 'Mở ứng dụng mail',
     resend: 'Không nhận được? Gửi lại',
+    resendIn: 'Gửi lại sau {{seconds}}s',
     resendCode: 'Gửi lại',
     useDifferentEmail: 'Dùng email khác',
     goToPennies: 'Vào Pennies →',
@@ -158,7 +161,6 @@ const vi: Translations = {
 
   account: {
     title: 'Tài khoản',
-    planFree: 'Miễn phí',
     details: 'Thông tin cá nhân',
     edit: 'Chỉnh sửa',
     fullName: 'Họ và tên',
@@ -187,17 +189,6 @@ const vi: Translations = {
     minCharsError: 'Ít nhất 8 ký tự',
     passwordMatchError: 'Mật khẩu không khớp',
     updatePassword: 'Cập nhật mật khẩu',
-  },
-
-  categories: {
-    food: { label: 'Ăn uống', long: 'Ăn uống' },
-    transport: { label: 'Di chuyển', long: 'Di chuyển' },
-    shopping: { label: 'Mua sắm', long: 'Mua sắm' },
-    fun: { label: 'Giải trí', long: 'Giải trí' },
-    health: { label: 'Sức khỏe', long: 'Sức khỏe' },
-    util: { label: 'Tiện ích', long: 'Tiện ích' },
-    housing: { label: 'Nhà ở', long: 'Nhà ở' },
-    other: { label: 'Khác', long: 'Khác' },
   },
 }
 

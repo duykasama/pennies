@@ -43,6 +43,8 @@ const en = {
     whereItWent: 'Where it went · {{month}}',
     noSpendingThisMonth: 'No spending tracked this month yet.',
     avgPerMonth: 'avg / month',
+    avgPerMonthValue: 'avg {{value}} / month',
+    soFarThisMonth: 'so far this month',
   },
 
   expenses: {
@@ -118,6 +120,7 @@ const en = {
     signInWithGoogle: 'Sign in with Google',
     openMailApp: 'Open mail app',
     resend: "Didn't get it? Resend",
+    resendIn: 'Resend in {{seconds}}s',
     resendCode: 'Resend',
     useDifferentEmail: 'Use a different email',
     goToPennies: 'Go to Pennies →',
@@ -156,7 +159,6 @@ const en = {
 
   account: {
     title: 'Account',
-    planFree: 'Free',
     details: 'Profile details',
     edit: 'Edit',
     fullName: 'Full name',
@@ -185,17 +187,6 @@ const en = {
     minCharsError: 'At least 8 characters',
     passwordMatchError: 'Passwords do not match',
     updatePassword: 'Update password',
-  },
-
-  categories: {
-    food: { label: 'Food', long: 'Food & Drink' },
-    transport: { label: 'Transport', long: 'Transport' },
-    shopping: { label: 'Shopping', long: 'Shopping' },
-    fun: { label: 'Fun', long: 'Entertainment' },
-    health: { label: 'Health', long: 'Health' },
-    util: { label: 'Utilities', long: 'Utilities' },
-    housing: { label: 'Housing', long: 'Housing' },
-    other: { label: 'Other', long: 'Other' },
   },
 }
 

@@ -60,9 +60,6 @@ export default function DesktopAccountView({ user }: Props) {
           <div className="flex flex-col gap-1.5">
             <div className="font-sans font-bold text-[20px] leading-tight text-sea-ink">{user.displayName}</div>
             <div className="font-sans font-medium text-[14px] leading-tight text-sea-ink-soft">{user.email}</div>
-            <div className="font-sans font-medium text-[12px] leading-tight text-sea-ink-muted mt-0.5">
-              {t('account.planFree')} plan
-            </div>
           </div>
         </div>
 

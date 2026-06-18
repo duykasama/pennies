@@ -3,11 +3,13 @@ import { CelebrateShell, DesktopPrimaryBtn } from './shared'
 
 interface Props {
   email: string
+  onOpenMailApp: () => void
   onResend: () => void
+  secondsLeft: number
   onUseDifferent: () => void
 }
 
-export default function DesktopCheckEmail({ email, onResend, onUseDifferent }: Props) {
+export default function DesktopCheckEmail({ email, onOpenMailApp, onResend, secondsLeft, onUseDifferent }: Props) {
   const { t } = useTranslation()
 
   return (
@@ -27,13 +29,14 @@ export default function DesktopCheckEmail({ email, onResend, onUseDifferent }: P
       }
     >
       <div className="w-full flex flex-col gap-3">
-        <DesktopPrimaryBtn>{t('auth.openMailApp')}</DesktopPrimaryBtn>
+        <DesktopPrimaryBtn onClick={onOpenMailApp}>{t('auth.openMailApp')}</DesktopPrimaryBtn>
         <button
           type="button"
           onClick={onResend}
-          className="bg-transparent border-0 text-lagoon-deep font-sans font-bold text-[13px] cursor-pointer h-10"
+          disabled={secondsLeft > 0}
+          className="bg-transparent border-0 text-lagoon-deep font-sans font-bold text-[13px] cursor-pointer h-10 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {t('auth.resend')}
+          {secondsLeft > 0 ? t('auth.resendIn', { seconds: secondsLeft }) : t('auth.resend')}
         </button>
       </div>
       <button

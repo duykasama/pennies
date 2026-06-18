@@ -22,6 +22,7 @@ function ForgotPasswordPage() {
     setLoading(true)
     try {
       await forgotPasswordFn({ data: { email } })
+      sessionStorage.setItem('pennies:cooldown_trigger', '1')
       navigate({ to: ROUTES.AUTH_CHECK_EMAIL, search: { email, from: 'forgot-password' } })
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to send reset email')

@@ -3,11 +3,13 @@ import { PrimaryBtn, GlyphCircle } from './shared'
 
 interface Props {
   email: string
+  onOpenMailApp: () => void
   onResend: () => void
+  secondsLeft: number
   onUseDifferent: () => void
 }
 
-export default function MobileCheckEmail({ email, onResend, onUseDifferent }: Props) {
+export default function MobileCheckEmail({ email, onOpenMailApp, onResend, secondsLeft, onUseDifferent }: Props) {
   const { t } = useTranslation()
 
   return (
@@ -26,13 +28,14 @@ export default function MobileCheckEmail({ email, onResend, onUseDifferent }: Pr
       </p>
       <p className="m-0 mb-8 font-sans font-bold text-[14px] text-sea-ink">{email}</p>
       <div className="w-full max-w-[280px] flex flex-col gap-3">
-        <PrimaryBtn>{t('auth.openMailApp')}</PrimaryBtn>
+        <PrimaryBtn onClick={onOpenMailApp}>{t('auth.openMailApp')}</PrimaryBtn>
         <button
           type="button"
           onClick={onResend}
-          className="bg-transparent border-0 text-lagoon-deep font-sans font-bold text-[13px] cursor-pointer p-2"
+          disabled={secondsLeft > 0}
+          className="bg-transparent border-0 text-lagoon-deep font-sans font-bold text-[13px] cursor-pointer p-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {t('auth.resend')}
+          {secondsLeft > 0 ? t('auth.resendIn', { seconds: secondsLeft }) : t('auth.resend')}
         </button>
       </div>
       <button

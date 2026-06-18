@@ -8,6 +8,6 @@ namespace Pennies.Application.Expenses.Queries.GetExpenseCategories;
 public sealed record GetExpenseCategoriesQuery : IRequest<Result<IReadOnlyList<CategoryResponse>>>, ICacheableQuery
 {
     public string? Language { get; init; }
-    public string CacheKey => $"expenses:categories:v2:{Language ?? "default"}";
+    public string CacheKey => $"expenses:categories:v3:{Language ?? "default"}";
     public TimeSpan? Expiration => null;
 }

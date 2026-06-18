@@ -24,8 +24,8 @@ internal static class ExpenseMappings
             expense.Description,
             expense.Amount,
             categories.TryGetValue((int)expense.Category, out var cat)
-                ? new CategoryResponse((int)expense.Category, ResolveDefault(cat.Translations), cat.Icon)
-                : new CategoryResponse((int)expense.Category, string.Empty, string.Empty),
+                ? new CategoryResponse((int)expense.Category, ResolveDefault(cat.Translations), cat.Icon, cat.DisplayOrder)
+                : new CategoryResponse((int)expense.Category, string.Empty, string.Empty, 0),
             expense.Frequency.HasValue && frequencies.TryGetValue(expense.Frequency.Value, out var freq)
                 ? new LookupResponse(expense.Frequency.Value, ResolveDefault(freq.Translations))
                 : null,

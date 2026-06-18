@@ -34,7 +34,7 @@ public class CachingBehaviorTests
     [Fact]
     public async Task Handle_CacheHit_ReturnsDeserializedValueWithoutCallingNext()
     {
-        var category = new CategoryResponse(1, "Food", "🍔");
+        var category = new CategoryResponse(1, "Food", "🍔", 1);
         var expected = Result<ExpenseResponse>.Success(new ExpenseResponse(
             Guid.NewGuid(), "Groceries", null, -50m, category, null, DateOnly.FromDateTime(DateTime.UtcNow), DateTime.UtcNow, DateTime.UtcNow));
         var cachedBytes = JsonSerializer.SerializeToUtf8Bytes(expected, JsonOptions);
@@ -60,7 +60,7 @@ public class CachingBehaviorTests
     public async Task Handle_CacheMiss_CallsNextAndStoresResult()
     {
         var response = Result<ExpenseResponse>.Success(new ExpenseResponse(
-            Guid.NewGuid(), "Groceries", null, -50m, new CategoryResponse(1, "Food", "🍔"), null, DateOnly.FromDateTime(DateTime.UtcNow), DateTime.UtcNow, DateTime.UtcNow));
+            Guid.NewGuid(), "Groceries", null, -50m, new CategoryResponse(1, "Food", "🍔", 1), null, DateOnly.FromDateTime(DateTime.UtcNow), DateTime.UtcNow, DateTime.UtcNow));
 
         _cache.GetAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns((byte[]?)null);

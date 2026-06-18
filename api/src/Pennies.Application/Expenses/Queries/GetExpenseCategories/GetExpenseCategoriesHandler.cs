@@ -14,7 +14,7 @@ internal sealed class GetExpenseCategoriesHandler(IExpenseLookupRepository repos
     {
         var items = await repository.GetCategoriesAsync(request.Language, cancellationToken);
         return Result.Success<IReadOnlyList<CategoryResponse>>(
-            items.Select(c => new CategoryResponse(c.Id, ResolveName(c.Translations, request.Language), c.Icon))
+            items.Select(c => new CategoryResponse(c.Id, ResolveName(c.Translations, request.Language), c.Icon, c.DisplayOrder))
                 .ToList().AsReadOnly());
     }
 

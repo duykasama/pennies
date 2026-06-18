@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
+import { useCategories } from '#/hooks/useCategories'
 import { SORT, FILTER } from '#/lib/constants'
 import type { SortOption } from '#/lib/constants'
 import Header from '#/components/pennies/mobile/Header'
@@ -45,7 +45,8 @@ export default function ExpenseList({
     observer.observe(el)
     return () => observer.disconnect()
   }, [onLoadMore, hasMore])
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const categories = useCategories()
 
   const today = new Date().toISOString().slice(0, 10)
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
@@ -53,10 +54,10 @@ export default function ExpenseList({
   function dateLabel(d: string) {
     if (d === today) return t('dates.today')
     if (d === yesterday) return t('dates.yesterday')
-    return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    return new Date(d + 'T00:00:00').toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })
   }
 
-  const filtered = filter === FILTER.ALL ? expenses : expenses.filter((e) => e.cat === filter)
+  const filtered = filter === FILTER.ALL ? expenses : expenses.filter((e) => String(e.cat) === filter)
 
   const sorted =
     sort === SORT.AMOUNT
@@ -73,7 +74,6 @@ export default function ExpenseList({
     groups.push({ date: '', items: sorted })
   }
 
-  const displayCategories = CATEGORIES.slice(0, 4)
 
   return (
     <>
@@ -87,14 +87,14 @@ export default function ExpenseList({
             accent="lagoon"
             onClick={() => setFilter(FILTER.ALL)}
           />
-          {displayCategories.map((cat) => (
+          {categories.map((cat) => (
             <FilterChip
               key={cat.id}
-              label={(t as (k: string) => string)(`categories.${cat.id}.label`)}
-              emoji={cat.emoji}
-              active={filter === cat.id}
+              label={cat.name}
+              emoji={cat.icon}
+              active={filter === String(cat.id)}
               accent="lagoon"
-              onClick={() => setFilter(cat.id)}
+              onClick={() => setFilter(String(cat.id))}
             />
           ))}
         </div>

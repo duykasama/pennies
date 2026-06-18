@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { CAT_BY_ID, formatVnd } from '#/lib/pennies'
+import { formatVnd } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
+import { categoryColor } from '#/lib/categories'
+import { useCategories } from '#/hooks/useCategories'
 import { cn } from '#/lib/utils'
 
 interface ExpenseRowProps {
@@ -10,15 +12,19 @@ interface ExpenseRowProps {
 }
 
 export default function ExpenseRow({ expense, variant = 'mobile', onClick }: ExpenseRowProps) {
-  const { t } = useTranslation()
-  const cat = CAT_BY_ID[expense.cat]
+  const { t, i18n } = useTranslation()
+  const categories = useCategories()
+  const cat = categories.find((c) => c.id === expense.cat)
+  const dot = categoryColor(expense.cat).dot
   const isDesktop = variant === 'desktop'
 
   const dateLabels: Record<string, string> = {
     today: t('dates.today'),
     yesterday: t('dates.yesterday'),
   }
-  const dateLabel = dateLabels[expense.date] ?? expense.date
+  const dateLabel =
+    dateLabels[expense.date] ??
+    new Date(expense.date + 'T00:00:00').toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })
 
   return (
     <div
@@ -38,15 +44,15 @@ export default function ExpenseRow({ expense, variant = 'mobile', onClick }: Exp
           'rounded-full flex items-center justify-center select-none flex-shrink-0',
           isDesktop ? 'w-8 h-8 text-[16px]' : 'w-7 h-7 text-[14px]',
         )}
-        style={{ background: cat.dot }}
+        style={{ background: dot }}
       >
-        {cat.emoji}
+        {cat?.icon ?? '·'}
       </div>
 
       {/* Title + sub */}
       <div className="min-w-0">
         <p className="font-bold text-[14px] leading-none text-sea-ink truncate">
-          {(t as (k: string) => string)(`categories.${expense.cat}.long`)}
+          {expense.title}
         </p>
         <p className="mt-1 font-medium text-[12px] leading-none text-sea-ink-soft truncate">{expense.sub}</p>
       </div>

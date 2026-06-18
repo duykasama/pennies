@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES } from '#/lib/pennies'
 import type { ExpenseCreate } from '#/lib/pennies'
+import { categoryColor } from '#/lib/categories'
+import { useCategories } from '#/hooks/useCategories'
 import { cn } from '#/lib/utils'
 
 interface AddExpenseProps {
@@ -11,9 +12,10 @@ interface AddExpenseProps {
 
 export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
   const { t } = useTranslation()
+  const categories = useCategories()
   const [amountStr, setAmountStr] = useState('')
   const [desc, setDesc] = useState('')
-  const [cat, setCat] = useState('food')
+  const [cat, setCat] = useState<number>(categories[0]?.id ?? 1)
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [note, setNote] = useState('')
   const [errors, setErrors] = useState<{ amount?: string; desc?: string }>({})
@@ -109,21 +111,24 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
           <div className="mb-5">
             <label className={labelBase}>{t('addExpense.category')}</label>
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => setCat(c.id)}
-                  className={cn(
-                    'h-8 px-3.5 rounded-full font-bold text-[12px] border-2 cursor-pointer inline-flex items-center gap-1.5 active:scale-[0.97] transition-transform',
-                    cat === c.id ? 'border-sea-ink' : 'border-transparent',
-                  )}
-                  style={{ background: c.dot, color: c.ink }}
-                >
-                  <span>{c.emoji}</span>
-                  <span>{(t as (k: string) => string)(`categories.${c.id}.long`)}</span>
-                </button>
-              ))}
+              {categories.map((c) => {
+                const { dot, ink } = categoryColor(c.id)
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setCat(c.id)}
+                    className={cn(
+                      'h-8 px-3.5 rounded-full font-bold text-[12px] border-2 cursor-pointer inline-flex items-center gap-1.5 active:scale-[0.97] transition-transform',
+                      cat === c.id ? 'border-sea-ink' : 'border-transparent',
+                    )}
+                    style={{ background: dot, color: ink }}
+                  >
+                    <span>{c.icon}</span>
+                    <span>{c.name}</span>
+                  </button>
+                )
+              })}
             </div>
           </div>
 

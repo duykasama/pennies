@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES } from '#/lib/pennies'
+import { useCategories } from '#/hooks/useCategories'
 import { SORT, FILTER } from '#/lib/constants'
 import type { SortOption } from '#/lib/constants'
 import { cn } from '#/lib/utils'
@@ -13,7 +13,7 @@ interface FilterToolbarProps {
 
 export default function FilterToolbar({ filter, setFilter, sort, setSort }: FilterToolbarProps) {
   const { t } = useTranslation()
-  const displayCategories = CATEGORIES.slice(0, 6)
+  const categories = useCategories()
 
   return (
     <div className="bg-white px-12 py-3.5 flex items-center gap-2.5 border-b border-hairline">
@@ -32,19 +32,19 @@ export default function FilterToolbar({ filter, setFilter, sort, setSort }: Filt
       </button>
 
       {/* Category chips */}
-      {displayCategories.map((cat) => (
+      {categories.map((cat) => (
         <button
           key={cat.id}
           type="button"
-          onClick={() => setFilter(cat.id)}
+          onClick={() => setFilter(String(cat.id))}
           className={cn(
             'h-8 px-3.5 rounded-full font-bold text-[12px] border cursor-pointer transition-colors',
-            filter === cat.id
+            filter === String(cat.id)
               ? 'bg-lagoon text-white border-transparent'
               : 'bg-white text-sea-ink border-hairline hover:bg-foam',
           )}
         >
-          {cat.emoji} {(t as (k: string) => string)(`categories.${cat.id}.label`)}
+          {cat.icon} {cat.name}
         </button>
       ))}
 

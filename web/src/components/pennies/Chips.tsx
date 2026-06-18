@@ -1,13 +1,14 @@
 import { cn } from '#/lib/utils'
-import type { Category } from '#/lib/pennies'
+import { categoryColor } from '#/lib/categories'
 
 interface CategoryChipProps {
-  cat: Category
+  cat: { id: number; name: string; icon: string }
   selected: boolean
   onClick: () => void
 }
 
 export function CategoryChip({ cat, selected, onClick }: CategoryChipProps) {
+  const { dot, ink } = categoryColor(cat.id)
   return (
     <button
       type="button"
@@ -18,9 +19,9 @@ export function CategoryChip({ cat, selected, onClick }: CategoryChipProps) {
         'border-2 transition-transform duration-150 active:scale-[0.96]',
         selected ? 'border-sea-ink' : 'border-transparent',
       )}
-      style={{ background: cat.dot, color: cat.ink }}
+      style={{ background: dot, color: ink }}
     >
-      {cat.emoji}&nbsp;{cat.label}
+      {cat.icon}&nbsp;{cat.name}
     </button>
   )
 }

@@ -29,7 +29,7 @@ export default function ExpenseList({
   hasMore,
   isLoadingMore,
 }: ExpenseListProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -50,10 +50,10 @@ export default function ExpenseList({
   function dateLabel(d: string) {
     if (d === today) return t('dates.today')
     if (d === yesterday) return t('dates.yesterday')
-    return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    return new Date(d + 'T00:00:00').toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })
   }
 
-  const filtered = filter === FILTER.ALL ? expenses : expenses.filter((e) => e.cat === filter)
+  const filtered = filter === FILTER.ALL ? expenses : expenses.filter((e) => String(e.cat) === filter)
 
   const sorted =
     sort === SORT.AMOUNT

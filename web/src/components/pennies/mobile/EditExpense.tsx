@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES, CAT_BY_ID } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
+import { useCategories } from '#/hooks/useCategories'
 import { CategoryChip } from '#/components/pennies/Chips'
 import { cn } from '#/lib/utils'
 
@@ -14,11 +14,12 @@ interface EditExpenseProps {
 
 export default function EditExpense({ expense, onClose, onUpdate, onDelete }: EditExpenseProps) {
   const { t } = useTranslation()
+  const categories = useCategories()
   const [amountStr, setAmountStr] = useState(() => String(Math.abs(expense.amount)))
-  const [desc, setDesc] = useState(expense.sub)
+  const [desc, setDesc] = useState(expense.title)
   const [cat, setCat] = useState(expense.cat)
   const [date, setDate] = useState(expense.date)
-  const [note, setNote] = useState('')
+  const [note, setNote] = useState(expense.sub)
   const [errors, setErrors] = useState<{ amount?: string; desc?: string }>({})
 
   function handleUpdate() {
@@ -27,7 +28,7 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
     if (!amountStr || isNaN(n) || n <= 0) newErrors.amount = t('editExpense.amountError')
     if (!desc.trim()) newErrors.desc = t('editExpense.descriptionError')
     if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return }
-    onUpdate({ ...expense, cat, title: CAT_BY_ID[cat].long, sub: desc.trim(), amount: -n, date })
+    onUpdate({ ...expense, cat, title: desc.trim(), sub: note.trim(), amount: -n, date })
   }
 
   const inputBase =
@@ -82,7 +83,7 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
         <div className="mb-4">
           <label className={labelBase}>{t('addExpense.category')}</label>
           <div className="grid grid-cols-4 gap-2">
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <CategoryChip key={c.id} cat={c} selected={cat === c.id} onClick={() => setCat(c.id)} />
             ))}
           </div>

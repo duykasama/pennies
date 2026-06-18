@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES } from '#/lib/pennies'
 import type { ExpenseCreate } from '#/lib/pennies'
+import { useCategories } from '#/hooks/useCategories'
 import Header from '#/components/pennies/mobile/Header'
 import { CategoryChip } from '#/components/pennies/Chips'
 import { cn } from '#/lib/utils'
@@ -13,9 +13,10 @@ interface AddExpenseProps {
 
 export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
   const { t } = useTranslation()
+  const categories = useCategories()
   const [amountStr, setAmountStr] = useState('')
   const [desc, setDesc] = useState('')
-  const [cat, setCat] = useState('food')
+  const [cat, setCat] = useState<number>(categories[0]?.id ?? 1)
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [note, setNote] = useState('')
   const [errors, setErrors] = useState<{ amount?: string; desc?: string }>({})
@@ -102,7 +103,7 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
           <div className="mb-4">
             <label className={labelBase}>{t('addExpense.category')}</label>
             <div className="grid grid-cols-4 gap-2">
-              {CATEGORIES.map((c) => (
+              {categories.map((c) => (
                 <CategoryChip
                   key={c.id}
                   cat={c}

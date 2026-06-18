@@ -8,6 +8,7 @@ import {
   catBreakdown,
   getPrevMonth,
 } from '#/lib/pennies'
+import { useCategories } from '#/hooks/useCategories'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
 import Header from '#/components/pennies/mobile/Header'
 
@@ -65,7 +66,7 @@ function MOCategoryBreakdown({ items }: { items: CatBreakdownItem[] }) {
             >
               {b.emoji}
             </span>
-            <span className="font-bold text-[13px] leading-none text-sea-ink">{b.label}</span>
+            <span className="font-bold text-[13px] leading-none text-sea-ink">{b.name}</span>
             <span className="flex-1" />
             <span className="font-bold text-[13px] leading-none text-sea-ink tabular-nums">
               {formatVnd(b.amount)}
@@ -84,10 +85,11 @@ function MOCategoryBreakdown({ items }: { items: CatBreakdownItem[] }) {
 export default function Dashboard({ expenses, onAccount, userInitials }: DashboardProps) {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const categories = useCategories()
 
   const P = periodSummary(expenses)
   const monthExp = expenses.filter((e) => e.date.slice(0, 7) === P.monthKey)
-  const breakdown = catBreakdown(monthExp)
+  const breakdown = catBreakdown(monthExp, categories)
 
   const prevKey   = getPrevMonth(P.monthKey)
   const prevTotal = expenses

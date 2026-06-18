@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES, CAT_BY_ID } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
+import { categoryColor } from '#/lib/categories'
+import { useCategories } from '#/hooks/useCategories'
 import { cn } from '#/lib/utils'
 
 interface EditExpenseProps {
@@ -13,11 +14,12 @@ interface EditExpenseProps {
 
 export default function EditExpense({ expense, onClose, onUpdate, onDelete }: EditExpenseProps) {
   const { t } = useTranslation()
+  const categories = useCategories()
   const [amountStr, setAmountStr] = useState(() => String(Math.abs(expense.amount)))
-  const [desc, setDesc] = useState(expense.sub)
+  const [desc, setDesc] = useState(expense.title)
   const [cat, setCat] = useState(expense.cat)
   const [date, setDate] = useState(expense.date)
-  const [note, setNote] = useState('')
+  const [note, setNote] = useState(expense.sub)
   const [errors, setErrors] = useState<{ amount?: string; desc?: string }>({})
 
   function handleUpdate() {
@@ -26,7 +28,7 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
     if (!amountStr || isNaN(n) || n <= 0) newErrors.amount = t('editExpense.amountError')
     if (!desc.trim()) newErrors.desc = t('editExpense.descriptionError')
     if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return }
-    onUpdate({ ...expense, cat, title: CAT_BY_ID[cat].long, sub: desc.trim(), amount: -n, date })
+    onUpdate({ ...expense, cat, title: desc.trim(), sub: note.trim(), amount: -n, date })
   }
 
   const inputBase =
@@ -79,21 +81,24 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
         <div className="mb-4">
           <label className={labelBase}>{t('addExpense.category')}</label>
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setCat(c.id)}
-                className={cn(
-                  'h-8 px-3.5 rounded-full font-bold text-[12px] border-2 cursor-pointer inline-flex items-center gap-1.5 active:scale-[0.97] transition-transform',
-                  cat === c.id ? 'border-sea-ink' : 'border-transparent',
-                )}
-                style={{ background: c.dot, color: c.ink }}
-              >
-                <span>{c.emoji}</span>
-                <span>{(t as (k: string) => string)(`categories.${c.id}.long`)}</span>
-              </button>
-            ))}
+            {categories.map((c) => {
+              const { dot, ink } = categoryColor(c.id)
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setCat(c.id)}
+                  className={cn(
+                    'h-8 px-3.5 rounded-full font-bold text-[12px] border-2 cursor-pointer inline-flex items-center gap-1.5 active:scale-[0.97] transition-transform',
+                    cat === c.id ? 'border-sea-ink' : 'border-transparent',
+                  )}
+                  style={{ background: dot, color: ink }}
+                >
+                  <span>{c.icon}</span>
+                  <span>{c.name}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
 

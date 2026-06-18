@@ -9,6 +9,7 @@ import {
   catBreakdown,
   getPrevMonth,
 } from '#/lib/pennies'
+import { useCategories } from '#/hooks/useCategories'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
 
 interface DashboardProps {
@@ -91,7 +92,7 @@ function CategoryBreakdown({ items }: { items: CatBreakdownItem[] }) {
             >
               {b.emoji}
             </span>
-            <span className="font-bold text-[14px] leading-none text-sea-ink">{b.label}</span>
+            <span className="font-bold text-[14px] leading-none text-sea-ink">{b.name}</span>
             <span className="flex-1" />
             <span className="font-bold text-[14px] leading-none text-sea-ink tabular-nums">
               {formatVnd(b.amount)}
@@ -110,10 +111,11 @@ function CategoryBreakdown({ items }: { items: CatBreakdownItem[] }) {
 export default function Dashboard({ expenses }: DashboardProps) {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const categories = useCategories()
 
   const P = periodSummary(expenses)
   const monthExp = expenses.filter((e) => e.date.slice(0, 7) === P.monthKey)
-  const breakdown = catBreakdown(monthExp)
+  const breakdown = catBreakdown(monthExp, categories)
 
   const prevKey   = getPrevMonth(P.monthKey)
   const prevTotal = expenses
@@ -135,13 +137,9 @@ export default function Dashboard({ expenses }: DashboardProps) {
   const monthShortName = monthShort(P.monthKey, i18n.language)
   const prevShort      = monthShort(prevKey,    i18n.language)
 
-  const WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  const MO = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ]
-  const now = new Date()
-  const niceDate = `${WD[now.getDay()]}, ${MO[now.getMonth()]} ${now.getDate()}`
+  const niceDate = new Intl.DateTimeFormat(i18n.language, {
+    weekday: 'long', month: 'long', day: 'numeric',
+  }).format(new Date())
 
   function countLabel(n: number) {
     return `${n} ${n === 1 ? t('dashboard.expense') : t('dashboard.expenses')}`
@@ -163,7 +161,7 @@ export default function Dashboard({ expenses }: DashboardProps) {
               <TrendChip delta={monthDelta} vs={prevShort} />
             </div>
             <p className="mt-3.5 font-medium text-[13px] leading-none text-sea-ink-soft m-0">
-              {P.monthCount} {P.monthCount === 1 ? t('dashboard.expense') : t('dashboard.expenses')} so far this month
+              {P.monthCount} {P.monthCount === 1 ? t('dashboard.expense') : t('dashboard.expenses')} {t('dashboard.soFarThisMonth')}
             </p>
           </div>
 
@@ -196,7 +194,7 @@ export default function Dashboard({ expenses }: DashboardProps) {
 
         <PeriodTile label={t('dashboard.thisYear')} value={formatVnd(P.year)}>
           <span className="font-medium text-[13px] leading-none text-lagoon-deep tabular-nums">
-            avg {formatVnd(avgMo)} / mo
+            {t('dashboard.avgPerMonthValue', { value: formatVnd(avgMo) })}
           </span>
         </PeriodTile>
       </div>

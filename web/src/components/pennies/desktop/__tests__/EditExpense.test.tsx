@@ -3,11 +3,11 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import EditExpense from '#/components/pennies/desktop/EditExpense'
 import type { Expense } from '#/lib/pennies'
 import i18n from '#/lib/i18n'
-import { I18nWrapper } from '#/test/i18n-wrapper'
+import { TestProviders } from '#/test/test-providers'
 
 const BASE_EXPENSE: Expense = {
   id: 'e3',
-  cat: 'shopping',
+  cat: 3,
   title: 'Shopping',
   sub: 'Bookstore',
   amount: -320000,
@@ -31,7 +31,7 @@ function renderEdit(overrides?: {
     onDelete: vi.fn(),
     ...overrides,
   }
-  render(<EditExpense {...props} />, { wrapper: I18nWrapper })
+  render(<EditExpense {...props} />, { wrapper: TestProviders })
   return props
 }
 
@@ -44,7 +44,7 @@ describe('EditExpense (desktop)', () => {
 
   it('renders pre-filled description', () => {
     renderEdit()
-    expect(screen.getByDisplayValue('Bookstore')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('Shopping')).toBeInTheDocument()
   })
 
   it('renders Cancel, Delete and Update buttons', () => {
@@ -82,7 +82,7 @@ describe('EditExpense (desktop)', () => {
 
   it('Update with a blank description shows a validation error and does not call onUpdate', () => {
     const { onUpdate } = renderEdit()
-    const descInput = screen.getByDisplayValue('Bookstore')
+    const descInput = screen.getByDisplayValue('Shopping')
     fireEvent.change(descInput, { target: { value: '' } })
     fireEvent.click(screen.getByRole('button', { name: /update/i }))
     expect(screen.getByText(/add a short description/i)).toBeInTheDocument()
@@ -92,9 +92,9 @@ describe('EditExpense (desktop)', () => {
   it('Update with valid data calls onUpdate with the correct negative amount', () => {
     const { onUpdate } = renderEdit()
     fireEvent.change(screen.getByPlaceholderText('0'), { target: { value: '500000' } })
-    fireEvent.change(screen.getByDisplayValue('Bookstore'), { target: { value: 'Coffee' } })
+    fireEvent.change(screen.getByDisplayValue('Shopping'), { target: { value: 'Coffee' } })
     fireEvent.click(screen.getByRole('button', { name: /update/i }))
     expect(onUpdate).toHaveBeenCalledTimes(1)
-    expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining({ amount: -500000, sub: 'Coffee' }))
+    expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining({ amount: -500000, title: 'Coffee', sub: 'Bookstore' }))
   })
 })

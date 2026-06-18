@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  formatVnd, CAT_BY_ID, CATEGORIES,
+  formatVnd,
   monthLabel, monthShort, daysInMonth, daysElapsed, getPrevMonth,
   expenseMonth, getAvailableMonths, calcMonthTotal, calcTopCategory,
   isoCurrentMonth,
@@ -8,7 +8,7 @@ import {
 import type { Expense } from '#/lib/pennies'
 
 const mkExp = (overrides: Partial<Expense> & { id: string; date: string }): Expense => ({
-  cat: 'food', title: 'Food', sub: '', amount: -10000, updatedAt: '', ...overrides,
+  cat: 1, title: 'Food', sub: '', amount: -10000, updatedAt: '', ...overrides,
 })
 
 describe('formatVnd', () => {
@@ -40,35 +40,6 @@ describe('formatVnd', () => {
     const pos = formatVnd(100000)
     const neg = formatVnd(-100000)
     expect(neg).toBe('-' + pos)
-  })
-})
-
-describe('CAT_BY_ID', () => {
-  const EXPECTED_IDS = ['food', 'transport', 'shopping', 'fun', 'health', 'util', 'housing', 'other']
-
-  it('contains all 8 category IDs', () => {
-    for (const id of EXPECTED_IDS) {
-      expect(CAT_BY_ID[id]).toBeDefined()
-    }
-  })
-
-  it('has correct shape for every category', () => {
-    for (const cat of CATEGORIES) {
-      expect(cat).toMatchObject({
-        id: expect.any(String),
-        label: expect.any(String),
-        long: expect.any(String),
-        emoji: expect.any(String),
-        dot: expect.any(String),
-        ink: expect.any(String),
-      })
-    }
-  })
-
-  it('lookup by id returns the matching category', () => {
-    expect(CAT_BY_ID['food'].emoji).toBe('🍴')
-    expect(CAT_BY_ID['transport'].emoji).toBe('🚌')
-    expect(CAT_BY_ID['health'].emoji).toBe('❤️')
   })
 })
 
@@ -152,12 +123,12 @@ describe('calcTopCategory', () => {
 
   it('returns the category with the largest absolute spend', () => {
     const expenses = [
-      mkExp({ id: 'a', date: '2026-05-01', cat: 'food', amount: -100 }),
-      mkExp({ id: 'b', date: '2026-05-02', cat: 'housing', amount: -5000 }),
-      mkExp({ id: 'c', date: '2026-05-03', cat: 'food', amount: -200 }),
+      mkExp({ id: 'a', date: '2026-05-01', cat: 1, amount: -100 }),
+      mkExp({ id: 'b', date: '2026-05-02', cat: 7, amount: -5000 }),
+      mkExp({ id: 'c', date: '2026-05-03', cat: 1, amount: -200 }),
     ]
     const top = calcTopCategory(expenses, '2026-05')
     expect(top).not.toBeNull()
-    expect(top!.cat).toBe('housing')
+    expect(top!.cat).toBe(7)
   })
 })

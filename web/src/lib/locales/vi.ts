@@ -46,6 +46,7 @@ const vi: Translations = {
     noSpendingThisMonth: 'Chưa có chi tiêu nào trong tháng này.',
     avgPerMonth: 'tb / tháng',
     avgPerMonthValue: 'tb {{value}} / tháng',
+    avgPerDayValue: 'tb {{value}} / ngày',
     soFarThisMonth: 'từ đầu tháng',
   },
 

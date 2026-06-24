@@ -107,6 +107,13 @@ export default function Dashboard({ expenses, onAccount, userInitials }: Dashboa
       ? -Math.round(Math.abs(P.year) / P.yearMonths / 1000) * 1000
       : 0
 
+  const dow = (new Date().getDay() + 6) % 7
+  const daysElapsed = dow + 1
+  const avgDay =
+    P.week !== 0
+      ? -Math.round(Math.abs(P.week) / daysElapsed / 1000) * 1000
+      : 0
+
   const monthShortName = monthShort(P.monthKey, i18n.language)
   const prevShort      = monthShort(prevKey,    i18n.language)
 
@@ -161,12 +168,17 @@ export default function Dashboard({ expenses, onAccount, userInitials }: Dashboa
             <p className="font-bold text-[19px] leading-none text-sea-ink tabular-nums m-0">
               {formatVnd(P.week)}
             </p>
-            <div className="text-[11px] leading-none">
-              {P.weekDelta !== null ? (
-                <MODelta delta={P.weekDelta} vs={t('dashboard.vsLastWeekShort')} />
-              ) : (
-                <span className="font-medium text-sea-ink-soft">{countLabel(P.weekCount)}</span>
-              )}
+            <div className="flex items-center justify-between gap-1">
+              <span className="font-medium text-[10px] leading-none text-lagoon-deep tabular-nums">
+                {t('dashboard.avgPerDayValue', { value: formatVnd(avgDay) })}
+              </span>
+              <div className="text-[11px] leading-none">
+                {P.weekDelta !== null ? (
+                  <MODelta delta={P.weekDelta} vs={t('dashboard.vsLastWeekShort')} />
+                ) : (
+                  <span className="font-medium text-sea-ink-soft">{countLabel(P.weekCount)}</span>
+                )}
+              </div>
             </div>
           </div>
         </div>

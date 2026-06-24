@@ -133,6 +133,13 @@ export default function Dashboard({ expenses }: DashboardProps) {
       ? -Math.round(Math.abs(P.year) / P.yearMonths / 1000) * 1000
       : 0
 
+  const dow = (new Date().getDay() + 6) % 7
+  const daysElapsed = dow + 1
+  const avgDay =
+    P.week !== 0
+      ? -Math.round(Math.abs(P.week) / daysElapsed / 1000) * 1000
+      : 0
+
   const monthName      = monthLabel(P.monthKey, i18n.language)
   const monthShortName = monthShort(P.monthKey, i18n.language)
   const prevShort      = monthShort(prevKey,    i18n.language)
@@ -183,13 +190,18 @@ export default function Dashboard({ expenses }: DashboardProps) {
         </PeriodTile>
 
         <PeriodTile label={t('dashboard.thisWeek')} value={formatVnd(P.week)}>
-          {P.weekDelta !== null ? (
-            <TrendChip delta={P.weekDelta} vs={t('dashboard.vsLastWeekShort')} />
-          ) : (
-            <span className="font-medium text-[13px] leading-none text-sea-ink-soft">
-              {countLabel(P.weekCount)}
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-medium text-[13px] leading-none text-lagoon-deep tabular-nums">
+              {t('dashboard.avgPerDayValue', { value: formatVnd(avgDay) })}
             </span>
-          )}
+            {P.weekDelta !== null ? (
+              <TrendChip delta={P.weekDelta} vs={t('dashboard.vsLastWeekShort')} />
+            ) : (
+              <span className="font-medium text-[13px] leading-none text-sea-ink-soft">
+                {countLabel(P.weekCount)}
+              </span>
+            )}
+          </div>
         </PeriodTile>
 
         <PeriodTile label={t('dashboard.thisYear')} value={formatVnd(P.year)}>

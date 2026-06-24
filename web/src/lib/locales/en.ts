@@ -28,7 +28,7 @@ const en = {
     thisMonth: 'This month',
     thisYear: 'This year',
     vsLastWeek: 'vs last week',
-    vsLastWeekShort: 'last wk',
+    vsLastWeekShort: 'last week',
     vsLastMonth: 'vs {{month}}',
     onTrack: 'On track',
     expense: 'expense',
@@ -44,6 +44,7 @@ const en = {
     noSpendingThisMonth: 'No spending tracked this month yet.',
     avgPerMonth: 'avg / month',
     avgPerMonthValue: 'avg {{value}} / month',
+    avgPerDayValue: 'avg {{value}} / day',
     soFarThisMonth: 'so far this month',
   },
 

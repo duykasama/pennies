@@ -151,9 +151,10 @@ export const updateAccountFn = createServerFn({ method: 'POST' })
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(data),
     })
-    const body = await res.json().catch(() => ({}))
-    if (!res.ok) throw new Error(body?.error ?? 'Update failed')
-    return body
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body?.error ?? 'Update failed')
+    }
   })
 
 export const requestEmailUpdateFn = createServerFn({ method: 'POST' })
@@ -166,9 +167,10 @@ export const requestEmailUpdateFn = createServerFn({ method: 'POST' })
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ newEmail: data.email }),
     })
-    const body = await res.json().catch(() => ({}))
-    if (!res.ok) throw new Error(body?.error ?? 'Request failed')
-    return body
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body?.error ?? 'Request failed')
+    }
   })
 
 export const confirmEmailUpdateFn = createServerFn({ method: 'POST' })
@@ -181,9 +183,10 @@ export const confirmEmailUpdateFn = createServerFn({ method: 'POST' })
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(data),
     })
-    const body = await res.json().catch(() => ({}))
-    if (!res.ok) throw new Error(body?.error ?? 'Confirmation failed')
-    return body
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body?.error ?? 'Confirmation failed')
+    }
   })
 
 export const changePasswordFn = createServerFn({ method: 'POST' })
@@ -196,9 +199,10 @@ export const changePasswordFn = createServerFn({ method: 'POST' })
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ currentPassword: data.current, newPassword: data.next }),
     })
-    const body = await res.json().catch(() => ({}))
-    if (!res.ok) throw new Error(body?.error ?? 'Password change failed')
-    return body
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body?.error ?? 'Password change failed')
+    }
   })
 
 export const forgotPasswordFn = createServerFn({ method: 'POST' })

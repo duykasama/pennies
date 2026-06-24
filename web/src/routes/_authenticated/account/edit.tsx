@@ -25,7 +25,6 @@ function AccountEditPage() {
       await updateAccountFn({ data: { displayName } })
     } catch (e) {
       setNameError(e instanceof Error ? e.message : 'Save failed')
-      throw e
     }
   }
 
@@ -35,7 +34,6 @@ function AccountEditPage() {
       await requestEmailUpdateFn({ data: { email } })
     } catch (e) {
       setEmailError(e instanceof Error ? e.message : 'Save failed')
-      throw e
     }
   }
 
@@ -46,7 +44,6 @@ function AccountEditPage() {
       await router.invalidate()
     } catch (e) {
       setEmailError(e instanceof Error ? e.message : 'Save failed')
-      throw e
     }
   }
 

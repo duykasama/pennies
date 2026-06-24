@@ -52,3 +52,13 @@ pnpm dlx shadcn@latest add <component>
 - Auth service: `http://localhost:5200` — `POST /auth/login`, `POST /auth/register`, `POST /auth/verify-email`, `POST /auth/resend-confirmation`
 - Expenses API: `http://localhost:5100` — `/expenses` endpoints, all require `Authorization: Bearer <token>`
 - URLs configured via `.env` (`AUTH_API_URL`, `PENNIES_API_URL`)
+
+**Component architecture**: Every screen has a mobile and a desktop variant. Components live in `src/components/pennies/mobile/` and `src/components/pennies/desktop/`. Routes render both, toggling visibility with `md:hidden` / `hidden md:block`. Never combine mobile and desktop logic into a single component.
+
+**Domain library** (`src/lib/pennies.ts`): Core utilities for the expense domain — `formatVnd` (VND display), `formatVndShort` (compact axis labels: `₫1,7M` / `₫705k`), `periodSummary` (today/week/month/year totals), `catBreakdown` (category rollup with emoji + dot color), `monthSeries` (last N months for bar charts), and date helpers (`getPrevMonth`, `monthLabel`, `monthShort`, etc.). Always import from here rather than computing inline.
+
+**i18n**: `react-i18next` with locale files at `src/lib/locales/en.ts` (source of truth) and `vi.ts`. `vi.ts` is typed against `en.ts` so adding a key to `en.ts` without adding it to `vi.ts` is a compile error. Use `useTranslation()` in all user-visible strings.
+
+**Categories**: `src/lib/categories.ts` exports `categoryColor(id)` → `{ dot, ink }` (pastel fill + text color). Category metadata (name, icon) comes from the API via `useCategories()` hook (`src/hooks/useCategories.ts`).
+
+**Design source**: The Pennies design project lives at `https://claude.ai/design/p/019e2493-c653-7b67-9d8f-1d6a13fcafe2`. Use the `DesignSync` MCP tool (available after `/design-login`) to read design files and sync implementations.

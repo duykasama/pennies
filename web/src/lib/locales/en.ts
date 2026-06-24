@@ -46,6 +46,7 @@ const en = {
     avgPerMonthValue: 'avg {{value}} / month',
     avgPerDayValue: 'avg {{value}} / day',
     soFarThisMonth: 'so far this month',
+    spendingOverMonths: 'Spending over months',
   },
 
   expenses: {

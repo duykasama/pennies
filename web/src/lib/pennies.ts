@@ -36,14 +36,17 @@ export function isoCurrentMonth(): string {
 
 export function monthLabel(m: string, locale = 'en'): string {
   const [y, mo] = m.split('-')
-  return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(
-    new Date(+y, +mo - 1, 1),
-  )
+  return new Intl.DateTimeFormat(locale, {
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(+y, +mo - 1, 1))
 }
 
 export function monthShort(m: string, locale = 'en'): string {
   const [, mo] = m.split('-')
-  return new Intl.DateTimeFormat(locale, { month: 'short' }).format(new Date(2000, +mo - 1, 1))
+  return new Intl.DateTimeFormat(locale, { month: 'short' }).format(
+    new Date(2000, +mo - 1, 1),
+  )
 }
 
 export function daysInMonth(m: string): number {
@@ -75,7 +78,48 @@ export function getAvailableMonths(expenses: Expense[]): string[] {
 }
 
 export function calcMonthTotal(expenses: Expense[], month: string): number {
-  return expenses.filter((e) => expenseMonth(e) === month).reduce((s, e) => s + e.amount, 0)
+  return expenses
+    .filter((e) => expenseMonth(e) === month)
+    .reduce((s, e) => s + e.amount, 0)
+}
+
+export function formatVndShort(n: number): string {
+  const a = Math.abs(n)
+  if (a >= 1_000_000)
+    return (
+      '₫' +
+      (a / 1_000_000).toFixed(a % 1_000_000 === 0 ? 0 : 1).replace('.', ',') +
+      'M'
+    )
+  if (a >= 1_000) return '₫' + Math.round(a / 1_000) + 'k'
+  return '₫' + a
+}
+
+export interface MonthSeriesItem {
+  key: string
+  short: string
+  total: number
+  current: boolean
+}
+
+export function monthSeries(
+  expenses: Expense[],
+  currentMonthKey: string,
+  locale = 'en',
+  count = 6,
+): MonthSeriesItem[] {
+  const months: string[] = []
+  let k = currentMonthKey
+  for (let i = 0; i < count; i++) {
+    months.unshift(k)
+    k = getPrevMonth(k)
+  }
+  return months.map((m) => ({
+    key: m,
+    short: monthShort(m, locale),
+    total: calcMonthTotal(expenses, m),
+    current: m === currentMonthKey,
+  }))
 }
 
 export function calcTopCategory(
@@ -111,13 +155,13 @@ export interface PeriodSummary {
   todayCount: number
   week: number
   weekCount: number
-  weekDelta: number | null   // % change vs last week; negative = spent less
+  weekDelta: number | null // % change vs last week; negative = spent less
   month: number
   monthCount: number
-  monthKey: string           // 'YYYY-MM'
+  monthKey: string // 'YYYY-MM'
   year: number
   yearCount: number
-  yearMonths: number         // distinct months with spend in current year
+  yearMonths: number // distinct months with spend in current year
   yearNum: number
 }
 
@@ -126,41 +170,62 @@ export interface PeriodSummary {
  * Uses the `date` field (ISO yyyy-mm-dd) of each expense.
  * `todayIso` defaults to the real today; pass a fixed date in tests.
  */
-export function periodSummary(expenses: Expense[], todayIso?: string): PeriodSummary {
+export function periodSummary(
+  expenses: Expense[],
+  todayIso?: string,
+): PeriodSummary {
   const iso = todayIso ?? isoToday()
   const t = pDate(iso)
-  const dow = (t.getDay() + 6) % 7          // Monday = 0
-  const weekStart = new Date(t); weekStart.setDate(t.getDate() - dow)
-  const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6)
-  const lwStart = new Date(weekStart); lwStart.setDate(weekStart.getDate() - 7)
-  const lwEnd = new Date(weekStart); lwEnd.setDate(weekStart.getDate() - 1)
-  const y = t.getFullYear(), m = t.getMonth()
+  const dow = (t.getDay() + 6) % 7 // Monday = 0
+  const weekStart = new Date(t)
+  weekStart.setDate(t.getDate() - dow)
+  const weekEnd = new Date(weekStart)
+  weekEnd.setDate(weekStart.getDate() + 6)
+  const lwStart = new Date(weekStart)
+  lwStart.setDate(weekStart.getDate() - 7)
+  const lwEnd = new Date(weekStart)
+  lwEnd.setDate(weekStart.getDate() - 1)
+  const y = t.getFullYear(),
+    m = t.getMonth()
 
   const inRange = (dateStr: string, a: Date, b: Date) => {
-    const d = pDate(dateStr); return d >= a && d <= b
+    const d = pDate(dateStr)
+    return d >= a && d <= b
   }
   const sum = (arr: Expense[]) => arr.reduce((s, e) => s + e.amount, 0)
 
-  const todayE = expenses.filter(e => e.date.slice(0, 10) === iso)
-  const weekE = expenses.filter(e => inRange(e.date.slice(0, 10), weekStart, weekEnd))
-  const lweekE = expenses.filter(e => inRange(e.date.slice(0, 10), lwStart, lwEnd))
-  const monthE = expenses.filter(e => {
+  const todayE = expenses.filter((e) => e.date.slice(0, 10) === iso)
+  const weekE = expenses.filter((e) =>
+    inRange(e.date.slice(0, 10), weekStart, weekEnd),
+  )
+  const lweekE = expenses.filter((e) =>
+    inRange(e.date.slice(0, 10), lwStart, lwEnd),
+  )
+  const monthE = expenses.filter((e) => {
     const d = pDate(e.date.slice(0, 10))
     return d.getFullYear() === y && d.getMonth() === m
   })
-  const yearE = expenses.filter(e => pDate(e.date.slice(0, 10)).getFullYear() === y)
+  const yearE = expenses.filter(
+    (e) => pDate(e.date.slice(0, 10)).getFullYear() === y,
+  )
 
   const pct = (cur: number, prev: number): number | null =>
-    (prev && prev !== 0)
-      ? Math.round((Math.abs(cur) - Math.abs(prev)) / Math.abs(prev) * 100)
+    prev && prev !== 0
+      ? Math.round(((Math.abs(cur) - Math.abs(prev)) / Math.abs(prev)) * 100)
       : null
 
   return {
-    today: sum(todayE), todayCount: todayE.length,
-    week: sum(weekE), weekCount: weekE.length, weekDelta: pct(sum(weekE), sum(lweekE)),
-    month: sum(monthE), monthCount: monthE.length, monthKey: `${y}-${String(m + 1).padStart(2, '0')}`,
-    year: sum(yearE), yearCount: yearE.length,
-    yearMonths: new Set(yearE.map(e => e.date.slice(0, 7))).size,
+    today: sum(todayE),
+    todayCount: todayE.length,
+    week: sum(weekE),
+    weekCount: weekE.length,
+    weekDelta: pct(sum(weekE), sum(lweekE)),
+    month: sum(monthE),
+    monthCount: monthE.length,
+    monthKey: `${y}-${String(m + 1).padStart(2, '0')}`,
+    year: sum(yearE),
+    yearCount: yearE.length,
+    yearMonths: new Set(yearE.map((e) => e.date.slice(0, 7))).size,
     yearNum: y,
   }
 }
@@ -180,7 +245,10 @@ export interface CatBreakdownItem {
   pct: number
 }
 
-export function catBreakdown(expenses: Expense[], categories: ApiCategory[]): CatBreakdownItem[] {
+export function catBreakdown(
+  expenses: Expense[],
+  categories: ApiCategory[],
+): CatBreakdownItem[] {
   const sums: Record<number, number> = {}
   for (const e of expenses) {
     sums[e.cat] = (sums[e.cat] || 0) + e.amount

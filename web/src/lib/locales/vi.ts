@@ -48,6 +48,7 @@ const vi: Translations = {
     avgPerMonthValue: 'tb {{value}} / tháng',
     avgPerDayValue: 'tb {{value}} / ngày',
     soFarThisMonth: 'từ đầu tháng',
+    spendingOverMonths: 'Chi tiêu theo tháng',
   },
 
   expenses: {

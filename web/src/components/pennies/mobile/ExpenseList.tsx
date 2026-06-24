@@ -39,7 +39,9 @@ export default function ExpenseList({
     const el = sentinelRef.current
     if (!el) return
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) onLoadMore() },
+      ([entry]) => {
+        if (entry.isIntersecting) onLoadMore()
+      },
       { threshold: 0.1 },
     )
     observer.observe(el)
@@ -54,10 +56,16 @@ export default function ExpenseList({
   function dateLabel(d: string) {
     if (d === today) return t('dates.today')
     if (d === yesterday) return t('dates.yesterday')
-    return new Date(d + 'T00:00:00').toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })
+    return new Date(d + 'T00:00:00').toLocaleDateString(i18n.language, {
+      month: 'short',
+      day: 'numeric',
+    })
   }
 
-  const filtered = filter === FILTER.ALL ? expenses : expenses.filter((e) => String(e.cat) === filter)
+  const filtered =
+    filter === FILTER.ALL
+      ? expenses
+      : expenses.filter((e) => String(e.cat) === filter)
 
   const sorted =
     sort === SORT.AMOUNT
@@ -66,14 +74,15 @@ export default function ExpenseList({
 
   const groups: { date: string; items: Expense[] }[] = []
   if (sort === SORT.DATE) {
-    const uniqueDates = [...new Set(sorted.map((e) => e.date))].sort((a, b) => b.localeCompare(a))
+    const uniqueDates = [...new Set(sorted.map((e) => e.date))].sort((a, b) =>
+      b.localeCompare(a),
+    )
     for (const date of uniqueDates) {
       groups.push({ date, items: sorted.filter((e) => e.date === date) })
     }
   } else {
     groups.push({ date: '', items: sorted })
   }
-
 
   return (
     <>
@@ -101,13 +110,17 @@ export default function ExpenseList({
 
         {/* Sort bar */}
         <div className="bg-foam px-4 py-2 flex gap-3 items-center">
-          <span className="font-medium text-[12px] text-sea-ink-soft">{t('expenses.sortBy')}</span>
+          <span className="font-medium text-[12px] text-sea-ink-soft">
+            {t('expenses.sortBy')}
+          </span>
           <button
             type="button"
             onClick={() => setSort(SORT.DATE)}
             className={cn(
               'bg-transparent border-0 cursor-pointer p-0 text-[12px] font-medium',
-              sort === SORT.DATE ? 'font-bold text-sea-ink' : 'text-sea-ink-soft',
+              sort === SORT.DATE
+                ? 'font-bold text-sea-ink'
+                : 'text-sea-ink-soft',
             )}
           >
             {t('expenses.sortDate')}
@@ -117,7 +130,9 @@ export default function ExpenseList({
             onClick={() => setSort(SORT.AMOUNT)}
             className={cn(
               'bg-transparent border-0 cursor-pointer p-0 text-[12px] font-medium',
-              sort === SORT.AMOUNT ? 'font-bold text-sea-ink' : 'text-sea-ink-soft',
+              sort === SORT.AMOUNT
+                ? 'font-bold text-sea-ink'
+                : 'text-sea-ink-soft',
             )}
           >
             {t('expenses.sortAmount')}
@@ -130,7 +145,9 @@ export default function ExpenseList({
             <div className="w-[150px] h-[150px] rounded-full bg-sand flex items-center justify-center font-display font-bold text-[56px] text-sea-ink-muted">
               ₫
             </div>
-            <p className="mt-7 mb-2 font-bold text-[18px] text-sea-ink">{t('expenses.emptyTitle')}</p>
+            <p className="mt-7 mb-2 font-bold text-[18px] text-sea-ink">
+              {t('expenses.emptyTitle')}
+            </p>
             <p className="m-0 mb-5 font-medium text-[14px] text-sea-ink-soft">
               {t('expenses.emptyMessage')}
             </p>
@@ -145,11 +162,25 @@ export default function ExpenseList({
                   — {dateLabel(group.date)}
                 </p>
                 {group.items.map((exp) => (
-                  <ExpenseRow key={exp.id} expense={exp} variant="mobile" onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined} />
+                  <ExpenseRow
+                    key={exp.id}
+                    expense={exp}
+                    variant="mobile"
+                    onClick={
+                      onOpenExpense ? () => onOpenExpense(exp) : undefined
+                    }
+                  />
                 ))}
               </div>
             ))
-          : sorted.map((exp) => <ExpenseRow key={exp.id} expense={exp} variant="mobile" onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined} />)}
+          : sorted.map((exp) => (
+              <ExpenseRow
+                key={exp.id}
+                expense={exp}
+                variant="mobile"
+                onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined}
+              />
+            ))}
 
         <div ref={sentinelRef} className="h-1" />
         {isLoadingMore && (

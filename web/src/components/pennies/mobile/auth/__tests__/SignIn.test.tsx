@@ -6,7 +6,12 @@ import MobileSignIn from '../SignIn'
 describe('MobileSignIn', () => {
   it('renders the welcome back heading', () => {
     render(
-      <MobileSignIn onSubmit={vi.fn()} onGoogle={vi.fn()} onSignUp={vi.fn()} onForgot={vi.fn()} />,
+      <MobileSignIn
+        onSubmit={vi.fn()}
+        onGoogle={vi.fn()}
+        onSignUp={vi.fn()}
+        onForgot={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     expect(screen.getByText('Welcome back')).toBeInTheDocument()
@@ -14,7 +19,12 @@ describe('MobileSignIn', () => {
 
   it('renders email and password inputs', () => {
     render(
-      <MobileSignIn onSubmit={vi.fn()} onGoogle={vi.fn()} onSignUp={vi.fn()} onForgot={vi.fn()} />,
+      <MobileSignIn
+        onSubmit={vi.fn()}
+        onGoogle={vi.fn()}
+        onSignUp={vi.fn()}
+        onForgot={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument()
@@ -24,7 +34,12 @@ describe('MobileSignIn', () => {
   it('calls onForgot when the Forgot? button is clicked', () => {
     const onForgot = vi.fn()
     render(
-      <MobileSignIn onSubmit={vi.fn()} onGoogle={vi.fn()} onSignUp={vi.fn()} onForgot={onForgot} />,
+      <MobileSignIn
+        onSubmit={vi.fn()}
+        onGoogle={vi.fn()}
+        onSignUp={vi.fn()}
+        onForgot={onForgot}
+      />,
       { wrapper: I18nWrapper },
     )
     fireEvent.click(screen.getByText('Forgot?'))
@@ -34,7 +49,12 @@ describe('MobileSignIn', () => {
   it('calls onSubmit with the current email value when Sign in is clicked', () => {
     const onSubmit = vi.fn()
     render(
-      <MobileSignIn onSubmit={onSubmit} onGoogle={vi.fn()} onSignUp={vi.fn()} onForgot={vi.fn()} />,
+      <MobileSignIn
+        onSubmit={onSubmit}
+        onGoogle={vi.fn()}
+        onSignUp={vi.fn()}
+        onForgot={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     fireEvent.change(screen.getByPlaceholderText('you@example.com'), {
@@ -48,7 +68,12 @@ describe('MobileSignIn', () => {
   it('calls onSubmit with empty string when email is untouched', () => {
     const onSubmit = vi.fn()
     render(
-      <MobileSignIn onSubmit={onSubmit} onGoogle={vi.fn()} onSignUp={vi.fn()} onForgot={vi.fn()} />,
+      <MobileSignIn
+        onSubmit={onSubmit}
+        onGoogle={vi.fn()}
+        onSignUp={vi.fn()}
+        onForgot={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     fireEvent.click(screen.getByText('Sign in'))
@@ -58,7 +83,12 @@ describe('MobileSignIn', () => {
   it('calls onGoogle when the Google button is clicked', () => {
     const onGoogle = vi.fn()
     render(
-      <MobileSignIn onSubmit={vi.fn()} onGoogle={onGoogle} onSignUp={vi.fn()} onForgot={vi.fn()} />,
+      <MobileSignIn
+        onSubmit={vi.fn()}
+        onGoogle={onGoogle}
+        onSignUp={vi.fn()}
+        onForgot={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     fireEvent.click(screen.getByText('Sign in with Google'))
@@ -68,7 +98,12 @@ describe('MobileSignIn', () => {
   it('calls onSignUp when the Create account link is clicked', () => {
     const onSignUp = vi.fn()
     render(
-      <MobileSignIn onSubmit={vi.fn()} onGoogle={vi.fn()} onSignUp={onSignUp} onForgot={vi.fn()} />,
+      <MobileSignIn
+        onSubmit={vi.fn()}
+        onGoogle={vi.fn()}
+        onSignUp={onSignUp}
+        onForgot={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     fireEvent.click(screen.getByText('Create account'))

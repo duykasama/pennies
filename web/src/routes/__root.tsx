@@ -9,7 +9,12 @@ import {
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
-import { setTheme, applyThemeClass, themeInitScript, themeStore } from '#/lib/themeStore'
+import {
+  setTheme,
+  applyThemeClass,
+  themeInitScript,
+  themeStore,
+} from '#/lib/themeStore'
 import type { Theme } from '#/lib/themeStore'
 import { getSessionFn } from '#/lib/auth'
 import { getLocaleFn, getThemeFn } from '#/lib/locale'
@@ -30,7 +35,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
   beforeLoad: async () => {
-    const [user, locale, theme] = await Promise.all([getSessionFn(), getLocaleFn(), getThemeFn()])
+    const [user, locale, theme] = await Promise.all([
+      getSessionFn(),
+      getLocaleFn(),
+      getThemeFn(),
+    ])
     if (i18n.language !== locale) await i18n.changeLanguage(locale)
     themeStore.setState(() => ({ theme }))
     return { user }
@@ -41,7 +50,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootDocument({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const saved = localStorage.getItem('theme') as Theme | null
-    const theme = saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'system'
+    const theme =
+      saved === 'light' || saved === 'dark' || saved === 'system'
+        ? saved
+        : 'system'
     setTheme(theme)
 
     const mq = window.matchMedia('(prefers-color-scheme: dark)')

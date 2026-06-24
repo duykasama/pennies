@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AuthShell, DesktopField, DesktopPrimaryBtn, DesktopGoogleBtn, OrDivider } from './shared'
+import {
+  AuthShell,
+  DesktopField,
+  DesktopPrimaryBtn,
+  DesktopGoogleBtn,
+  OrDivider,
+} from './shared'
 
 interface Props {
   onSubmit: (email: string, password: string) => void
@@ -10,7 +16,13 @@ interface Props {
   error?: string | null
 }
 
-export default function DesktopSignIn({ onSubmit, onGoogle, onSignUp, onForgot, error }: Props) {
+export default function DesktopSignIn({
+  onSubmit,
+  onGoogle,
+  onSignUp,
+  onForgot,
+  error,
+}: Props) {
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
@@ -32,7 +44,12 @@ export default function DesktopSignIn({ onSubmit, onGoogle, onSignUp, onForgot, 
         </>
       }
     >
-      <form onSubmit={(e) => { e.preventDefault(); onSubmit(email, pw) }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          onSubmit(email, pw)
+        }}
+      >
         <DesktopField
           label={t('auth.email')}
           type="email"
@@ -59,7 +76,9 @@ export default function DesktopSignIn({ onSubmit, onGoogle, onSignUp, onForgot, 
         {error && (
           <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
         )}
-        <DesktopPrimaryBtn type="submit">{t('auth.signInBtn')}</DesktopPrimaryBtn>
+        <DesktopPrimaryBtn type="submit">
+          {t('auth.signInBtn')}
+        </DesktopPrimaryBtn>
       </form>
       <OrDivider />
       <DesktopGoogleBtn label={t('auth.signInWithGoogle')} onClick={onGoogle} />

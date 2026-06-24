@@ -14,6 +14,7 @@ bun --bun run check     # Check formatting only
 ```
 
 Add shadcn components:
+
 ```bash
 pnpm dlx shadcn@latest add <component>
 ```
@@ -47,6 +48,7 @@ pnpm dlx shadcn@latest add <component>
 **Authentication**: JWT stored in an httpOnly cookie (`auth_token`). Session server functions live in `src/lib/auth.ts`. Protected routes sit under the `_authenticated` pathless layout (`src/routes/_authenticated.tsx`), which redirects unauthenticated users to `/auth/sign-in`. The root `beforeLoad` in `__root.tsx` calls `getSessionFn()` to populate `user` into router context on every navigation.
 
 **Backend services** (separate .NET processes, not part of this repo):
+
 - Auth service: `http://localhost:5200` — `POST /auth/login`, `POST /auth/register`, `POST /auth/verify-email`, `POST /auth/resend-confirmation`
 - Expenses API: `http://localhost:5100` — `/expenses` endpoints, all require `Authorization: Bearer <token>`
 - URLs configured via `.env` (`AUTH_API_URL`, `PENNIES_API_URL`)

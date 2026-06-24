@@ -32,7 +32,9 @@ function Field({
 }) {
   return (
     <div className="mb-4">
-      <label className="block font-sans font-bold text-[13px] leading-tight text-sea-ink mb-2">{label}</label>
+      <label className="block font-sans font-bold text-[13px] leading-tight text-sea-ink mb-2">
+        {label}
+      </label>
       <input
         type={type}
         className={`${desktopInputCls} ${error ? 'bg-[#fff6f6] border-danger text-danger' : ''}`}
@@ -41,15 +43,27 @@ function Field({
         placeholder={placeholder}
       />
       {error ? (
-        <span className="block mt-1.5 font-sans font-medium text-[11px] leading-tight text-danger">{error}</span>
+        <span className="block mt-1.5 font-sans font-medium text-[11px] leading-tight text-danger">
+          {error}
+        </span>
       ) : help ? (
-        <span className="block mt-1.5 font-sans font-medium text-[12px] leading-snug text-sea-ink-soft">{help}</span>
+        <span className="block mt-1.5 font-sans font-medium text-[12px] leading-snug text-sea-ink-soft">
+          {help}
+        </span>
       ) : null}
     </div>
   )
 }
 
-function SaveBtn({ onClick, disabled, children }: { onClick: () => void; disabled?: boolean; children: React.ReactNode }) {
+function SaveBtn({
+  onClick,
+  disabled,
+  children,
+}: {
+  onClick: () => void
+  disabled?: boolean
+  children: React.ReactNode
+}) {
   return (
     <button
       type="submit"
@@ -62,7 +76,15 @@ function SaveBtn({ onClick, disabled, children }: { onClick: () => void; disable
   )
 }
 
-function NameCard({ user, onSaveName, externalError }: { user: UserProfile; onSaveName: (n: string) => Promise<void>; externalError: string | null }) {
+function NameCard({
+  user,
+  onSaveName,
+  externalError,
+}: {
+  user: UserProfile
+  onSaveName: (n: string) => Promise<void>
+  externalError: string | null
+}) {
   const { t } = useTranslation()
   const [name, setName] = useState(user.displayName)
   const [baseName, setBaseName] = useState(user.displayName)
@@ -70,10 +92,15 @@ function NameCard({ user, onSaveName, externalError }: { user: UserProfile; onSa
   const [saved, setSaved] = useState(false)
   const dirty = name.trim() !== baseName
 
-  useEffect(() => { setError(externalError) }, [externalError])
+  useEffect(() => {
+    setError(externalError)
+  }, [externalError])
 
   async function submit() {
-    if (!name.trim()) { setError(t('account.nameError')); return }
+    if (!name.trim()) {
+      setError(t('account.nameError'))
+      return
+    }
     setError(null)
     try {
       await onSaveName(name.trim())
@@ -87,40 +114,71 @@ function NameCard({ user, onSaveName, externalError }: { user: UserProfile; onSa
 
   return (
     <div className="bg-foam rounded-p-md p-7 shadow-card mb-5">
-      <h2 className="m-0 mb-4 font-sans font-bold text-[17px] leading-tight text-sea-ink">{t('account.nameSection')}</h2>
-      <form onSubmit={(e) => { e.preventDefault(); if (dirty) submit() }}>
+      <h2 className="m-0 mb-4 font-sans font-bold text-[17px] leading-tight text-sea-ink">
+        {t('account.nameSection')}
+      </h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (dirty) submit()
+        }}
+      >
         <Field
           label={t('account.fullName')}
           value={name}
-          onChange={(e) => { setName(e.target.value); setError(null) }}
+          onChange={(e) => {
+            setName(e.target.value)
+            setError(null)
+          }}
           placeholder={t('auth.namePlaceholder')}
           error={error}
         />
         <div className="flex items-center justify-end gap-3 mt-1">
-          {saved && <span className="font-sans font-medium text-[13px] text-success">{t('account.nameSaved')}</span>}
-          <SaveBtn onClick={submit} disabled={!dirty}>{t('account.saveName')}</SaveBtn>
+          {saved && (
+            <span className="font-sans font-medium text-[13px] text-success">
+              {t('account.nameSaved')}
+            </span>
+          )}
+          <SaveBtn onClick={submit} disabled={!dirty}>
+            {t('account.saveName')}
+          </SaveBtn>
         </div>
       </form>
     </div>
   )
 }
 
-function CodeInput({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+function CodeInput({
+  value,
+  onChange,
+}: {
+  value: string[]
+  onChange: (v: string[]) => void
+}) {
   const refs = useRef<(HTMLInputElement | null)[]>([])
   function setAt(i: number, v: string) {
     const ch = v.replace(/\D/g, '').slice(-1)
-    const next = [...value]; next[i] = ch; onChange(next)
+    const next = [...value]
+    next[i] = ch
+    onChange(next)
     if (ch && i < 5) refs.current[i + 1]?.focus()
   }
   function onKey(i: number, e: React.KeyboardEvent) {
-    if (e.key === 'Backspace' && !value[i] && i > 0) refs.current[i - 1]?.focus()
+    if (e.key === 'Backspace' && !value[i] && i > 0)
+      refs.current[i - 1]?.focus()
   }
   function onPaste(e: React.ClipboardEvent) {
     e.preventDefault()
-    const digits = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6).split('')
+    const digits = e.clipboardData
+      .getData('text')
+      .replace(/\D/g, '')
+      .slice(0, 6)
+      .split('')
     if (!digits.length) return
     const next = ['', '', '', '', '', '']
-    digits.forEach((d, i) => { next[i] = d })
+    digits.forEach((d, i) => {
+      next[i] = d
+    })
     onChange(next)
     refs.current[Math.min(digits.length, 5)]?.focus()
   }
@@ -129,10 +187,12 @@ function CodeInput({ value, onChange }: { value: string[]; onChange: (v: string[
       {value.map((c, i) => (
         <input
           key={i}
-          ref={el => { refs.current[i] = el }}
+          ref={(el) => {
+            refs.current[i] = el
+          }}
           value={c}
-          onChange={e => setAt(i, e.target.value)}
-          onKeyDown={e => onKey(i, e)}
+          onChange={(e) => setAt(i, e.target.value)}
+          onKeyDown={(e) => onKey(i, e)}
           onPaste={onPaste}
           inputMode="numeric"
           maxLength={1}
@@ -143,7 +203,17 @@ function CodeInput({ value, onChange }: { value: string[]; onChange: (v: string[
   )
 }
 
-function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { user: UserProfile; onRequestEmail: (e: string) => Promise<void>; onConfirmEmail: (code: string) => Promise<void>; externalError: string | null }) {
+function EmailCard({
+  user,
+  onRequestEmail,
+  onConfirmEmail,
+  externalError,
+}: {
+  user: UserProfile
+  onRequestEmail: (e: string) => Promise<void>
+  onConfirmEmail: (code: string) => Promise<void>
+  externalError: string | null
+}) {
   const { t } = useTranslation()
   const [email, setEmail] = useState(user.email)
   const [code, setCode] = useState(['', '', '', '', '', ''])
@@ -152,12 +222,17 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
   const [codeSent, setCodeSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const dirty = email.trim() !== user.email
-  const complete = code.every(c => c)
+  const complete = code.every((c) => c)
 
-  useEffect(() => { setError(externalError) }, [externalError])
+  useEffect(() => {
+    setError(externalError)
+  }, [externalError])
 
   async function requestCode() {
-    if (!/^\S+@\S+\.\S+$/.test(email)) { setError(t('account.emailError')); return }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setError(t('account.emailError'))
+      return
+    }
     setError(null)
     try {
       await onRequestEmail(email.trim())
@@ -191,8 +266,17 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
 
   return (
     <div className="bg-foam rounded-p-md p-7 shadow-card mb-5">
-      <h2 className="m-0 mb-4 font-sans font-bold text-[17px] leading-tight text-sea-ink">{t('account.emailSection')}</h2>
-      <form onSubmit={(e) => { e.preventDefault(); codeSent ? (complete && !loading && confirmCode()) : (dirty && requestCode()) }}>
+      <h2 className="m-0 mb-4 font-sans font-bold text-[17px] leading-tight text-sea-ink">
+        {t('account.emailSection')}
+      </h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          codeSent
+            ? complete && !loading && confirmCode()
+            : dirty && requestCode()
+        }}
+      >
         <Field
           label={t('auth.email')}
           type="email"
@@ -204,7 +288,9 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
         />
         {codeSent && (
           <>
-            <div className="mb-2 font-sans font-bold text-[13px] leading-none text-sea-ink">{t('account.confirmationCode')}</div>
+            <div className="mb-2 font-sans font-bold text-[13px] leading-none text-sea-ink">
+              {t('account.confirmationCode')}
+            </div>
             <CodeInput value={code} onChange={setCode} />
             <div className="-mt-2 mb-4 font-sans font-medium text-[12px] leading-tight text-sea-ink-soft">
               {t('auth.didntGetCode')}{' '}
@@ -219,18 +305,35 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
           </>
         )}
         <div className="flex items-center justify-end gap-3 mt-1">
-          {saved && <span className="font-sans font-medium text-[13px] text-success">{t('account.emailSaved')}</span>}
-          {!codeSent
-            ? <SaveBtn onClick={requestCode} disabled={!dirty}>{t('account.saveEmail')}</SaveBtn>
-            : <SaveBtn onClick={confirmCode} disabled={!complete || loading}>{t('account.confirmEmail')}</SaveBtn>
-          }
+          {saved && (
+            <span className="font-sans font-medium text-[13px] text-success">
+              {t('account.emailSaved')}
+            </span>
+          )}
+          {!codeSent ? (
+            <SaveBtn onClick={requestCode} disabled={!dirty}>
+              {t('account.saveEmail')}
+            </SaveBtn>
+          ) : (
+            <SaveBtn onClick={confirmCode} disabled={!complete || loading}>
+              {t('account.confirmEmail')}
+            </SaveBtn>
+          )}
         </div>
       </form>
     </div>
   )
 }
 
-export default function DesktopAccountEdit({ user, onCancel, onSaveName, onRequestEmail, onConfirmEmail, nameError, emailError }: Props) {
+export default function DesktopAccountEdit({
+  user,
+  onCancel,
+  onSaveName,
+  onRequestEmail,
+  onConfirmEmail,
+  nameError,
+  emailError,
+}: Props) {
   const { t } = useTranslation()
 
   return (
@@ -248,8 +351,17 @@ export default function DesktopAccountEdit({ user, onCancel, onSaveName, onReque
             {t('account.editTitle')}
           </h1>
 
-          <NameCard user={user} onSaveName={onSaveName} externalError={nameError} />
-          <EmailCard user={user} onRequestEmail={onRequestEmail} onConfirmEmail={onConfirmEmail} externalError={emailError} />
+          <NameCard
+            user={user}
+            onSaveName={onSaveName}
+            externalError={nameError}
+          />
+          <EmailCard
+            user={user}
+            onRequestEmail={onRequestEmail}
+            onConfirmEmail={onConfirmEmail}
+            externalError={emailError}
+          />
         </div>
       </div>
     </>

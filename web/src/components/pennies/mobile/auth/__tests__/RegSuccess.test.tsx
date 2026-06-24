@@ -16,7 +16,9 @@ describe('MobileRegSuccess', () => {
 
   it('calls onContinue when Go to Pennies is clicked', () => {
     const onContinue = vi.fn()
-    render(<MobileRegSuccess onContinue={onContinue} />, { wrapper: I18nWrapper })
+    render(<MobileRegSuccess onContinue={onContinue} />, {
+      wrapper: I18nWrapper,
+    })
     fireEvent.click(screen.getByText('Go to Pennies →'))
     expect(onContinue).toHaveBeenCalledOnce()
   })

@@ -43,30 +43,54 @@ describe('ExpenseRow', () => {
   })
 
   it('shows translated "Today" for date=today', () => {
-    render(<ExpenseRow expense={{ ...baseExpense, date: 'today' }} variant="desktop" />, {
-      wrapper: TestProviders,
-    })
+    render(
+      <ExpenseRow
+        expense={{ ...baseExpense, date: 'today' }}
+        variant="desktop"
+      />,
+      {
+        wrapper: TestProviders,
+      },
+    )
     expect(screen.getByText('Today')).toBeInTheDocument()
   })
 
   it('shows translated "Yesterday" for date=yesterday', () => {
-    render(<ExpenseRow expense={{ ...baseExpense, date: 'yesterday' }} variant="desktop" />, {
-      wrapper: TestProviders,
-    })
+    render(
+      <ExpenseRow
+        expense={{ ...baseExpense, date: 'yesterday' }}
+        variant="desktop"
+      />,
+      {
+        wrapper: TestProviders,
+      },
+    )
     expect(screen.getByText('Yesterday')).toBeInTheDocument()
   })
 
   it('formats ISO date string when date is not today or yesterday', () => {
-    render(<ExpenseRow expense={{ ...baseExpense, date: '2026-05-12' }} variant="desktop" />, {
-      wrapper: TestProviders,
-    })
+    render(
+      <ExpenseRow
+        expense={{ ...baseExpense, date: '2026-05-12' }}
+        variant="desktop"
+      />,
+      {
+        wrapper: TestProviders,
+      },
+    )
     expect(screen.getByText('May 12')).toBeInTheDocument()
   })
 
   it('does not render date column in mobile variant', () => {
-    render(<ExpenseRow expense={{ ...baseExpense, date: 'today' }} variant="mobile" />, {
-      wrapper: TestProviders,
-    })
+    render(
+      <ExpenseRow
+        expense={{ ...baseExpense, date: 'today' }}
+        variant="mobile"
+      />,
+      {
+        wrapper: TestProviders,
+      },
+    )
     expect(screen.queryByText('Today')).not.toBeInTheDocument()
   })
 })

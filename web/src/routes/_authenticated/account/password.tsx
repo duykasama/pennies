@@ -32,13 +32,21 @@ function AccountPasswordPage() {
     <div className="min-h-screen bg-bg-base">
       {/* Mobile */}
       <div className="md:hidden relative w-full min-h-screen overflow-hidden bg-bg-base font-sans text-sea-ink">
-        <MobileAccountPassword onCancel={handleCancel} onSave={handleSave} error={error} />
+        <MobileAccountPassword
+          onCancel={handleCancel}
+          onSave={handleSave}
+          error={error}
+        />
       </div>
 
       {/* Desktop */}
       <div className="hidden md:block w-full min-h-screen bg-bg-base font-sans text-sea-ink">
         <TopNav />
-        <DesktopAccountPassword onCancel={handleCancel} onSave={handleSave} error={error} />
+        <DesktopAccountPassword
+          onCancel={handleCancel}
+          onSave={handleSave}
+          error={error}
+        />
       </div>
     </div>
   )

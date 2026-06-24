@@ -48,7 +48,8 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
   const inputBase =
     'w-full h-11 px-3.5 rounded-p-sm bg-white border border-transparent font-normal text-[14px] text-sea-ink outline-none transition-colors focus:border-lagoon box-border'
   const inputError = 'bg-[#fff6f6] border-danger text-danger'
-  const labelBase = 'block font-bold text-[12px] leading-none text-sea-ink-soft mb-2'
+  const labelBase =
+    'block font-bold text-[12px] leading-none text-sea-ink-soft mb-2'
 
   return (
     <div>
@@ -64,9 +65,16 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
       {/* Form card */}
       <div className="flex justify-center px-12 py-9">
         <div className="w-[480px] bg-foam rounded-p-md p-8 shadow-card">
-          <h1 className="font-bold text-[24px] text-sea-ink mb-6 mt-0">{t('addExpense.title')}</h1>
+          <h1 className="font-bold text-[24px] text-sea-ink mb-6 mt-0">
+            {t('addExpense.title')}
+          </h1>
 
-          <form onSubmit={(e) => { e.preventDefault(); handleSave() }}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleSave()
+            }}
+          >
             {/* Amount */}
             <div className="mb-5">
               <label className={labelBase}>{t('addExpense.amount')}</label>
@@ -77,9 +85,14 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
                 value={amountStr}
                 onChange={(e) => {
                   setAmountStr(e.target.value)
-                  if (errors.amount) setErrors((prev) => ({ ...prev, amount: undefined }))
+                  if (errors.amount)
+                    setErrors((prev) => ({ ...prev, amount: undefined }))
                 }}
-                className={cn(inputBase, 'h-[52px] font-bold text-[22px]', errors.amount && inputError)}
+                className={cn(
+                  inputBase,
+                  'h-[52px] font-bold text-[22px]',
+                  errors.amount && inputError,
+                )}
               />
               {errors.amount && (
                 <span className="block mt-1.5 font-medium text-[11px] text-danger">
@@ -97,7 +110,8 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
                 value={desc}
                 onChange={(e) => {
                   setDesc(e.target.value)
-                  if (errors.desc) setErrors((prev) => ({ ...prev, desc: undefined }))
+                  if (errors.desc)
+                    setErrors((prev) => ({ ...prev, desc: undefined }))
                 }}
                 className={cn(inputBase, errors.desc && inputError)}
               />

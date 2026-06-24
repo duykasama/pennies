@@ -4,7 +4,11 @@ import { Sun, Moon, Monitor } from 'lucide-react'
 import { useTheme, setTheme } from '#/lib/themeStore'
 import type { Theme } from '#/lib/themeStore'
 
-const THEMES: { value: Theme; icon: React.ElementType; labelKey: 'theme.light' | 'theme.dark' | 'theme.system' }[] = [
+const THEMES: {
+  value: Theme
+  icon: React.ElementType
+  labelKey: 'theme.light' | 'theme.dark' | 'theme.system'
+}[] = [
   { value: 'light', icon: Sun, labelKey: 'theme.light' },
   { value: 'dark', icon: Moon, labelKey: 'theme.dark' },
   { value: 'system', icon: Monitor, labelKey: 'theme.system' },
@@ -64,7 +68,9 @@ export default function ThemePicker({ variant }: ThemePickerProps) {
             >
               <Icon size={13} strokeWidth={2} />
               <span className="flex-1">{t(labelKey)}</span>
-              {value === theme && <span className="text-lagoon font-bold">✓</span>}
+              {value === theme && (
+                <span className="text-lagoon font-bold">✓</span>
+              )}
             </button>
           ))}
         </div>

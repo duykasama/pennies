@@ -37,7 +37,9 @@ export default function ExpenseList({
     const el = sentinelRef.current
     if (!el) return
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) onLoadMore() },
+      ([entry]) => {
+        if (entry.isIntersecting) onLoadMore()
+      },
       { threshold: 0.1 },
     )
     observer.observe(el)
@@ -50,10 +52,16 @@ export default function ExpenseList({
   function dateLabel(d: string) {
     if (d === today) return t('dates.today')
     if (d === yesterday) return t('dates.yesterday')
-    return new Date(d + 'T00:00:00').toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })
+    return new Date(d + 'T00:00:00').toLocaleDateString(i18n.language, {
+      month: 'short',
+      day: 'numeric',
+    })
   }
 
-  const filtered = filter === FILTER.ALL ? expenses : expenses.filter((e) => String(e.cat) === filter)
+  const filtered =
+    filter === FILTER.ALL
+      ? expenses
+      : expenses.filter((e) => String(e.cat) === filter)
 
   const sorted =
     sort === SORT.AMOUNT
@@ -62,7 +70,9 @@ export default function ExpenseList({
 
   const groups: { date: string; items: Expense[] }[] = []
   if (sort === SORT.DATE) {
-    const uniqueDates = [...new Set(sorted.map((e) => e.date))].sort((a, b) => b.localeCompare(a))
+    const uniqueDates = [...new Set(sorted.map((e) => e.date))].sort((a, b) =>
+      b.localeCompare(a),
+    )
     for (const date of uniqueDates) {
       groups.push({ date, items: sorted.filter((e) => e.date === date) })
     }
@@ -70,7 +80,12 @@ export default function ExpenseList({
 
   return (
     <div>
-      <FilterToolbar filter={filter} setFilter={setFilter} sort={sort} setSort={setSort} />
+      <FilterToolbar
+        filter={filter}
+        setFilter={setFilter}
+        sort={sort}
+        setSort={setSort}
+      />
       <div className="px-12 pt-4 pb-12">
         {filtered.length === 0 && (
           <p className="py-16 text-center text-sea-ink-soft font-medium text-[14px]">
@@ -85,11 +100,25 @@ export default function ExpenseList({
                   — {dateLabel(group.date)}
                 </p>
                 {group.items.map((exp) => (
-                  <ExpenseRow key={exp.id} expense={exp} variant="desktop" onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined} />
+                  <ExpenseRow
+                    key={exp.id}
+                    expense={exp}
+                    variant="desktop"
+                    onClick={
+                      onOpenExpense ? () => onOpenExpense(exp) : undefined
+                    }
+                  />
                 ))}
               </div>
             ))
-          : sorted.map((exp) => <ExpenseRow key={exp.id} expense={exp} variant="desktop" onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined} />)}
+          : sorted.map((exp) => (
+              <ExpenseRow
+                key={exp.id}
+                expense={exp}
+                variant="desktop"
+                onClick={onOpenExpense ? () => onOpenExpense(exp) : undefined}
+              />
+            ))}
 
         <div ref={sentinelRef} className="h-1" />
         {isLoadingMore && (

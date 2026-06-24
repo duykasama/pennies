@@ -34,7 +34,13 @@ interface FilterChipProps {
   onClick: () => void
 }
 
-export function FilterChip({ label, emoji, active, accent = 'lagoon', onClick }: FilterChipProps) {
+export function FilterChip({
+  label,
+  emoji,
+  active,
+  accent = 'lagoon',
+  onClick,
+}: FilterChipProps) {
   return (
     <button
       type="button"
@@ -43,8 +49,12 @@ export function FilterChip({ label, emoji, active, accent = 'lagoon', onClick }:
         'flex-none h-7 px-3.5 rounded-full inline-flex items-center gap-1.5',
         'font-bold text-[11px] leading-none cursor-pointer border',
         'transition-colors duration-150',
-        active && accent === 'lagoon' && 'bg-lagoon text-white border-transparent',
-        active && accent === 'dark' && 'bg-sea-ink text-white border-transparent',
+        active &&
+          accent === 'lagoon' &&
+          'bg-lagoon text-white border-transparent',
+        active &&
+          accent === 'dark' &&
+          'bg-sea-ink text-white border-transparent',
         !active && 'bg-white text-sea-ink border-hairline hover:bg-foam',
       )}
     >

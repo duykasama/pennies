@@ -27,7 +27,12 @@ function CheckEmailPage() {
   }
 
   function handleUseDifferent() {
-    navigate({ to: from === 'forgot-password' ? ROUTES.AUTH_FORGOT_PASSWORD : ROUTES.AUTH_SIGN_UP })
+    navigate({
+      to:
+        from === 'forgot-password'
+          ? ROUTES.AUTH_FORGOT_PASSWORD
+          : ROUTES.AUTH_SIGN_UP,
+    })
   }
 
   async function handleResend() {

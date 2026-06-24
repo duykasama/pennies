@@ -13,11 +13,14 @@ const listQueryOptions = {
     getExpensesFn({ data: { pageIndex: pageParam } }),
   initialPageParam: 1,
   getNextPageParam: (lastPage: Awaited<ReturnType<typeof getExpensesFn>>) =>
-    lastPage.pageIndex < lastPage.totalPages ? lastPage.pageIndex + 1 : undefined,
+    lastPage.pageIndex < lastPage.totalPages
+      ? lastPage.pageIndex + 1
+      : undefined,
 }
 
 export const Route = createFileRoute('/_authenticated/expenses/')({
-  loader: ({ context }) => context.queryClient.prefetchInfiniteQuery(listQueryOptions),
+  loader: ({ context }) =>
+    context.queryClient.prefetchInfiniteQuery(listQueryOptions),
   validateSearch: (
     search: Record<string, unknown>,
   ): { filter: string; sort: SortOption; toast?: string } => ({
@@ -29,7 +32,8 @@ export const Route = createFileRoute('/_authenticated/expenses/')({
 })
 
 function ExpensesPage() {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(listQueryOptions)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(listQueryOptions)
   const expenses = data?.pages.flatMap((p) => p.items.map(mapApiExpense)) ?? []
   const { filter, sort, toast } = Route.useSearch()
   const navigate = useNavigate()
@@ -52,7 +56,11 @@ function ExpensesPage() {
   }
 
   function openExpense(exp: Expense) {
-    navigate({ to: '/expenses/$expenseId', params: { expenseId: exp.id }, search: { filter, sort } })
+    navigate({
+      to: '/expenses/$expenseId',
+      params: { expenseId: exp.id },
+      search: { filter, sort },
+    })
   }
 
   return (

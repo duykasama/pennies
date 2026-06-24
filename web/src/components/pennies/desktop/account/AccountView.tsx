@@ -9,11 +9,25 @@ interface Props {
   user: UserProfile
 }
 
-function FieldRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
+function FieldRow({
+  label,
+  value,
+  last,
+}: {
+  label: string
+  value: string
+  last?: boolean
+}) {
   return (
-    <div className={`flex items-center justify-between py-4 ${last ? '' : 'border-b border-hairline'}`}>
-      <span className="font-sans font-medium text-[13px] leading-tight text-sea-ink-soft">{label}</span>
-      <span className="font-sans font-bold text-[14px] leading-tight text-sea-ink">{value}</span>
+    <div
+      className={`flex items-center justify-between py-4 ${last ? '' : 'border-b border-hairline'}`}
+    >
+      <span className="font-sans font-medium text-[13px] leading-tight text-sea-ink-soft">
+        {label}
+      </span>
+      <span className="font-sans font-bold text-[14px] leading-tight text-sea-ink">
+        {value}
+      </span>
     </div>
   )
 }
@@ -30,7 +44,9 @@ function SectionCard({
   return (
     <div className="bg-white rounded-p-md shadow-card px-7 py-6 mb-5">
       <div className="flex items-center justify-between mb-1">
-        <h2 className="m-0 font-sans font-bold text-[16px] leading-tight text-sea-ink">{title}</h2>
+        <h2 className="m-0 font-sans font-bold text-[16px] leading-tight text-sea-ink">
+          {title}
+        </h2>
         {action}
       </div>
       {children}
@@ -58,8 +74,12 @@ export default function DesktopAccountView({ user }: Props) {
         <div className="bg-white rounded-p-md shadow-card px-7 py-6 mb-5 flex items-center gap-5">
           <Avatar displayName={user.displayName} size={64} />
           <div className="flex flex-col gap-1.5">
-            <div className="font-sans font-bold text-[20px] leading-tight text-sea-ink">{user.displayName}</div>
-            <div className="font-sans font-medium text-[14px] leading-tight text-sea-ink-soft">{user.email}</div>
+            <div className="font-sans font-bold text-[20px] leading-tight text-sea-ink">
+              {user.displayName}
+            </div>
+            <div className="font-sans font-medium text-[14px] leading-tight text-sea-ink-soft">
+              {user.email}
+            </div>
           </div>
         </div>
 

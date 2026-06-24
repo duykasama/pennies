@@ -14,7 +14,9 @@ export default function BottomNav() {
         to={ROUTES.DASHBOARD}
         activeOptions={{ exact: true }}
         activeProps={{ className: `${tabBase} font-bold text-lagoon` }}
-        inactiveProps={{ className: `${tabBase} font-medium text-sea-ink-soft` }}
+        inactiveProps={{
+          className: `${tabBase} font-medium text-sea-ink-soft`,
+        }}
       >
         <span className="text-[18px] leading-none">🏠</span>
         <span>{t('bottomNav.home')}</span>
@@ -24,7 +26,9 @@ export default function BottomNav() {
         to={ROUTES.EXPENSES}
         search={{ filter: FILTER.ALL, sort: SORT.DATE }}
         activeProps={{ className: `${tabBase} font-bold text-lagoon` }}
-        inactiveProps={{ className: `${tabBase} font-medium text-sea-ink-soft` }}
+        inactiveProps={{
+          className: `${tabBase} font-medium text-sea-ink-soft`,
+        }}
       >
         <span className="text-[18px] leading-none">📋</span>
         <span>{t('bottomNav.expenses')}</span>

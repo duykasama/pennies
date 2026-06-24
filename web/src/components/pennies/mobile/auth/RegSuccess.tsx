@@ -6,14 +6,29 @@ interface Props {
   onContinue: () => void
 }
 
-export default function MobileRegSuccess({ email = 'alex@example.com', onContinue }: Props) {
+export default function MobileRegSuccess({
+  email = 'alex@example.com',
+  onContinue,
+}: Props) {
   const { t } = useTranslation()
 
   return (
     <div className="absolute inset-0 overflow-y-auto bg-bg-base flex flex-col items-center px-6 pt-16 text-center">
       <GlyphCircle>
-        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-          <path d="M14 28l10 10 18-22" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+        <svg
+          width="56"
+          height="56"
+          viewBox="0 0 56 56"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M14 28l10 10 18-22"
+            stroke="#fff"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </GlyphCircle>
       <h2 className="mt-7 mb-2 font-sans font-bold text-[24px] leading-tight text-sea-ink">

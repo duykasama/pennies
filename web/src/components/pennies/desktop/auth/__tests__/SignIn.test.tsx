@@ -6,7 +6,12 @@ import DesktopSignIn from '../SignIn'
 describe('DesktopSignIn', () => {
   it('renders the welcome back heading', () => {
     render(
-      <DesktopSignIn onSubmit={vi.fn()} onGoogle={vi.fn()} onSignUp={vi.fn()} onForgot={vi.fn()} />,
+      <DesktopSignIn
+        onSubmit={vi.fn()}
+        onGoogle={vi.fn()}
+        onSignUp={vi.fn()}
+        onForgot={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     expect(screen.getByText('Welcome back')).toBeInTheDocument()
@@ -14,7 +19,12 @@ describe('DesktopSignIn', () => {
 
   it('renders email and password inputs', () => {
     render(
-      <DesktopSignIn onSubmit={vi.fn()} onGoogle={vi.fn()} onSignUp={vi.fn()} onForgot={vi.fn()} />,
+      <DesktopSignIn
+        onSubmit={vi.fn()}
+        onGoogle={vi.fn()}
+        onSignUp={vi.fn()}
+        onForgot={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument()

@@ -47,8 +47,10 @@ export const getExpensesFn = createServerFn()
   .handler(async ({ data }): Promise<PaginatedExpenses> => {
     const token = getCookie('auth_token')
     const params = new URLSearchParams()
-    if (data.pageIndex !== undefined) params.set('pageIndex', String(data.pageIndex))
-    if (data.pageSize !== undefined) params.set('pageSize', String(data.pageSize))
+    if (data.pageIndex !== undefined)
+      params.set('pageIndex', String(data.pageIndex))
+    if (data.pageSize !== undefined)
+      params.set('pageSize', String(data.pageSize))
     if (data.month !== undefined) params.set('month', String(data.month))
     if (data.year !== undefined) params.set('year', String(data.year))
     const qs = params.toString()
@@ -87,7 +89,10 @@ export const updateExpenseFn = createServerFn({ method: 'POST' })
     const token = getCookie('auth_token')
     const res = await fetch(`${API_URL}/expenses/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(body),
     })
     if (!res.ok) throw new Error('Failed to update expense')
@@ -119,7 +124,10 @@ export const createExpenseFn = createServerFn({ method: 'POST' })
     const token = getCookie('auth_token')
     const res = await fetch(`${API_URL}/expenses`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(data),
     })
     if (!res.ok) throw new Error('Failed to create expense')

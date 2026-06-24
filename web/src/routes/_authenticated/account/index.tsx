@@ -1,4 +1,8 @@
-import { createFileRoute, getRouteApi, useNavigate } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  getRouteApi,
+  useNavigate,
+} from '@tanstack/react-router'
 import { ROUTES } from '#/lib/constants'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopAccountView from '#/components/pennies/desktop/account/AccountView'

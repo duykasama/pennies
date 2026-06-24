@@ -11,11 +11,25 @@ interface Props {
   onBack: () => void
 }
 
-function FieldRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
+function FieldRow({
+  label,
+  value,
+  last,
+}: {
+  label: string
+  value: string
+  last?: boolean
+}) {
   return (
-    <div className={`flex items-center justify-between py-3.5 ${last ? '' : 'border-b border-hairline'}`}>
-      <span className="font-sans font-medium text-[13px] leading-tight text-sea-ink-soft">{label}</span>
-      <span className="font-sans font-bold text-[14px] leading-tight text-sea-ink">{value}</span>
+    <div
+      className={`flex items-center justify-between py-3.5 ${last ? '' : 'border-b border-hairline'}`}
+    >
+      <span className="font-sans font-medium text-[13px] leading-tight text-sea-ink-soft">
+        {label}
+      </span>
+      <span className="font-sans font-bold text-[14px] leading-tight text-sea-ink">
+        {value}
+      </span>
     </div>
   )
 }
@@ -32,7 +46,9 @@ function SectionCard({
   return (
     <div className="mx-4 mb-4 bg-white rounded-p-xl shadow-card px-5 py-1">
       <div className="flex items-center justify-between pt-4 pb-1">
-        <h2 className="m-0 font-sans font-bold text-[15px] leading-tight text-sea-ink">{title}</h2>
+        <h2 className="m-0 font-sans font-bold text-[15px] leading-tight text-sea-ink">
+          {title}
+        </h2>
         {action}
       </div>
       {children}
@@ -55,8 +71,12 @@ export default function MobileAccountView({ user, onBack }: Props) {
       <div className="absolute inset-x-0 top-14 bottom-0 overflow-y-auto bg-bg-base">
         <div className="flex flex-col items-center text-center pt-7 pb-5 px-6">
           <Avatar displayName={user.displayName} size={72} />
-          <div className="mt-3.5 font-sans font-bold text-[20px] leading-tight text-sea-ink">{user.displayName}</div>
-          <div className="mt-2 font-sans font-medium text-[13px] leading-tight text-sea-ink-soft">{user.email}</div>
+          <div className="mt-3.5 font-sans font-bold text-[20px] leading-tight text-sea-ink">
+            {user.displayName}
+          </div>
+          <div className="mt-2 font-sans font-medium text-[13px] leading-tight text-sea-ink-soft">
+            {user.email}
+          </div>
         </div>
 
         <SectionCard

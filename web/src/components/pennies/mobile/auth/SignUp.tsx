@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AuthHeader, AuthInput, PrimaryBtn, GoogleButton, OrDivider } from './shared'
+import {
+  AuthHeader,
+  AuthInput,
+  PrimaryBtn,
+  GoogleButton,
+  OrDivider,
+} from './shared'
 
 interface Props {
   onSubmit: (name: string, email: string, password: string) => void
@@ -9,7 +15,12 @@ interface Props {
   error?: string | null
 }
 
-export default function MobileSignUp({ onSubmit, onGoogle, onSignIn, error }: Props) {
+export default function MobileSignUp({
+  onSubmit,
+  onGoogle,
+  onSignIn,
+  error,
+}: Props) {
   const { t } = useTranslation()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -19,7 +30,12 @@ export default function MobileSignUp({ onSubmit, onGoogle, onSignIn, error }: Pr
     <div className="absolute inset-0 overflow-y-auto bg-bg-base">
       <AuthHeader title={t('auth.createAccount')} sub={t('auth.createSub')} />
       <div className="mx-4 bg-white rounded-p-xl p-5 shadow-card">
-        <form onSubmit={(e) => { e.preventDefault(); onSubmit(name, email, pw) }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            onSubmit(name, email, pw)
+          }}
+        >
           <AuthInput
             label={t('auth.fullName')}
             value={name}

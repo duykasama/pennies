@@ -10,7 +10,13 @@ interface HeaderProps {
   userInitials?: string
 }
 
-export default function Header({ variant, title, onBack, onAccount, userInitials }: HeaderProps) {
+export default function Header({
+  variant,
+  title,
+  onBack,
+  onAccount,
+  userInitials,
+}: HeaderProps) {
   const { t } = useTranslation()
 
   return (

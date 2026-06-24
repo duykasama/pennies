@@ -1,7 +1,16 @@
-import { createFileRoute, getRouteApi, useNavigate, useRouter } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  getRouteApi,
+  useNavigate,
+  useRouter,
+} from '@tanstack/react-router'
 import { useState } from 'react'
 import { ROUTES } from '#/lib/constants'
-import { updateAccountFn, requestEmailUpdateFn, confirmEmailUpdateFn } from '#/lib/auth'
+import {
+  updateAccountFn,
+  requestEmailUpdateFn,
+  confirmEmailUpdateFn,
+} from '#/lib/auth'
 import TopNav from '#/components/pennies/desktop/TopNav'
 import DesktopAccountEdit from '#/components/pennies/desktop/account/AccountEdit'
 import MobileAccountEdit from '#/components/pennies/mobile/account/AccountEdit'

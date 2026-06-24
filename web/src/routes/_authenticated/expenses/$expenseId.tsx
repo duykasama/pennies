@@ -1,7 +1,17 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useInfiniteQuery, useSuspenseQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useInfiniteQuery,
+  useSuspenseQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { getExpenseFn, getExpensesFn, mapApiExpense, updateExpenseFn, deleteExpenseFn } from '#/lib/expenses'
+import {
+  getExpenseFn,
+  getExpensesFn,
+  mapApiExpense,
+  updateExpenseFn,
+  deleteExpenseFn,
+} from '#/lib/expenses'
 import { formatVnd } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
@@ -14,7 +24,9 @@ const listQueryOptions = {
     getExpensesFn({ data: { pageIndex: pageParam } }),
   initialPageParam: 1,
   getNextPageParam: (lastPage: Awaited<ReturnType<typeof getExpensesFn>>) =>
-    lastPage.pageIndex < lastPage.totalPages ? lastPage.pageIndex + 1 : undefined,
+    lastPage.pageIndex < lastPage.totalPages
+      ? lastPage.pageIndex + 1
+      : undefined,
 }
 
 export const Route = createFileRoute('/_authenticated/expenses/$expenseId')({
@@ -40,8 +52,14 @@ export const Route = createFileRoute('/_authenticated/expenses/$expenseId')({
 function ExpenseDetailPage() {
   const { t } = useTranslation()
   const { expenseId } = Route.useParams()
-  const { data: listData, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(listQueryOptions)
-  const expenses = listData?.pages.flatMap((p) => p.items.map(mapApiExpense)) ?? []
+  const {
+    data: listData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(listQueryOptions)
+  const expenses =
+    listData?.pages.flatMap((p) => p.items.map(mapApiExpense)) ?? []
   const { data: singleExpense } = useSuspenseQuery({
     queryKey: ['expense', expenseId],
     queryFn: () => getExpenseFn({ data: { id: expenseId } }),
@@ -53,15 +71,27 @@ function ExpenseDetailPage() {
   const toastMsg = null
 
   function setFilter(f: string) {
-    navigate({ to: '/expenses/$expenseId', params: { expenseId }, search: { filter: f, sort } })
+    navigate({
+      to: '/expenses/$expenseId',
+      params: { expenseId },
+      search: { filter: f, sort },
+    })
   }
 
   function setSort(s: SortOption) {
-    navigate({ to: '/expenses/$expenseId', params: { expenseId }, search: { filter, sort: s } })
+    navigate({
+      to: '/expenses/$expenseId',
+      params: { expenseId },
+      search: { filter, sort: s },
+    })
   }
 
   function openExpense(exp: Expense) {
-    navigate({ to: '/expenses/$expenseId', params: { expenseId: exp.id }, search: { filter, sort } })
+    navigate({
+      to: '/expenses/$expenseId',
+      params: { expenseId: exp.id },
+      search: { filter, sort },
+    })
   }
 
   function handleClose() {
@@ -83,7 +113,11 @@ function ExpenseDetailPage() {
     await queryClient.invalidateQueries({ queryKey: ['expenses'] })
     navigate({
       to: ROUTES.EXPENSES,
-      search: { filter, sort, toast: t('editExpense.update') + ' · ' + formatVnd(exp.amount) },
+      search: {
+        filter,
+        sort,
+        toast: t('editExpense.update') + ' · ' + formatVnd(exp.amount),
+      },
     })
   }
 

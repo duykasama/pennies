@@ -1,14 +1,28 @@
 import { describe, it, expect } from 'vitest'
 import {
   formatVnd,
-  monthLabel, monthShort, daysInMonth, daysElapsed, getPrevMonth,
-  expenseMonth, getAvailableMonths, calcMonthTotal, calcTopCategory,
+  monthLabel,
+  monthShort,
+  daysInMonth,
+  daysElapsed,
+  getPrevMonth,
+  expenseMonth,
+  getAvailableMonths,
+  calcMonthTotal,
+  calcTopCategory,
   isoCurrentMonth,
 } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 
-const mkExp = (overrides: Partial<Expense> & { id: string; date: string }): Expense => ({
-  cat: 1, title: 'Food', sub: '', amount: -10000, updatedAt: '', ...overrides,
+const mkExp = (
+  overrides: Partial<Expense> & { id: string; date: string },
+): Expense => ({
+  cat: 1,
+  title: 'Food',
+  sub: '',
+  amount: -10000,
+  updatedAt: '',
+  ...overrides,
 })
 
 describe('formatVnd', () => {
@@ -45,25 +59,32 @@ describe('formatVnd', () => {
 
 describe('monthLabel', () => {
   it('formats May 2026', () => expect(monthLabel('2026-05')).toBe('May 2026'))
-  it('formats January 2026', () => expect(monthLabel('2026-01')).toBe('January 2026'))
-  it('formats December 2025', () => expect(monthLabel('2025-12')).toBe('December 2025'))
+  it('formats January 2026', () =>
+    expect(monthLabel('2026-01')).toBe('January 2026'))
+  it('formats December 2025', () =>
+    expect(monthLabel('2025-12')).toBe('December 2025'))
 })
 
 describe('monthShort', () => {
   it('shortens May to May', () => expect(monthShort('2026-05')).toBe('May'))
-  it('shortens December to Dec', () => expect(monthShort('2026-12')).toBe('Dec'))
+  it('shortens December to Dec', () =>
+    expect(monthShort('2026-12')).toBe('Dec'))
 })
 
 describe('daysInMonth', () => {
   it('January has 31 days', () => expect(daysInMonth('2026-01')).toBe(31))
-  it('non-leap February has 28 days', () => expect(daysInMonth('2026-02')).toBe(28))
-  it('leap-year February has 29 days', () => expect(daysInMonth('2020-02')).toBe(29))
+  it('non-leap February has 28 days', () =>
+    expect(daysInMonth('2026-02')).toBe(28))
+  it('leap-year February has 29 days', () =>
+    expect(daysInMonth('2020-02')).toBe(29))
   it('April has 30 days', () => expect(daysInMonth('2026-04')).toBe(30))
 })
 
 describe('daysElapsed', () => {
-  it('returns full days for a known past month', () => expect(daysElapsed('2020-01')).toBe(31))
-  it('returns 29 for leap February 2020', () => expect(daysElapsed('2020-02')).toBe(29))
+  it('returns full days for a known past month', () =>
+    expect(daysElapsed('2020-01')).toBe(31))
+  it('returns 29 for leap February 2020', () =>
+    expect(daysElapsed('2020-02')).toBe(29))
   it('returns a value between 1 and 31 for the current month', () => {
     const d = daysElapsed(isoCurrentMonth())
     expect(d).toBeGreaterThanOrEqual(1)
@@ -72,8 +93,10 @@ describe('daysElapsed', () => {
 })
 
 describe('getPrevMonth', () => {
-  it('goes back one month', () => expect(getPrevMonth('2026-05')).toBe('2026-04'))
-  it('wraps from January to December of prior year', () => expect(getPrevMonth('2026-01')).toBe('2025-12'))
+  it('goes back one month', () =>
+    expect(getPrevMonth('2026-05')).toBe('2026-04'))
+  it('wraps from January to December of prior year', () =>
+    expect(getPrevMonth('2026-01')).toBe('2025-12'))
 })
 
 describe('expenseMonth', () => {

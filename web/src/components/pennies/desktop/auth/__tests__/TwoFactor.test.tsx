@@ -46,7 +46,7 @@ describe('DesktopTwoFactor', () => {
     )
     const inputs = Array.from(
       document.querySelectorAll('input[inputmode="numeric"]'),
-    ) as HTMLInputElement[]
+    )
 
     fireEvent.change(inputs[0], { target: { value: '3' } })
     expect(document.activeElement).toBe(inputs[1])
@@ -64,7 +64,7 @@ describe('DesktopTwoFactor', () => {
     )
     const inputs = Array.from(
       document.querySelectorAll('input[inputmode="numeric"]'),
-    ) as HTMLInputElement[]
+    )
 
     expect(() => {
       fireEvent.change(inputs[5], { target: { value: '7' } })
@@ -83,7 +83,7 @@ describe('DesktopTwoFactor', () => {
     )
     const inputs = Array.from(
       document.querySelectorAll('input[inputmode="numeric"]'),
-    ) as HTMLInputElement[]
+    )
 
     // Ensure box 2 is empty (default), then fire Backspace on it
     expect(inputs[2].value).toBe('')
@@ -103,7 +103,7 @@ describe('DesktopTwoFactor', () => {
     )
     const inputs = Array.from(
       document.querySelectorAll('input[inputmode="numeric"]'),
-    ) as HTMLInputElement[]
+    )
 
     inputs[0].focus()
     fireEvent.keyDown(inputs[0], { key: 'Backspace' })

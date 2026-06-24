@@ -9,7 +9,12 @@ interface Props {
   loading?: boolean
 }
 
-export default function MobileForgotPassword({ onSubmit, onBack, error, loading }: Props) {
+export default function MobileForgotPassword({
+  onSubmit,
+  onBack,
+  error,
+  loading,
+}: Props) {
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
 
@@ -26,7 +31,12 @@ export default function MobileForgotPassword({ onSubmit, onBack, error, loading 
       </div>
       <AuthHeader title={t('auth.forgotTitle')} sub={t('auth.forgotSub')} />
       <div className="mx-4 bg-white rounded-p-xl p-5 shadow-card">
-        <form onSubmit={(e) => { e.preventDefault(); onSubmit(email) }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            onSubmit(email)
+          }}
+        >
           <AuthInput
             label={t('auth.email')}
             type="email"
@@ -34,9 +44,13 @@ export default function MobileForgotPassword({ onSubmit, onBack, error, loading 
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t('auth.emailPlaceholder')}
           />
-          {error && <p className="text-red-500 text-[13px] font-medium mt-2">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-[13px] font-medium mt-2">{error}</p>
+          )}
           <div className="mt-1">
-            <PrimaryBtn type="submit" disabled={loading}>{t('auth.continueBtn')}</PrimaryBtn>
+            <PrimaryBtn type="submit" disabled={loading}>
+              {t('auth.continueBtn')}
+            </PrimaryBtn>
           </div>
         </form>
       </div>

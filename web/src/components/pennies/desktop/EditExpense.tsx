@@ -12,10 +12,17 @@ interface EditExpenseProps {
   onDelete: (id: string) => void
 }
 
-export default function EditExpense({ expense, onClose, onUpdate, onDelete }: EditExpenseProps) {
+export default function EditExpense({
+  expense,
+  onClose,
+  onUpdate,
+  onDelete,
+}: EditExpenseProps) {
   const { t } = useTranslation()
   const categories = useCategories()
-  const [amountStr, setAmountStr] = useState(() => String(Math.abs(expense.amount)))
+  const [amountStr, setAmountStr] = useState(() =>
+    String(Math.abs(expense.amount)),
+  )
   const [desc, setDesc] = useState(expense.title)
   const [cat, setCat] = useState(expense.cat)
   const [date, setDate] = useState(expense.date)
@@ -25,10 +32,21 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
   function handleUpdate() {
     const n = parseFloat(amountStr.replace(/,/g, ''))
     const newErrors: { amount?: string; desc?: string } = {}
-    if (!amountStr || isNaN(n) || n <= 0) newErrors.amount = t('editExpense.amountError')
+    if (!amountStr || isNaN(n) || n <= 0)
+      newErrors.amount = t('editExpense.amountError')
     if (!desc.trim()) newErrors.desc = t('editExpense.descriptionError')
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return }
-    onUpdate({ ...expense, cat, title: desc.trim(), sub: note.trim(), amount: -n, date })
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+    onUpdate({
+      ...expense,
+      cat,
+      title: desc.trim(),
+      sub: note.trim(),
+      amount: -n,
+      date,
+    })
   }
 
   const inputBase =
@@ -38,11 +56,16 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
 
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center p-8">
-      <div className="absolute inset-0 bg-sea-ink/30 backdrop-blur-[4px] modal-fade" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-sea-ink/30 backdrop-blur-[4px] modal-fade"
+        onClick={onClose}
+      />
 
       <div className="relative w-[520px] max-h-full overflow-y-auto bg-foam rounded-p-lg shadow-pop p-8 modal-pop">
         <div className="flex items-center justify-between mb-5">
-          <h1 className="m-0 font-bold text-[24px] leading-none text-sea-ink">{t('editExpense.title')}</h1>
+          <h1 className="m-0 font-bold text-[24px] leading-none text-sea-ink">
+            {t('editExpense.title')}
+          </h1>
           <button
             type="button"
             onClick={onClose}
@@ -53,18 +76,30 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
           </button>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); handleUpdate() }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleUpdate()
+          }}
+        >
           <div className="mb-4">
             <label className={labelBase}>{t('addExpense.amount')}</label>
             <input
               type="number"
               inputMode="decimal"
               value={amountStr}
-              onChange={(e) => { setAmountStr(e.target.value); setErrors((p) => ({ ...p, amount: undefined })) }}
+              onChange={(e) => {
+                setAmountStr(e.target.value)
+                setErrors((p) => ({ ...p, amount: undefined }))
+              }}
               className={cn(inputBase, errors.amount && inputError)}
               placeholder="0"
             />
-            {errors.amount && <span className="block mt-1.5 font-medium text-[11px] text-danger">{errors.amount}</span>}
+            {errors.amount && (
+              <span className="block mt-1.5 font-medium text-[11px] text-danger">
+                {errors.amount}
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
@@ -72,11 +107,18 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
             <input
               type="text"
               value={desc}
-              onChange={(e) => { setDesc(e.target.value); setErrors((p) => ({ ...p, desc: undefined })) }}
+              onChange={(e) => {
+                setDesc(e.target.value)
+                setErrors((p) => ({ ...p, desc: undefined }))
+              }}
               className={cn(inputBase, errors.desc && inputError)}
               placeholder={t('addExpense.descriptionPlaceholder')}
             />
-            {errors.desc && <span className="block mt-1.5 font-medium text-[11px] text-danger">{errors.desc}</span>}
+            {errors.desc && (
+              <span className="block mt-1.5 font-medium text-[11px] text-danger">
+                {errors.desc}
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
@@ -105,7 +147,12 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
 
           <div className="mb-4">
             <label className={labelBase}>{t('addExpense.date')}</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputBase} />
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className={inputBase}
+            />
           </div>
 
           <div className="mb-6">

@@ -31,7 +31,9 @@ export default function TopNav() {
         to={ROUTES.DASHBOARD}
         activeOptions={{ exact: true }}
         activeProps={{ className: `${linkBase} font-bold text-white` }}
-        inactiveProps={{ className: `${linkBase} font-medium text-white/55 hover:text-lagoon-mist` }}
+        inactiveProps={{
+          className: `${linkBase} font-medium text-white/55 hover:text-lagoon-mist`,
+        }}
       >
         {t('nav.dashboard')}
       </Link>
@@ -40,7 +42,9 @@ export default function TopNav() {
         to={ROUTES.EXPENSES}
         search={{ filter: FILTER.ALL, sort: SORT.DATE }}
         activeProps={{ className: `${linkBase} font-bold text-white` }}
-        inactiveProps={{ className: `${linkBase} font-medium text-white/55 hover:text-lagoon-mist` }}
+        inactiveProps={{
+          className: `${linkBase} font-medium text-white/55 hover:text-lagoon-mist`,
+        }}
       >
         {t('nav.expenses')}
       </Link>

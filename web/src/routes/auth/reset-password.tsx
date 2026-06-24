@@ -3,8 +3,14 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ROUTES } from '#/lib/constants'
 import { logoutFn, resetPasswordFn } from '#/lib/auth'
-import { DesktopResetPassword, DesktopResetSuccess } from '#/components/pennies/desktop/auth/ResetPassword'
-import { MobileResetPassword, MobileResetSuccess } from '#/components/pennies/mobile/auth/ResetPassword'
+import {
+  DesktopResetPassword,
+  DesktopResetSuccess,
+} from '#/components/pennies/desktop/auth/ResetPassword'
+import {
+  MobileResetPassword,
+  MobileResetSuccess,
+} from '#/components/pennies/mobile/auth/ResetPassword'
 
 const RESET_TOKEN_KEY = 'pennies_reset_token'
 
@@ -19,7 +25,10 @@ function loadResetToken(): string | null {
   try {
     const raw = localStorage.getItem(RESET_TOKEN_KEY)
     if (!raw) return null
-    const { token, expiresAt } = JSON.parse(raw) as { token: string; expiresAt: number }
+    const { token, expiresAt } = JSON.parse(raw) as {
+      token: string
+      expiresAt: number
+    }
     if (Date.now() > expiresAt) {
       localStorage.removeItem(RESET_TOKEN_KEY)
       return null
@@ -76,8 +85,13 @@ function ResetPasswordPage() {
     return (
       <div className="min-h-screen bg-bg-base flex items-center justify-center font-sans text-sea-ink">
         <div className="text-center px-6">
-          <p className="text-red-500 font-medium mb-4">{t('auth.noTokenError')}</p>
-          <a href={ROUTES.AUTH_SIGN_IN} className="text-lagoon-deep font-bold underline">
+          <p className="text-red-500 font-medium mb-4">
+            {t('auth.noTokenError')}
+          </p>
+          <a
+            href={ROUTES.AUTH_SIGN_IN}
+            className="text-lagoon-deep font-bold underline"
+          >
             {t('auth.backToSignIn')}
           </a>
         </div>

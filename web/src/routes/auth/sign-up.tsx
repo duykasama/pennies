@@ -38,10 +38,20 @@ function SignUpPage() {
   return (
     <>
       <div className="md:hidden relative w-full min-h-screen overflow-hidden bg-bg-base font-sans text-sea-ink">
-        <MobileSignUp onSubmit={handleSubmit} onGoogle={handleGoogle} onSignIn={handleSignIn} error={error} />
+        <MobileSignUp
+          onSubmit={handleSubmit}
+          onGoogle={handleGoogle}
+          onSignIn={handleSignIn}
+          error={error}
+        />
       </div>
       <div className="hidden md:block w-full min-h-screen font-sans text-sea-ink">
-        <DesktopSignUp onSubmit={handleSubmit} onGoogle={handleGoogle} onSignIn={handleSignIn} error={error} />
+        <DesktopSignUp
+          onSubmit={handleSubmit}
+          onGoogle={handleGoogle}
+          onSignIn={handleSignIn}
+          error={error}
+        />
       </div>
     </>
   )

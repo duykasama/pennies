@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AuthShell, CelebrateShell, DesktopPrimaryBtn, desktopInputCls } from './shared'
+import {
+  AuthShell,
+  CelebrateShell,
+  DesktopPrimaryBtn,
+  desktopInputCls,
+} from './shared'
 
 interface FormProps {
   onSubmit: (newPassword: string) => void
@@ -9,7 +14,12 @@ interface FormProps {
   loading: boolean
 }
 
-export function DesktopResetPassword({ onSubmit, onBack, error, loading }: FormProps) {
+export function DesktopResetPassword({
+  onSubmit,
+  onBack,
+  error,
+  loading,
+}: FormProps) {
   const { t } = useTranslation()
   const [newPw, setNewPw] = useState('')
   const [confirmPw, setConfirmPw] = useState('')
@@ -47,7 +57,12 @@ export function DesktopResetPassword({ onSubmit, onBack, error, loading }: FormP
         </button>
       }
     >
-      <form onSubmit={(e) => { e.preventDefault(); handleSubmit() }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit()
+        }}
+      >
         <div className="mb-4">
           <label className="block font-sans font-bold text-[13px] leading-none text-sea-ink mb-2">
             {t('auth.resetNewPassword')}
@@ -63,7 +78,9 @@ export function DesktopResetPassword({ onSubmit, onBack, error, loading }: FormP
             placeholder={t('auth.passwordPlaceholder')}
           />
           {newPwError ? (
-            <p className="mt-1.5 font-sans font-medium text-[12px] text-danger">{newPwError}</p>
+            <p className="mt-1.5 font-sans font-medium text-[12px] text-danger">
+              {newPwError}
+            </p>
           ) : (
             <p className="mt-1.5 font-sans font-medium text-[12px] text-sea-ink-soft">
               {t('auth.resetPasswordMinLength')}
@@ -86,11 +103,15 @@ export function DesktopResetPassword({ onSubmit, onBack, error, loading }: FormP
             placeholder={t('auth.resetConfirmPlaceholder')}
           />
           {confirmPwError && (
-            <p className="mt-1.5 font-sans font-medium text-[12px] text-danger">{confirmPwError}</p>
+            <p className="mt-1.5 font-sans font-medium text-[12px] text-danger">
+              {confirmPwError}
+            </p>
           )}
         </div>
 
-        {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
+        )}
 
         <DesktopPrimaryBtn type="submit" disabled={loading}>
           {t('auth.resetBtn')}
@@ -110,9 +131,28 @@ export function DesktopResetSuccess({ onBack }: SuccessProps) {
   return (
     <CelebrateShell
       glyph={
-        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-          <rect x="15" y="29" width="34" height="24" rx="4.5" stroke="#fff" strokeWidth="3" />
-          <path d="M22 29v-6a10 10 0 0 1 20 0v6" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+        <svg
+          width="64"
+          height="64"
+          viewBox="0 0 64 64"
+          fill="none"
+          aria-hidden="true"
+        >
+          <rect
+            x="15"
+            y="29"
+            width="34"
+            height="24"
+            rx="4.5"
+            stroke="#fff"
+            strokeWidth="3"
+          />
+          <path
+            d="M22 29v-6a10 10 0 0 1 20 0v6"
+            stroke="#fff"
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
           <path
             d="M27 40l4 4 7-8"
             stroke="#fff"
@@ -126,7 +166,9 @@ export function DesktopResetSuccess({ onBack }: SuccessProps) {
       sub={t('auth.resetSuccessSub')}
     >
       <div className="w-full">
-        <DesktopPrimaryBtn onClick={onBack}>{t('auth.backToSignInArrow')}</DesktopPrimaryBtn>
+        <DesktopPrimaryBtn onClick={onBack}>
+          {t('auth.backToSignInArrow')}
+        </DesktopPrimaryBtn>
       </div>
     </CelebrateShell>
   )

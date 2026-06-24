@@ -11,7 +11,12 @@ interface FilterToolbarProps {
   setSort: (s: SortOption) => void
 }
 
-export default function FilterToolbar({ filter, setFilter, sort, setSort }: FilterToolbarProps) {
+export default function FilterToolbar({
+  filter,
+  setFilter,
+  sort,
+  setSort,
+}: FilterToolbarProps) {
   const { t } = useTranslation()
   const categories = useCategories()
 
@@ -59,7 +64,9 @@ export default function FilterToolbar({ filter, setFilter, sort, setSort }: Filt
           onClick={() => setSort(SORT.DATE)}
           className={cn(
             'bg-transparent border-0 cursor-pointer p-0 text-[13px]',
-            sort === SORT.DATE ? 'font-bold text-sea-ink' : 'font-medium text-sea-ink-soft',
+            sort === SORT.DATE
+              ? 'font-bold text-sea-ink'
+              : 'font-medium text-sea-ink-soft',
           )}
         >
           {t('expenses.sortDate')}
@@ -70,7 +77,9 @@ export default function FilterToolbar({ filter, setFilter, sort, setSort }: Filt
           onClick={() => setSort(SORT.AMOUNT)}
           className={cn(
             'bg-transparent border-0 cursor-pointer p-0 text-[13px]',
-            sort === SORT.AMOUNT ? 'font-bold text-sea-ink' : 'font-medium text-sea-ink-soft',
+            sort === SORT.AMOUNT
+              ? 'font-bold text-sea-ink'
+              : 'font-medium text-sea-ink-soft',
           )}
         >
           {t('expenses.sortAmount')}

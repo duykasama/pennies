@@ -9,7 +9,12 @@ interface Props {
   onBack: () => void
 }
 
-export default function MobileTwoFactor({ email, onVerify, onResend, onBack }: Props) {
+export default function MobileTwoFactor({
+  email,
+  onVerify,
+  onResend,
+  onBack,
+}: Props) {
   const { t } = useTranslation()
   const [code, setCode] = useState(['', '', '', '', '', ''])
   const refs = useRef<(HTMLInputElement | null)[]>([])
@@ -37,13 +42,18 @@ export default function MobileTwoFactor({ email, onVerify, onResend, onBack }: P
           ← {t('addExpense.back').replace('← ', '')}
         </button>
       </div>
-      <AuthHeader title={t('auth.twoFactor')} sub={`${t('auth.twoFactorSub')} ${email}.`} />
+      <AuthHeader
+        title={t('auth.twoFactor')}
+        sub={`${t('auth.twoFactorSub')} ${email}.`}
+      />
       <div className="mx-4 bg-white rounded-p-xl p-5 shadow-card">
         <div className="flex gap-2 justify-center mb-5">
           {code.map((c, i) => (
             <input
               key={i}
-              ref={(el) => { refs.current[i] = el }}
+              ref={(el) => {
+                refs.current[i] = el
+              }}
               value={c}
               onChange={(e) => setAt(i, e.target.value)}
               onKeyDown={(e) => onKey(i, e)}

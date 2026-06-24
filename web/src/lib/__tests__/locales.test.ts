@@ -13,8 +13,8 @@ function getLeafKeys(obj: Record<string, unknown>, prefix = ''): string[] {
 }
 
 describe('locales', () => {
-  const enKeys = getLeafKeys(en as unknown as Record<string, unknown>)
-  const viKeys = getLeafKeys(vi as unknown as Record<string, unknown>)
+  const enKeys = getLeafKeys(en)
+  const viKeys = getLeafKeys(vi)
 
   it('Vietnamese locale has every key that English has', () => {
     const missing = enKeys.filter((k) => !viKeys.includes(k))
@@ -37,7 +37,7 @@ describe('locales', () => {
         }
       }
     }
-    checkNoEmpty(en as unknown as Record<string, unknown>)
+    checkNoEmpty(en)
   })
 
   it('no Vietnamese value is an empty string', () => {
@@ -51,6 +51,6 @@ describe('locales', () => {
         }
       }
     }
-    checkNoEmpty(vi as unknown as Record<string, unknown>)
+    checkNoEmpty(vi)
   })
 })

@@ -16,7 +16,9 @@ describe('DesktopRegSuccess', () => {
 
   it('calls onContinue when Go to Pennies is clicked', () => {
     const onContinue = vi.fn()
-    render(<DesktopRegSuccess onContinue={onContinue} />, { wrapper: I18nWrapper })
+    render(<DesktopRegSuccess onContinue={onContinue} />, {
+      wrapper: I18nWrapper,
+    })
     fireEvent.click(screen.getByText('Go to Pennies →'))
     expect(onContinue).toHaveBeenCalledOnce()
   })
@@ -27,9 +29,12 @@ describe('DesktopRegSuccess', () => {
   })
 
   it('shows the provided email in the footer', () => {
-    render(<DesktopRegSuccess email="jane@pennies.app" onContinue={vi.fn()} />, {
-      wrapper: I18nWrapper,
-    })
+    render(
+      <DesktopRegSuccess email="jane@pennies.app" onContinue={vi.fn()} />,
+      {
+        wrapper: I18nWrapper,
+      },
+    )
     expect(screen.getByText(/jane@pennies\.app/)).toBeInTheDocument()
   })
 })

@@ -43,7 +43,10 @@ export function useResendCooldown({ email = '' } = {}) {
   useEffect(() => {
     if (!startedAt) return
     const id = setInterval(() => {
-      const left = Math.max(0, COOLDOWN - Math.floor((Date.now() - startedAt) / 1000))
+      const left = Math.max(
+        0,
+        COOLDOWN - Math.floor((Date.now() - startedAt) / 1000),
+      )
       setSecondsLeft(left)
       if (left === 0) {
         setStartedAt(null)

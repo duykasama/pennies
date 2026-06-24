@@ -6,7 +6,11 @@ import MobileCheckEmail from '../CheckEmail'
 describe('MobileCheckEmail', () => {
   it('renders the check email heading', () => {
     render(
-      <MobileCheckEmail email="test@example.com" onResend={vi.fn()} onUseDifferent={vi.fn()} />,
+      <MobileCheckEmail
+        email="test@example.com"
+        onResend={vi.fn()}
+        onUseDifferent={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     expect(screen.getByText('Check your email')).toBeInTheDocument()
@@ -14,7 +18,11 @@ describe('MobileCheckEmail', () => {
 
   it('displays the provided email address', () => {
     render(
-      <MobileCheckEmail email="user@pennies.app" onResend={vi.fn()} onUseDifferent={vi.fn()} />,
+      <MobileCheckEmail
+        email="user@pennies.app"
+        onResend={vi.fn()}
+        onUseDifferent={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     expect(screen.getByText('user@pennies.app')).toBeInTheDocument()
@@ -23,7 +31,11 @@ describe('MobileCheckEmail', () => {
   it('calls onResend when the resend button is clicked', () => {
     const onResend = vi.fn()
     render(
-      <MobileCheckEmail email="test@example.com" onResend={onResend} onUseDifferent={vi.fn()} />,
+      <MobileCheckEmail
+        email="test@example.com"
+        onResend={onResend}
+        onUseDifferent={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     fireEvent.click(screen.getByText("Didn't get it? Resend"))
@@ -33,7 +45,11 @@ describe('MobileCheckEmail', () => {
   it('calls onUseDifferent when the use different email button is clicked', () => {
     const onUseDifferent = vi.fn()
     render(
-      <MobileCheckEmail email="test@example.com" onResend={vi.fn()} onUseDifferent={onUseDifferent} />,
+      <MobileCheckEmail
+        email="test@example.com"
+        onResend={vi.fn()}
+        onUseDifferent={onUseDifferent}
+      />,
       { wrapper: I18nWrapper },
     )
     fireEvent.click(screen.getByText('Use a different email'))

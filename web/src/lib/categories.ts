@@ -40,6 +40,6 @@ const PALETTE: { dot: string; ink: string }[] = [
 ]
 
 export function categoryColor(id: number): { dot: string; ink: string } {
-  const idx = ((id - 1) % PALETTE.length + PALETTE.length) % PALETTE.length
+  const idx = (((id - 1) % PALETTE.length) + PALETTE.length) % PALETTE.length
   return PALETTE[idx]
 }

@@ -38,7 +38,7 @@ function renderEdit(overrides?: {
 describe('EditExpense (mobile)', () => {
   it('renders pre-filled amount', () => {
     renderEdit()
-    const input = screen.getByPlaceholderText('0') as HTMLInputElement
+    const input = screen.getByPlaceholderText('0')
     expect(input.value).toBe('320000')
   })
 
@@ -74,9 +74,13 @@ describe('EditExpense (mobile)', () => {
 
   it('Update with a blank amount shows a validation error and does not call onUpdate', () => {
     const { onUpdate } = renderEdit()
-    fireEvent.change(screen.getByPlaceholderText('0'), { target: { value: '' } })
+    fireEvent.change(screen.getByPlaceholderText('0'), {
+      target: { value: '' },
+    })
     fireEvent.click(screen.getByRole('button', { name: /update/i }))
-    expect(screen.getByText(/amount must be greater than 0/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/amount must be greater than 0/i),
+    ).toBeInTheDocument()
     expect(onUpdate).not.toHaveBeenCalled()
   })
 
@@ -91,10 +95,20 @@ describe('EditExpense (mobile)', () => {
 
   it('Update with valid data calls onUpdate with the correct negative amount', () => {
     const { onUpdate } = renderEdit()
-    fireEvent.change(screen.getByPlaceholderText('0'), { target: { value: '500000' } })
-    fireEvent.change(screen.getByDisplayValue('Shopping'), { target: { value: 'Coffee' } })
+    fireEvent.change(screen.getByPlaceholderText('0'), {
+      target: { value: '500000' },
+    })
+    fireEvent.change(screen.getByDisplayValue('Shopping'), {
+      target: { value: 'Coffee' },
+    })
     fireEvent.click(screen.getByRole('button', { name: /update/i }))
     expect(onUpdate).toHaveBeenCalledTimes(1)
-    expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining({ amount: -500000, title: 'Coffee', sub: 'Bookstore' }))
+    expect(onUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        amount: -500000,
+        title: 'Coffee',
+        sub: 'Bookstore',
+      }),
+    )
   })
 })

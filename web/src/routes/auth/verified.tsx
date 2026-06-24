@@ -3,7 +3,9 @@ import { ROUTES } from '#/lib/constants'
 import MobileRegSuccess from '#/components/pennies/mobile/auth/RegSuccess'
 import DesktopRegSuccess from '#/components/pennies/desktop/auth/RegSuccess'
 
-export const Route = createFileRoute('/auth/verified')({ component: VerifiedPage })
+export const Route = createFileRoute('/auth/verified')({
+  component: VerifiedPage,
+})
 
 function VerifiedPage() {
   const navigate = useNavigate()

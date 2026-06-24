@@ -9,7 +9,12 @@ interface FormProps {
   loading: boolean
 }
 
-export function MobileResetPassword({ onSubmit, onBack, error, loading }: FormProps) {
+export function MobileResetPassword({
+  onSubmit,
+  onBack,
+  error,
+  loading,
+}: FormProps) {
   const { t } = useTranslation()
   const [newPw, setNewPw] = useState('')
   const [confirmPw, setConfirmPw] = useState('')
@@ -37,7 +42,12 @@ export function MobileResetPassword({ onSubmit, onBack, error, loading }: FormPr
     <div className="absolute inset-0 overflow-y-auto bg-bg-base">
       <AuthHeader title={t('auth.resetTitle')} sub={t('auth.resetSub')} />
       <div className="mx-4 bg-white rounded-p-xl p-5 shadow-card">
-        <form onSubmit={(e) => { e.preventDefault(); handleSubmit() }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSubmit()
+          }}
+        >
           <div className="mb-4">
             <label className="block font-sans font-bold text-[12px] leading-none text-sea-ink-soft mb-2">
               {t('auth.resetNewPassword')}
@@ -84,7 +94,9 @@ export function MobileResetPassword({ onSubmit, onBack, error, loading }: FormPr
             )}
           </div>
 
-          {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
+          )}
 
           <div className="mt-1">
             <PrimaryBtn type="submit" disabled={loading}>
@@ -118,9 +130,28 @@ export function MobileResetSuccess({ onBack }: SuccessProps) {
   return (
     <div className="absolute inset-0 overflow-y-auto bg-bg-base flex flex-col items-center px-6 pt-16 text-center">
       <GlyphCircle>
-        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-          <rect x="13" y="25" width="30" height="21" rx="4" stroke="#fff" strokeWidth="2.5" />
-          <path d="M19 25v-5a9 9 0 0 1 18 0v5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+        <svg
+          width="56"
+          height="56"
+          viewBox="0 0 56 56"
+          fill="none"
+          aria-hidden="true"
+        >
+          <rect
+            x="13"
+            y="25"
+            width="30"
+            height="21"
+            rx="4"
+            stroke="#fff"
+            strokeWidth="2.5"
+          />
+          <path
+            d="M19 25v-5a9 9 0 0 1 18 0v5"
+            stroke="#fff"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
           <path
             d="M24 35l3 3 6-7"
             stroke="#fff"

@@ -61,7 +61,13 @@ export function DesktopPrimaryBtn({
   )
 }
 
-export function DesktopGoogleBtn({ label, onClick }: { label: string; onClick?: () => void }) {
+export function DesktopGoogleBtn({
+  label,
+  onClick,
+}: {
+  label: string
+  onClick?: () => void
+}) {
   return (
     <button
       type="button"
@@ -102,7 +108,9 @@ function BrandPanel() {
         <div className="font-display font-bold text-[28px] leading-none tracking-[-0.015em]">
           Pennies
         </div>
-        <span className="font-sans font-bold text-[12px] text-lagoon-mist">EN · VI</span>
+        <span className="font-sans font-bold text-[12px] text-lagoon-mist">
+          EN · VI
+        </span>
       </div>
 
       <div className="flex-1 flex flex-col justify-center relative">
@@ -201,7 +209,9 @@ export function CelebrateShell({
           <div className="font-display font-bold text-[28px] leading-none tracking-[-0.015em]">
             Pennies
           </div>
-          <span className="font-sans font-bold text-[12px] text-lagoon-mist">EN · VI</span>
+          <span className="font-sans font-bold text-[12px] text-lagoon-mist">
+            EN · VI
+          </span>
         </div>
         <div className="flex-1 flex flex-col justify-center relative">
           <div className="font-display font-bold text-[48px] leading-[1.05] tracking-[-0.02em] text-white max-w-[400px]">

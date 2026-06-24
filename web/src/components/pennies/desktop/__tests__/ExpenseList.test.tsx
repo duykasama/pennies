@@ -14,13 +14,69 @@ const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
 const older = '2026-05-12'
 
 const TEST_EXPENSES: Expense[] = [
-  { id: 'e1', cat: 1, title: 'Food & Drink', sub: 'Lunch', amount: -65000, date: today, updatedAt: '2026-06-01T00:00:00Z' },
-  { id: 'e2', cat: 2, title: 'Transport', sub: 'Grab', amount: -25000, date: today, updatedAt: '2026-06-01T00:00:00Z' },
-  { id: 'e3', cat: 3, title: 'Shopping', sub: 'Bookstore', amount: -320000, date: today, updatedAt: '2026-06-01T00:00:00Z' },
-  { id: 'e4', cat: 5, title: 'Health', sub: 'Pharmacy', amount: -85000, date: yesterday, updatedAt: '2026-06-01T00:00:00Z' },
-  { id: 'e5', cat: 4, title: 'Entertainment', sub: 'Cinema', amount: -180000, date: yesterday, updatedAt: '2026-06-01T00:00:00Z' },
-  { id: 'e6', cat: 1, title: 'Food & Drink', sub: 'Coffee', amount: -55000, date: older, updatedAt: '2026-06-01T00:00:00Z' },
-  { id: 'e7', cat: 6, title: 'Utilities', sub: 'Electric', amount: -420000, date: older, updatedAt: '2026-06-01T00:00:00Z' },
+  {
+    id: 'e1',
+    cat: 1,
+    title: 'Food & Drink',
+    sub: 'Lunch',
+    amount: -65000,
+    date: today,
+    updatedAt: '2026-06-01T00:00:00Z',
+  },
+  {
+    id: 'e2',
+    cat: 2,
+    title: 'Transport',
+    sub: 'Grab',
+    amount: -25000,
+    date: today,
+    updatedAt: '2026-06-01T00:00:00Z',
+  },
+  {
+    id: 'e3',
+    cat: 3,
+    title: 'Shopping',
+    sub: 'Bookstore',
+    amount: -320000,
+    date: today,
+    updatedAt: '2026-06-01T00:00:00Z',
+  },
+  {
+    id: 'e4',
+    cat: 5,
+    title: 'Health',
+    sub: 'Pharmacy',
+    amount: -85000,
+    date: yesterday,
+    updatedAt: '2026-06-01T00:00:00Z',
+  },
+  {
+    id: 'e5',
+    cat: 4,
+    title: 'Entertainment',
+    sub: 'Cinema',
+    amount: -180000,
+    date: yesterday,
+    updatedAt: '2026-06-01T00:00:00Z',
+  },
+  {
+    id: 'e6',
+    cat: 1,
+    title: 'Food & Drink',
+    sub: 'Coffee',
+    amount: -55000,
+    date: older,
+    updatedAt: '2026-06-01T00:00:00Z',
+  },
+  {
+    id: 'e7',
+    cat: 6,
+    title: 'Utilities',
+    sub: 'Electric',
+    amount: -420000,
+    date: older,
+    updatedAt: '2026-06-01T00:00:00Z',
+  },
 ]
 
 beforeEach(async () => {
@@ -78,7 +134,9 @@ describe('ExpenseList', () => {
         />,
         { wrapper: TestProviders },
       )
-      expect(screen.getByText(/no expenses in this filter/i)).toBeInTheDocument()
+      expect(
+        screen.getByText(/no expenses in this filter/i),
+      ).toBeInTheDocument()
     })
   })
 
@@ -95,9 +153,7 @@ describe('ExpenseList', () => {
         { wrapper: TestProviders },
       )
       const sorted = [...TEST_EXPENSES].sort((a, b) => a.amount - b.amount)
-      const amounts = screen
-        .getAllByText(/^-?₫/)
-        .map((el) => el.textContent)
+      const amounts = screen.getAllByText(/^-?₫/).map((el) => el.textContent)
       const expectedAmounts = sorted.map((e) => formatVnd(e.amount))
       expect(amounts).toEqual(expectedAmounts)
     })

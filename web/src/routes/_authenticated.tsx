@@ -7,6 +7,7 @@ export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ context }) => {
     if (!context.user) throw redirect({ to: ROUTES.AUTH_SIGN_IN })
   },
-  loader: ({ context }) => context.queryClient.ensureQueryData(categoriesQueryOptions(i18n.language)),
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(categoriesQueryOptions(i18n.language)),
   component: () => <Outlet />,
 })

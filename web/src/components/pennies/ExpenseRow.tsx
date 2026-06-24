@@ -11,7 +11,11 @@ interface ExpenseRowProps {
   onClick?: () => void
 }
 
-export default function ExpenseRow({ expense, variant = 'mobile', onClick }: ExpenseRowProps) {
+export default function ExpenseRow({
+  expense,
+  variant = 'mobile',
+  onClick,
+}: ExpenseRowProps) {
   const { t, i18n } = useTranslation()
   const categories = useCategories()
   const cat = categories.find((c) => c.id === expense.cat)
@@ -24,7 +28,10 @@ export default function ExpenseRow({ expense, variant = 'mobile', onClick }: Exp
   }
   const dateLabel =
     dateLabels[expense.date] ??
-    new Date(expense.date + 'T00:00:00').toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })
+    new Date(expense.date + 'T00:00:00').toLocaleDateString(i18n.language, {
+      month: 'short',
+      day: 'numeric',
+    })
 
   return (
     <div
@@ -54,12 +61,16 @@ export default function ExpenseRow({ expense, variant = 'mobile', onClick }: Exp
         <p className="font-bold text-[14px] leading-none text-sea-ink truncate">
           {expense.title}
         </p>
-        <p className="mt-1 font-medium text-[12px] leading-none text-sea-ink-soft truncate">{expense.sub}</p>
+        <p className="mt-1 font-medium text-[12px] leading-none text-sea-ink-soft truncate">
+          {expense.sub}
+        </p>
       </div>
 
       {/* Date column (desktop only) */}
       {isDesktop && (
-        <p className="font-medium text-[13px] leading-none text-sea-ink-soft">{dateLabel}</p>
+        <p className="font-medium text-[13px] leading-none text-sea-ink-soft">
+          {dateLabel}
+        </p>
       )}
 
       {/* Amount */}

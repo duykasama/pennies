@@ -12,10 +12,17 @@ interface EditExpenseProps {
   onDelete: (id: string) => void
 }
 
-export default function EditExpense({ expense, onClose, onUpdate, onDelete }: EditExpenseProps) {
+export default function EditExpense({
+  expense,
+  onClose,
+  onUpdate,
+  onDelete,
+}: EditExpenseProps) {
   const { t } = useTranslation()
   const categories = useCategories()
-  const [amountStr, setAmountStr] = useState(() => String(Math.abs(expense.amount)))
+  const [amountStr, setAmountStr] = useState(() =>
+    String(Math.abs(expense.amount)),
+  )
   const [desc, setDesc] = useState(expense.title)
   const [cat, setCat] = useState(expense.cat)
   const [date, setDate] = useState(expense.date)
@@ -25,26 +32,43 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
   function handleUpdate() {
     const n = parseFloat(amountStr.replace(/,/g, ''))
     const newErrors: { amount?: string; desc?: string } = {}
-    if (!amountStr || isNaN(n) || n <= 0) newErrors.amount = t('editExpense.amountError')
+    if (!amountStr || isNaN(n) || n <= 0)
+      newErrors.amount = t('editExpense.amountError')
     if (!desc.trim()) newErrors.desc = t('editExpense.descriptionError')
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return }
-    onUpdate({ ...expense, cat, title: desc.trim(), sub: note.trim(), amount: -n, date })
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+    onUpdate({
+      ...expense,
+      cat,
+      title: desc.trim(),
+      sub: note.trim(),
+      amount: -n,
+      date,
+    })
   }
 
   const inputBase =
     'w-full h-11 px-3.5 rounded-p-md bg-foam border border-transparent font-normal text-[14px] text-sea-ink outline-none transition-colors focus:bg-white focus:border-lagoon box-border'
   const inputError = 'bg-danger-soft border-danger text-danger'
-  const labelBase = 'block font-bold text-[12px] leading-none text-sea-ink-soft mb-2'
+  const labelBase =
+    'block font-bold text-[12px] leading-none text-sea-ink-soft mb-2'
 
   return (
     <div className="absolute inset-0 z-30 flex items-end justify-center">
-      <div className="absolute inset-0 bg-sea-ink/30 backdrop-blur-[3px] modal-fade" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-sea-ink/30 backdrop-blur-[3px] modal-fade"
+        onClick={onClose}
+      />
 
       <div className="relative w-full max-h-[88%] overflow-y-auto bg-white rounded-t-[24px] shadow-pop p-5 pb-7 modal-rise">
         <div className="w-9 h-1 rounded-full bg-sea-ink-muted/50 mx-auto mb-4" />
 
         <div className="flex items-center justify-between mb-4">
-          <p className="font-bold text-[22px] leading-none text-sea-ink">{t('editExpense.title')}</p>
+          <p className="font-bold text-[22px] leading-none text-sea-ink">
+            {t('editExpense.title')}
+          </p>
           <button
             type="button"
             onClick={onClose}
@@ -55,18 +79,34 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
           </button>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); handleUpdate() }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleUpdate()
+          }}
+        >
           <div className="mb-4">
             <label className={labelBase}>{t('addExpense.amount')}</label>
             <input
               type="number"
               inputMode="decimal"
               value={amountStr}
-              onChange={(e) => { setAmountStr(e.target.value); setErrors((p) => ({ ...p, amount: undefined })) }}
-              className={cn(inputBase, 'h-[52px] font-bold text-[22px]', errors.amount && inputError)}
+              onChange={(e) => {
+                setAmountStr(e.target.value)
+                setErrors((p) => ({ ...p, amount: undefined }))
+              }}
+              className={cn(
+                inputBase,
+                'h-[52px] font-bold text-[22px]',
+                errors.amount && inputError,
+              )}
               placeholder="0"
             />
-            {errors.amount && <span className="block mt-1.5 font-medium text-[11px] text-danger">{errors.amount}</span>}
+            {errors.amount && (
+              <span className="block mt-1.5 font-medium text-[11px] text-danger">
+                {errors.amount}
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
@@ -74,25 +114,42 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
             <input
               type="text"
               value={desc}
-              onChange={(e) => { setDesc(e.target.value); setErrors((p) => ({ ...p, desc: undefined })) }}
+              onChange={(e) => {
+                setDesc(e.target.value)
+                setErrors((p) => ({ ...p, desc: undefined }))
+              }}
               className={cn(inputBase, errors.desc && inputError)}
               placeholder={t('addExpense.descriptionPlaceholder')}
             />
-            {errors.desc && <span className="block mt-1.5 font-medium text-[11px] text-danger">{errors.desc}</span>}
+            {errors.desc && (
+              <span className="block mt-1.5 font-medium text-[11px] text-danger">
+                {errors.desc}
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
             <label className={labelBase}>{t('addExpense.category')}</label>
             <div className="grid grid-cols-4 gap-2">
               {categories.map((c) => (
-                <CategoryChip key={c.id} cat={c} selected={cat === c.id} onClick={() => setCat(c.id)} />
+                <CategoryChip
+                  key={c.id}
+                  cat={c}
+                  selected={cat === c.id}
+                  onClick={() => setCat(c.id)}
+                />
               ))}
             </div>
           </div>
 
           <div className="mb-4">
             <label className={labelBase}>{t('addExpense.date')}</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputBase} />
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className={inputBase}
+            />
           </div>
 
           <div className="mb-5">

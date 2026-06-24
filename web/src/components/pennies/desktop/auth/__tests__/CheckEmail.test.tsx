@@ -6,7 +6,11 @@ import DesktopCheckEmail from '../CheckEmail'
 describe('DesktopCheckEmail', () => {
   it('renders the check email heading', () => {
     render(
-      <DesktopCheckEmail email="test@example.com" onResend={vi.fn()} onUseDifferent={vi.fn()} />,
+      <DesktopCheckEmail
+        email="test@example.com"
+        onResend={vi.fn()}
+        onUseDifferent={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     expect(screen.getByText('Check your email')).toBeInTheDocument()
@@ -14,7 +18,11 @@ describe('DesktopCheckEmail', () => {
 
   it('displays the provided email address', () => {
     render(
-      <DesktopCheckEmail email="user@pennies.app" onResend={vi.fn()} onUseDifferent={vi.fn()} />,
+      <DesktopCheckEmail
+        email="user@pennies.app"
+        onResend={vi.fn()}
+        onUseDifferent={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     expect(screen.getByText('user@pennies.app')).toBeInTheDocument()
@@ -23,7 +31,11 @@ describe('DesktopCheckEmail', () => {
   it('calls onResend when the resend button is clicked', () => {
     const onResend = vi.fn()
     render(
-      <DesktopCheckEmail email="test@example.com" onResend={onResend} onUseDifferent={vi.fn()} />,
+      <DesktopCheckEmail
+        email="test@example.com"
+        onResend={onResend}
+        onUseDifferent={vi.fn()}
+      />,
       { wrapper: I18nWrapper },
     )
     fireEvent.click(screen.getByText("Didn't get it? Resend"))

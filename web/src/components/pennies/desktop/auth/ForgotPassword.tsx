@@ -9,7 +9,12 @@ interface Props {
   loading?: boolean
 }
 
-export default function DesktopForgotPassword({ onSubmit, onBack, error, loading }: Props) {
+export default function DesktopForgotPassword({
+  onSubmit,
+  onBack,
+  error,
+  loading,
+}: Props) {
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
 
@@ -27,7 +32,12 @@ export default function DesktopForgotPassword({ onSubmit, onBack, error, loading
         </button>
       }
     >
-      <form onSubmit={(e) => { e.preventDefault(); onSubmit(email) }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          onSubmit(email)
+        }}
+      >
         <DesktopField
           label={t('auth.email')}
           type="email"
@@ -35,7 +45,9 @@ export default function DesktopForgotPassword({ onSubmit, onBack, error, loading
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t('auth.emailPlaceholder')}
         />
-        {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
+        )}
         <DesktopPrimaryBtn type="submit" disabled={loading}>
           {t('auth.continueBtn')}
         </DesktopPrimaryBtn>

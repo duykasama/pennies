@@ -22,7 +22,9 @@ function VerifyEmailPage() {
     }
     verifyEmailFn({ data: { token } })
       .then(() => navigate({ to: ROUTES.AUTH_VERIFIED }))
-      .catch((e: unknown) => setError(e instanceof Error ? e.message : 'Verification failed'))
+      .catch((e: unknown) =>
+        setError(e instanceof Error ? e.message : 'Verification failed'),
+      )
   }, [token, navigate])
 
   return (
@@ -30,7 +32,10 @@ function VerifyEmailPage() {
       {error ? (
         <div className="text-center">
           <p className="text-red-500 font-medium mb-4">{error}</p>
-          <a href={ROUTES.AUTH_SIGN_IN} className="text-lagoon-deep font-bold underline">
+          <a
+            href={ROUTES.AUTH_SIGN_IN}
+            className="text-lagoon-deep font-bold underline"
+          >
             Back to sign in
           </a>
         </div>

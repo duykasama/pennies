@@ -9,7 +9,9 @@ export function AuthHeader({ title, sub }: { title: string; sub?: string }) {
       <div className="font-display font-bold text-[32px] leading-none tracking-[-0.015em] text-sea-ink">
         Pennies
       </div>
-      <div className="mt-4 font-sans font-bold text-[20px] leading-tight text-sea-ink">{title}</div>
+      <div className="mt-4 font-sans font-bold text-[20px] leading-tight text-sea-ink">
+        {title}
+      </div>
       {sub && (
         <div className="mt-2 font-sans font-medium text-[13px] leading-snug text-sea-ink-soft max-w-[300px] mx-auto">
           {sub}
@@ -76,7 +78,13 @@ export function PrimaryBtn({
   )
 }
 
-export function GoogleButton({ label, onClick }: { label: string; onClick?: () => void }) {
+export function GoogleButton({
+  label,
+  onClick,
+}: {
+  label: string
+  onClick?: () => void
+}) {
   return (
     <button
       type="button"
@@ -101,7 +109,13 @@ export function OrDivider() {
   )
 }
 
-export function GlyphCircle({ children, size = 112 }: { children: React.ReactNode; size?: number }) {
+export function GlyphCircle({
+  children,
+  size = 112,
+}: {
+  children: React.ReactNode
+  size?: number
+}) {
   return (
     <div
       className="rounded-full bg-lagoon flex items-center justify-center"

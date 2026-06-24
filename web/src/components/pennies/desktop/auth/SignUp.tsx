@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AuthShell, DesktopField, DesktopPrimaryBtn, DesktopGoogleBtn, OrDivider } from './shared'
+import {
+  AuthShell,
+  DesktopField,
+  DesktopPrimaryBtn,
+  DesktopGoogleBtn,
+  OrDivider,
+} from './shared'
 
 interface Props {
   onSubmit: (name: string, email: string, password: string) => void
@@ -9,7 +15,12 @@ interface Props {
   error?: string | null
 }
 
-export default function DesktopSignUp({ onSubmit, onGoogle, onSignIn, error }: Props) {
+export default function DesktopSignUp({
+  onSubmit,
+  onGoogle,
+  onSignIn,
+  error,
+}: Props) {
   const { t } = useTranslation()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -32,7 +43,12 @@ export default function DesktopSignUp({ onSubmit, onGoogle, onSignIn, error }: P
         </>
       }
     >
-      <form onSubmit={(e) => { e.preventDefault(); onSubmit(name, email, pw) }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          onSubmit(name, email, pw)
+        }}
+      >
         <DesktopField
           label={t('auth.fullName')}
           value={name}

@@ -1,23 +1,33 @@
 import { createServerFn } from '@tanstack/react-start'
-import { getCookie, setCookie, deleteCookie } from '@tanstack/react-start/server'
+import {
+  getCookie,
+  setCookie,
+  deleteCookie,
+} from '@tanstack/react-start/server'
 import { z } from 'zod'
 import { API_URL, ROUTES } from '#/lib/constants'
 
 export type SessionUser = { sub: string; email: string; displayName: string }
 export type UserProfile = SessionUser
 
-export const getSessionFn = createServerFn().handler(async (): Promise<SessionUser | null> => {
-  const token = getCookie('auth_token')
-  if (!token) return null
-  try {
-    const [, b64] = token.split('.')
-    const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
-    if (payload.exp * 1000 < Date.now()) return null
-    return { sub: payload.sub, email: payload.email, displayName: payload.displayName }
-  } catch {
-    return null
-  }
-})
+export const getSessionFn = createServerFn().handler(
+  async (): Promise<SessionUser | null> => {
+    const token = getCookie('auth_token')
+    if (!token) return null
+    try {
+      const [, b64] = token.split('.')
+      const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
+      if (payload.exp * 1000 < Date.now()) return null
+      return {
+        sub: payload.sub,
+        email: payload.email,
+        displayName: payload.displayName,
+      }
+    } catch {
+      return null
+    }
+  },
+)
 
 export const loginFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ email: z.string(), password: z.string() }))
@@ -43,7 +53,11 @@ export const loginFn = createServerFn({ method: 'POST' })
     })
     const [, b64] = accessToken.split('.')
     const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
-    return { sub: payload.sub, email: payload.email, displayName: payload.displayName }
+    return {
+      sub: payload.sub,
+      email: payload.email,
+      displayName: payload.displayName,
+    }
   })
 
 export const logoutFn = createServerFn({ method: 'POST' }).handler(async () => {
@@ -51,7 +65,13 @@ export const logoutFn = createServerFn({ method: 'POST' }).handler(async () => {
 })
 
 export const registerFn = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ displayName: z.string(), email: z.string(), password: z.string() }))
+  .inputValidator(
+    z.object({
+      displayName: z.string(),
+      email: z.string(),
+      password: z.string(),
+    }),
+  )
   .handler(async ({ data }) => {
     const res = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
@@ -79,15 +99,17 @@ export const verifyEmailFn = createServerFn({ method: 'POST' })
     return body as { message: string }
   })
 
-export const getGoogleAuthUrlFn = createServerFn().handler(async (): Promise<string> => {
-  const redirectUri = `${process.env['APP_URL']}${ROUTES.AUTH_GOOGLE_CALLBACK}`
-  const res = await fetch(
-    `${API_URL}/auth/google/url?redirectUri=${encodeURIComponent(redirectUri)}`,
-  )
-  if (!res.ok) throw new Error('Failed to get Google auth URL')
-  const url = await res.json()
-  return url
-})
+export const getGoogleAuthUrlFn = createServerFn().handler(
+  async (): Promise<string> => {
+    const redirectUri = `${process.env['APP_URL']}${ROUTES.AUTH_GOOGLE_CALLBACK}`
+    const res = await fetch(
+      `${API_URL}/auth/google/url?redirectUri=${encodeURIComponent(redirectUri)}`,
+    )
+    if (!res.ok) throw new Error('Failed to get Google auth URL')
+    const url = await res.json()
+    return url
+  },
+)
 
 export const googleLoginFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ code: z.string() }))
@@ -112,7 +134,11 @@ export const googleLoginFn = createServerFn({ method: 'POST' })
     })
     const [, b64] = accessToken.split('.')
     const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
-    return { sub: payload.sub, email: payload.email, displayName: payload.displayName }
+    return {
+      sub: payload.sub,
+      email: payload.email,
+      displayName: payload.displayName,
+    }
   })
 
 export const resendConfirmationFn = createServerFn({ method: 'POST' })
@@ -128,18 +154,20 @@ export const resendConfirmationFn = createServerFn({ method: 'POST' })
     return body
   })
 
-export const getProfileFn = createServerFn().handler(async (): Promise<SessionUser> => {
-  const token = getCookie('auth_token')
-  if (!token) throw new Error('Not authenticated')
-  const res = await fetch(`${API_URL}/auth/profile`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body?.error ?? 'Failed to load profile')
-  }
-  return res.json() as Promise<SessionUser>
-})
+export const getProfileFn = createServerFn().handler(
+  async (): Promise<SessionUser> => {
+    const token = getCookie('auth_token')
+    if (!token) throw new Error('Not authenticated')
+    const res = await fetch(`${API_URL}/auth/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body?.error ?? 'Failed to load profile')
+    }
+    return res.json() as Promise<SessionUser>
+  },
+)
 
 export const updateAccountFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ displayName: z.string().min(1) }))
@@ -148,7 +176,10 @@ export const updateAccountFn = createServerFn({ method: 'POST' })
     if (!token) throw new Error('Not authenticated')
     const res = await fetch(`${API_URL}/auth/profile/display-name`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(data),
     })
     if (!res.ok) {
@@ -164,7 +195,10 @@ export const requestEmailUpdateFn = createServerFn({ method: 'POST' })
     if (!token) throw new Error('Not authenticated')
     const res = await fetch(`${API_URL}/auth/request-email-update`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ newEmail: data.email }),
     })
     if (!res.ok) {
@@ -180,7 +214,10 @@ export const confirmEmailUpdateFn = createServerFn({ method: 'POST' })
     if (!token) throw new Error('Not authenticated')
     const res = await fetch(`${API_URL}/auth/confirm-email-update`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(data),
     })
     if (!res.ok) {
@@ -190,14 +227,22 @@ export const confirmEmailUpdateFn = createServerFn({ method: 'POST' })
   })
 
 export const changePasswordFn = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ current: z.string().min(1), next: z.string().min(8) }))
+  .inputValidator(
+    z.object({ current: z.string().min(1), next: z.string().min(8) }),
+  )
   .handler(async ({ data }) => {
     const token = getCookie('auth_token')
     if (!token) throw new Error('Not authenticated')
     const res = await fetch(`${API_URL}/auth/change-password`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ currentPassword: data.current, newPassword: data.next }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        currentPassword: data.current,
+        newPassword: data.next,
+      }),
     })
     if (!res.ok) {
       const body = await res.json().catch(() => ({}))
@@ -222,7 +267,9 @@ export const forgotPasswordFn = createServerFn({ method: 'POST' })
   })
 
 export const resetPasswordFn = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ token: z.string().min(1), newPassword: z.string().min(8) }))
+  .inputValidator(
+    z.object({ token: z.string().min(1), newPassword: z.string().min(8) }),
+  )
   .handler(async ({ data }) => {
     const res = await fetch(`${API_URL}/auth/reset-password`, {
       method: 'POST',

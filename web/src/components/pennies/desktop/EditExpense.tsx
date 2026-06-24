@@ -53,95 +53,96 @@ export default function EditExpense({ expense, onClose, onUpdate, onDelete }: Ed
           </button>
         </div>
 
-        <div className="mb-4">
-          <label className={labelBase}>{t('addExpense.amount')}</label>
-          <input
-            type="number"
-            inputMode="decimal"
-            value={amountStr}
-            onChange={(e) => { setAmountStr(e.target.value); setErrors((p) => ({ ...p, amount: undefined })) }}
-            className={cn(inputBase, errors.amount && inputError)}
-            placeholder="0"
-          />
-          {errors.amount && <span className="block mt-1.5 font-medium text-[11px] text-danger">{errors.amount}</span>}
-        </div>
-
-        <div className="mb-4">
-          <label className={labelBase}>{t('addExpense.description')}</label>
-          <input
-            type="text"
-            value={desc}
-            onChange={(e) => { setDesc(e.target.value); setErrors((p) => ({ ...p, desc: undefined })) }}
-            className={cn(inputBase, errors.desc && inputError)}
-            placeholder={t('addExpense.descriptionPlaceholder')}
-          />
-          {errors.desc && <span className="block mt-1.5 font-medium text-[11px] text-danger">{errors.desc}</span>}
-        </div>
-
-        <div className="mb-4">
-          <label className={labelBase}>{t('addExpense.category')}</label>
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => {
-              const { dot, ink } = categoryColor(c.id)
-              return (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => setCat(c.id)}
-                  className={cn(
-                    'h-8 px-3.5 rounded-full font-bold text-[12px] border-2 cursor-pointer inline-flex items-center gap-1.5 active:scale-[0.97] transition-transform',
-                    cat === c.id ? 'border-sea-ink' : 'border-transparent',
-                  )}
-                  style={{ background: dot, color: ink }}
-                >
-                  <span>{c.icon}</span>
-                  <span>{c.name}</span>
-                </button>
-              )
-            })}
+        <form onSubmit={(e) => { e.preventDefault(); handleUpdate() }}>
+          <div className="mb-4">
+            <label className={labelBase}>{t('addExpense.amount')}</label>
+            <input
+              type="number"
+              inputMode="decimal"
+              value={amountStr}
+              onChange={(e) => { setAmountStr(e.target.value); setErrors((p) => ({ ...p, amount: undefined })) }}
+              className={cn(inputBase, errors.amount && inputError)}
+              placeholder="0"
+            />
+            {errors.amount && <span className="block mt-1.5 font-medium text-[11px] text-danger">{errors.amount}</span>}
           </div>
-        </div>
 
-        <div className="mb-4">
-          <label className={labelBase}>{t('addExpense.date')}</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputBase} />
-        </div>
+          <div className="mb-4">
+            <label className={labelBase}>{t('addExpense.description')}</label>
+            <input
+              type="text"
+              value={desc}
+              onChange={(e) => { setDesc(e.target.value); setErrors((p) => ({ ...p, desc: undefined })) }}
+              className={cn(inputBase, errors.desc && inputError)}
+              placeholder={t('addExpense.descriptionPlaceholder')}
+            />
+            {errors.desc && <span className="block mt-1.5 font-medium text-[11px] text-danger">{errors.desc}</span>}
+          </div>
 
-        <div className="mb-6">
-          <label className={labelBase}>{t('addExpense.note')}</label>
-          <input
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder={t('addExpense.notePlaceholder')}
-            className={inputBase}
-          />
-        </div>
+          <div className="mb-4">
+            <label className={labelBase}>{t('addExpense.category')}</label>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((c) => {
+                const { dot, ink } = categoryColor(c.id)
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setCat(c.id)}
+                    className={cn(
+                      'h-8 px-3.5 rounded-full font-bold text-[12px] border-2 cursor-pointer inline-flex items-center gap-1.5 active:scale-[0.97] transition-transform',
+                      cat === c.id ? 'border-sea-ink' : 'border-transparent',
+                    )}
+                    style={{ background: dot, color: ink }}
+                  >
+                    <span>{c.icon}</span>
+                    <span>{c.name}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
 
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => onDelete(expense.id)}
-            className="h-10 px-[22px] bg-danger-soft hover:brightness-95 text-danger border-0 rounded-p-sm font-bold text-[13px] leading-none cursor-pointer transition-all"
-          >
-            {t('editExpense.delete')}
-          </button>
-          <span className="flex-1" />
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-10 px-[22px] bg-white text-sea-ink hover:bg-foam border-0 rounded-p-sm font-bold text-[13px] leading-none cursor-pointer shadow-card transition-colors"
-          >
-            {t('editExpense.cancel')}
-          </button>
-          <button
-            type="button"
-            onClick={handleUpdate}
-            className="h-10 px-[22px] bg-lagoon hover:bg-lagoon-deep text-white border-0 rounded-p-sm font-bold text-[13px] leading-none cursor-pointer transition-colors"
-          >
-            {t('editExpense.update')}
-          </button>
-        </div>
+          <div className="mb-4">
+            <label className={labelBase}>{t('addExpense.date')}</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputBase} />
+          </div>
+
+          <div className="mb-6">
+            <label className={labelBase}>{t('addExpense.note')}</label>
+            <input
+              type="text"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder={t('addExpense.notePlaceholder')}
+              className={inputBase}
+            />
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => onDelete(expense.id)}
+              className="h-10 px-[22px] bg-danger-soft hover:brightness-95 text-danger border-0 rounded-p-sm font-bold text-[13px] leading-none cursor-pointer transition-all"
+            >
+              {t('editExpense.delete')}
+            </button>
+            <span className="flex-1" />
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-10 px-[22px] bg-white text-sea-ink hover:bg-foam border-0 rounded-p-sm font-bold text-[13px] leading-none cursor-pointer shadow-card transition-colors"
+            >
+              {t('editExpense.cancel')}
+            </button>
+            <button
+              type="submit"
+              className="h-10 px-[22px] bg-lagoon hover:bg-lagoon-deep text-white border-0 rounded-p-sm font-bold text-[13px] leading-none cursor-pointer transition-colors"
+            >
+              {t('editExpense.update')}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

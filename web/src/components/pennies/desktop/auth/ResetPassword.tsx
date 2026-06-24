@@ -47,53 +47,55 @@ export function DesktopResetPassword({ onSubmit, onBack, error, loading }: FormP
         </button>
       }
     >
-      <div className="mb-4">
-        <label className="block font-sans font-bold text-[13px] leading-none text-sea-ink mb-2">
-          {t('auth.resetNewPassword')}
-        </label>
-        <input
-          type="password"
-          className={`${desktopInputCls} ${newPwError ? 'bg-danger-soft border-danger text-danger' : ''}`}
-          value={newPw}
-          onChange={(e) => {
-            setNewPw(e.target.value)
-            if (newPwError) setNewPwError(null)
-          }}
-          placeholder={t('auth.passwordPlaceholder')}
-        />
-        {newPwError ? (
-          <p className="mt-1.5 font-sans font-medium text-[12px] text-danger">{newPwError}</p>
-        ) : (
-          <p className="mt-1.5 font-sans font-medium text-[12px] text-sea-ink-soft">
-            {t('auth.resetPasswordMinLength')}
-          </p>
-        )}
-      </div>
+      <form onSubmit={(e) => { e.preventDefault(); handleSubmit() }}>
+        <div className="mb-4">
+          <label className="block font-sans font-bold text-[13px] leading-none text-sea-ink mb-2">
+            {t('auth.resetNewPassword')}
+          </label>
+          <input
+            type="password"
+            className={`${desktopInputCls} ${newPwError ? 'bg-danger-soft border-danger text-danger' : ''}`}
+            value={newPw}
+            onChange={(e) => {
+              setNewPw(e.target.value)
+              if (newPwError) setNewPwError(null)
+            }}
+            placeholder={t('auth.passwordPlaceholder')}
+          />
+          {newPwError ? (
+            <p className="mt-1.5 font-sans font-medium text-[12px] text-danger">{newPwError}</p>
+          ) : (
+            <p className="mt-1.5 font-sans font-medium text-[12px] text-sea-ink-soft">
+              {t('auth.resetPasswordMinLength')}
+            </p>
+          )}
+        </div>
 
-      <div className="mb-4">
-        <label className="block font-sans font-bold text-[13px] leading-none text-sea-ink mb-2">
-          {t('auth.resetConfirmPassword')}
-        </label>
-        <input
-          type="password"
-          className={`${desktopInputCls} ${confirmPwError ? 'bg-danger-soft border-danger text-danger' : ''}`}
-          value={confirmPw}
-          onChange={(e) => {
-            setConfirmPw(e.target.value)
-            if (confirmPwError) setConfirmPwError(null)
-          }}
-          placeholder={t('auth.resetConfirmPlaceholder')}
-        />
-        {confirmPwError && (
-          <p className="mt-1.5 font-sans font-medium text-[12px] text-danger">{confirmPwError}</p>
-        )}
-      </div>
+        <div className="mb-4">
+          <label className="block font-sans font-bold text-[13px] leading-none text-sea-ink mb-2">
+            {t('auth.resetConfirmPassword')}
+          </label>
+          <input
+            type="password"
+            className={`${desktopInputCls} ${confirmPwError ? 'bg-danger-soft border-danger text-danger' : ''}`}
+            value={confirmPw}
+            onChange={(e) => {
+              setConfirmPw(e.target.value)
+              if (confirmPwError) setConfirmPwError(null)
+            }}
+            placeholder={t('auth.resetConfirmPlaceholder')}
+          />
+          {confirmPwError && (
+            <p className="mt-1.5 font-sans font-medium text-[12px] text-danger">{confirmPwError}</p>
+          )}
+        </div>
 
-      {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
+        {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
 
-      <DesktopPrimaryBtn onClick={handleSubmit} disabled={loading}>
-        {t('auth.resetBtn')}
-      </DesktopPrimaryBtn>
+        <DesktopPrimaryBtn type="submit" disabled={loading}>
+          {t('auth.resetBtn')}
+        </DesktopPrimaryBtn>
+      </form>
     </AuthShell>
   )
 }

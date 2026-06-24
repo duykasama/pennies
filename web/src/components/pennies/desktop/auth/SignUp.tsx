@@ -32,34 +32,36 @@ export default function DesktopSignUp({ onSubmit, onGoogle, onSignIn, error }: P
         </>
       }
     >
-      <DesktopField
-        label={t('auth.fullName')}
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder={t('auth.namePlaceholder')}
-      />
-      <DesktopField
-        label={t('auth.email')}
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder={t('auth.emailPlaceholder')}
-      />
-      <DesktopField
-        label={t('auth.password')}
-        type="password"
-        value={pw}
-        onChange={(e) => setPw(e.target.value)}
-        placeholder={t('auth.passwordPlaceholder')}
-      />
-      {error && (
-        <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
-      )}
-      <div className="mt-1">
-        <DesktopPrimaryBtn onClick={() => onSubmit(name, email, pw)}>
-          {t('auth.createAccountBtn')}
-        </DesktopPrimaryBtn>
-      </div>
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(name, email, pw) }}>
+        <DesktopField
+          label={t('auth.fullName')}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder={t('auth.namePlaceholder')}
+        />
+        <DesktopField
+          label={t('auth.email')}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t('auth.emailPlaceholder')}
+        />
+        <DesktopField
+          label={t('auth.password')}
+          type="password"
+          value={pw}
+          onChange={(e) => setPw(e.target.value)}
+          placeholder={t('auth.passwordPlaceholder')}
+        />
+        {error && (
+          <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
+        )}
+        <div className="mt-1">
+          <DesktopPrimaryBtn type="submit">
+            {t('auth.createAccountBtn')}
+          </DesktopPrimaryBtn>
+        </div>
+      </form>
       <OrDivider />
       <DesktopGoogleBtn label={t('auth.signUpWithGoogle')} onClick={onGoogle} />
     </AuthShell>

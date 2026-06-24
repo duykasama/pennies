@@ -27,17 +27,19 @@ export default function DesktopForgotPassword({ onSubmit, onBack, error, loading
         </button>
       }
     >
-      <DesktopField
-        label={t('auth.email')}
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder={t('auth.emailPlaceholder')}
-      />
-      {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
-      <DesktopPrimaryBtn onClick={() => onSubmit(email)} disabled={loading}>
-        {t('auth.continueBtn')}
-      </DesktopPrimaryBtn>
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(email) }}>
+        <DesktopField
+          label={t('auth.email')}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t('auth.emailPlaceholder')}
+        />
+        {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
+        <DesktopPrimaryBtn type="submit" disabled={loading}>
+          {t('auth.continueBtn')}
+        </DesktopPrimaryBtn>
+      </form>
     </AuthShell>
   )
 }

@@ -63,33 +63,39 @@ function NameCard({ user, onSaveName, externalError }: { user: UserProfile; onSa
   async function submit() {
     if (!name.trim()) { setError(t('account.nameError')); return }
     setError(null)
-    await onSaveName(name.trim())
-    setBaseName(name.trim())
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    try {
+      await onSaveName(name.trim())
+      setBaseName(name.trim())
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch {
+      // error surfaced via externalError prop
+    }
   }
 
   return (
     <div className="mx-4 mb-3 bg-white rounded-p-xl p-5 shadow-card">
       <div className="font-sans font-bold text-[15px] leading-tight text-sea-ink mb-4">{t('account.nameSection')}</div>
-      <Field
-        label={t('account.fullName')}
-        value={name}
-        onChange={(e) => { setName(e.target.value); setError(null) }}
-        placeholder={t('auth.namePlaceholder')}
-        error={error}
-      />
-      <div className="flex items-center justify-end gap-3 mt-1">
-        {saved && <span className="font-sans font-medium text-[12px] text-success">{t('account.nameSaved')}</span>}
-        <button
-          type="button"
-          onClick={submit}
-          disabled={!dirty}
-          className="h-10 px-5 bg-lagoon hover:bg-lagoon-deep active:scale-[0.97] text-white border-0 rounded-p-md font-sans font-bold text-[13px] leading-tight cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
-        >
-          {t('account.saveName')}
-        </button>
-      </div>
+      <form onSubmit={(e) => { e.preventDefault(); if (dirty) submit() }}>
+        <Field
+          label={t('account.fullName')}
+          value={name}
+          onChange={(e) => { setName(e.target.value); setError(null) }}
+          placeholder={t('auth.namePlaceholder')}
+          error={error}
+        />
+        <div className="flex items-center justify-end gap-3 mt-1">
+          {saved && <span className="font-sans font-medium text-[12px] text-success">{t('account.nameSaved')}</span>}
+          <button
+            type="submit"
+            onClick={submit}
+            disabled={!dirty}
+            className="h-10 px-5 bg-lagoon hover:bg-lagoon-deep active:scale-[0.97] text-white border-0 rounded-p-md font-sans font-bold text-[13px] leading-tight cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+          >
+            {t('account.saveName')}
+          </button>
+        </div>
+      </form>
     </div>
   )
 }
@@ -148,8 +154,12 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
   async function requestCode() {
     if (!/^\S+@\S+\.\S+$/.test(email)) { setError(t('account.emailError')); return }
     setError(null)
-    await onRequestEmail(email.trim())
-    setCodeSent(true)
+    try {
+      await onRequestEmail(email.trim())
+      setCodeSent(true)
+    } catch {
+      // error surfaced via externalError prop
+    }
   }
 
   async function confirmCode() {
@@ -161,6 +171,8 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
       setCode(['', '', '', '', '', ''])
       setCodeSent(false)
       setTimeout(() => setSaved(false), 3000)
+    } catch {
+      // error surfaced via externalError prop
     } finally {
       setLoading(false)
     }
@@ -175,55 +187,57 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
   return (
     <div className="mx-4 mb-3 bg-white rounded-p-xl p-5 shadow-card">
       <div className="font-sans font-bold text-[15px] leading-tight text-sea-ink mb-4">{t('account.emailSection')}</div>
-      <Field
-        label={t('auth.email')}
-        type="email"
-        value={email}
-        onChange={handleEmailChange}
-        placeholder={t('auth.emailPlaceholder')}
-        error={error}
-        help={!error && !codeSent ? t('account.confirmEmailNote') : undefined}
-      />
-      {codeSent && (
-        <>
-          <div className="mb-2 font-sans font-bold text-[12px] leading-tight text-sea-ink-soft">{t('account.confirmationCode')}</div>
-          <CodeInput value={code} onChange={setCode} />
-          <div className="-mt-2 mb-4 font-sans font-medium text-[11px] leading-tight text-sea-ink-soft">
-            {t('auth.didntGetCode')}{' '}
-            <button
-              type="button"
-              onClick={requestCode}
-              className="bg-transparent border-0 text-lagoon-deep font-bold text-[11px] cursor-pointer p-0 underline"
-            >
-              {t('auth.resendCode')}
-            </button>
-          </div>
-        </>
-      )}
-      <div className="flex items-center justify-end gap-3 mt-1">
-        {saved && <span className="font-sans font-medium text-[12px] text-success">{t('account.emailSaved')}</span>}
-        {!codeSent
-          ? (
-            <button
-              type="button"
-              onClick={requestCode}
-              disabled={!dirty}
-              className="h-10 px-5 bg-lagoon hover:bg-lagoon-deep active:scale-[0.97] text-white border-0 rounded-p-md font-sans font-bold text-[13px] leading-tight cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
-            >
-              {t('account.saveEmail')}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={confirmCode}
-              disabled={!complete || loading}
-              className="h-10 px-5 bg-lagoon hover:bg-lagoon-deep active:scale-[0.97] text-white border-0 rounded-p-md font-sans font-bold text-[13px] leading-tight cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
-            >
-              {t('account.confirmEmail')}
-            </button>
-          )
-        }
-      </div>
+      <form onSubmit={(e) => { e.preventDefault(); codeSent ? (complete && !loading && confirmCode()) : (dirty && requestCode()) }}>
+        <Field
+          label={t('auth.email')}
+          type="email"
+          value={email}
+          onChange={handleEmailChange}
+          placeholder={t('auth.emailPlaceholder')}
+          error={error}
+          help={!error && !codeSent ? t('account.confirmEmailNote') : undefined}
+        />
+        {codeSent && (
+          <>
+            <div className="mb-2 font-sans font-bold text-[12px] leading-tight text-sea-ink-soft">{t('account.confirmationCode')}</div>
+            <CodeInput value={code} onChange={setCode} />
+            <div className="-mt-2 mb-4 font-sans font-medium text-[11px] leading-tight text-sea-ink-soft">
+              {t('auth.didntGetCode')}{' '}
+              <button
+                type="button"
+                onClick={requestCode}
+                className="bg-transparent border-0 text-lagoon-deep font-bold text-[11px] cursor-pointer p-0 underline"
+              >
+                {t('auth.resendCode')}
+              </button>
+            </div>
+          </>
+        )}
+        <div className="flex items-center justify-end gap-3 mt-1">
+          {saved && <span className="font-sans font-medium text-[12px] text-success">{t('account.emailSaved')}</span>}
+          {!codeSent
+            ? (
+              <button
+                type="submit"
+                onClick={requestCode}
+                disabled={!dirty}
+                className="h-10 px-5 bg-lagoon hover:bg-lagoon-deep active:scale-[0.97] text-white border-0 rounded-p-md font-sans font-bold text-[13px] leading-tight cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+              >
+                {t('account.saveEmail')}
+              </button>
+            ) : (
+              <button
+                type="submit"
+                onClick={confirmCode}
+                disabled={!complete || loading}
+                className="h-10 px-5 bg-lagoon hover:bg-lagoon-deep active:scale-[0.97] text-white border-0 rounded-p-md font-sans font-bold text-[13px] leading-tight cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+              >
+                {t('account.confirmEmail')}
+              </button>
+            )
+          }
+        </div>
+      </form>
     </div>
   )
 }

@@ -58,102 +58,103 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
         <div className="m-4 bg-white rounded-p-xl p-5 shadow-card">
           <h2 className="font-bold text-[22px] text-sea-ink mb-5">{t('addExpense.title')}</h2>
 
-          {/* Amount */}
-          <div className="mb-4">
-            <label className={labelBase}>{t('addExpense.amount')}</label>
-            <input
-              type="number"
-              inputMode="decimal"
-              placeholder={t('addExpense.amountPlaceholder')}
-              value={amountStr}
-              onChange={(e) => {
-                setAmountStr(e.target.value)
-                if (errors.amount) setErrors((prev) => ({ ...prev, amount: undefined }))
-              }}
-              className={cn(inputBase, 'h-[52px] font-bold text-[22px]', errors.amount && inputError)}
-            />
-            {errors.amount && (
-              <span className="block mt-1.5 font-medium text-[11px] text-danger">
-                {errors.amount}
-              </span>
-            )}
-          </div>
-
-          {/* Description */}
-          <div className="mb-4">
-            <label className={labelBase}>{t('addExpense.description')}</label>
-            <input
-              type="text"
-              placeholder={t('addExpense.descriptionPlaceholder')}
-              value={desc}
-              onChange={(e) => {
-                setDesc(e.target.value)
-                if (errors.desc) setErrors((prev) => ({ ...prev, desc: undefined }))
-              }}
-              className={cn(inputBase, errors.desc && inputError)}
-            />
-            {errors.desc && (
-              <span className="block mt-1.5 font-medium text-[11px] text-danger">
-                {errors.desc}
-              </span>
-            )}
-          </div>
-
-          {/* Category */}
-          <div className="mb-4">
-            <label className={labelBase}>{t('addExpense.category')}</label>
-            <div className="grid grid-cols-4 gap-2">
-              {categories.map((c) => (
-                <CategoryChip
-                  key={c.id}
-                  cat={c}
-                  selected={cat === c.id}
-                  onClick={() => setCat(c.id)}
-                />
-              ))}
+          <form onSubmit={(e) => { e.preventDefault(); handleSave() }}>
+            {/* Amount */}
+            <div className="mb-4">
+              <label className={labelBase}>{t('addExpense.amount')}</label>
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder={t('addExpense.amountPlaceholder')}
+                value={amountStr}
+                onChange={(e) => {
+                  setAmountStr(e.target.value)
+                  if (errors.amount) setErrors((prev) => ({ ...prev, amount: undefined }))
+                }}
+                className={cn(inputBase, 'h-[52px] font-bold text-[22px]', errors.amount && inputError)}
+              />
+              {errors.amount && (
+                <span className="block mt-1.5 font-medium text-[11px] text-danger">
+                  {errors.amount}
+                </span>
+              )}
             </div>
-          </div>
 
-          {/* Date */}
-          <div className="mb-4">
-            <label className={labelBase}>{t('addExpense.date')}</label>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className={inputBase}
-            />
-          </div>
+            {/* Description */}
+            <div className="mb-4">
+              <label className={labelBase}>{t('addExpense.description')}</label>
+              <input
+                type="text"
+                placeholder={t('addExpense.descriptionPlaceholder')}
+                value={desc}
+                onChange={(e) => {
+                  setDesc(e.target.value)
+                  if (errors.desc) setErrors((prev) => ({ ...prev, desc: undefined }))
+                }}
+                className={cn(inputBase, errors.desc && inputError)}
+              />
+              {errors.desc && (
+                <span className="block mt-1.5 font-medium text-[11px] text-danger">
+                  {errors.desc}
+                </span>
+              )}
+            </div>
 
-          {/* Note */}
-          <div className="mb-6">
-            <label className={labelBase}>{t('addExpense.note')}</label>
-            <input
-              type="text"
-              placeholder={t('addExpense.notePlaceholder')}
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              className={inputBase}
-            />
-          </div>
+            {/* Category */}
+            <div className="mb-4">
+              <label className={labelBase}>{t('addExpense.category')}</label>
+              <div className="grid grid-cols-4 gap-2">
+                {categories.map((c) => (
+                  <CategoryChip
+                    key={c.id}
+                    cat={c}
+                    selected={cat === c.id}
+                    onClick={() => setCat(c.id)}
+                  />
+                ))}
+              </div>
+            </div>
 
-          {/* Buttons */}
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex-1 h-11 bg-foam hover:bg-sand text-sea-ink border-0 rounded-p-md font-bold text-[14px] cursor-pointer"
-            >
-              {t('addExpense.cancel')}
-            </button>
-            <button
-              type="button"
-              onClick={handleSave}
-              className="flex-1 h-11 bg-lagoon hover:bg-lagoon-deep text-white border-0 rounded-p-md font-bold text-[14px] cursor-pointer transition-all active:scale-[0.97]"
-            >
-              {t('addExpense.submit')}
-            </button>
-          </div>
+            {/* Date */}
+            <div className="mb-4">
+              <label className={labelBase}>{t('addExpense.date')}</label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className={inputBase}
+              />
+            </div>
+
+            {/* Note */}
+            <div className="mb-6">
+              <label className={labelBase}>{t('addExpense.note')}</label>
+              <input
+                type="text"
+                placeholder={t('addExpense.notePlaceholder')}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className={inputBase}
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="flex-1 h-11 bg-foam hover:bg-sand text-sea-ink border-0 rounded-p-md font-bold text-[14px] cursor-pointer"
+              >
+                {t('addExpense.cancel')}
+              </button>
+              <button
+                type="submit"
+                className="flex-1 h-11 bg-lagoon hover:bg-lagoon-deep text-white border-0 rounded-p-md font-bold text-[14px] cursor-pointer transition-all active:scale-[0.97]"
+              >
+                {t('addExpense.submit')}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </>

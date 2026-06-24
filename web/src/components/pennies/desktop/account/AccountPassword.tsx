@@ -76,49 +76,50 @@ export default function DesktopAccountPassword({ onCancel, onSave, error }: Prop
             {t('account.passwordSub')}
           </p>
 
-          <Field
-            label={t('account.currentPassword')}
-            value={cur}
-            onChange={(e) => { setCur(e.target.value); setErrors({ ...errors, cur: '' }) }}
-            placeholder="••••••••"
-            error={errors.cur}
-          />
-          <Field
-            label={t('account.newPassword')}
-            value={next}
-            onChange={(e) => { setNext(e.target.value); setErrors({ ...errors, next: '' }) }}
-            placeholder={t('auth.passwordPlaceholder')}
-            error={errors.next}
-            help={!errors.next ? 'Use at least 8 characters.' : undefined}
-          />
-          <Field
-            label={t('account.confirmPassword')}
-            value={conf}
-            onChange={(e) => { setConf(e.target.value); setErrors({ ...errors, conf: '' }) }}
-            placeholder="Re-enter new password"
-            error={errors.conf}
-          />
+          <form onSubmit={(e) => { e.preventDefault(); submit() }}>
+            <Field
+              label={t('account.currentPassword')}
+              value={cur}
+              onChange={(e) => { setCur(e.target.value); setErrors({ ...errors, cur: '' }) }}
+              placeholder="••••••••"
+              error={errors.cur}
+            />
+            <Field
+              label={t('account.newPassword')}
+              value={next}
+              onChange={(e) => { setNext(e.target.value); setErrors({ ...errors, next: '' }) }}
+              placeholder={t('auth.passwordPlaceholder')}
+              error={errors.next}
+              help={!errors.next ? 'Use at least 8 characters.' : undefined}
+            />
+            <Field
+              label={t('account.confirmPassword')}
+              value={conf}
+              onChange={(e) => { setConf(e.target.value); setErrors({ ...errors, conf: '' }) }}
+              placeholder="Re-enter new password"
+              error={errors.conf}
+            />
 
-          {error && (
-            <p className="text-sea-ink-soft text-[13px] font-medium mb-3">{error}</p>
-          )}
+            {error && (
+              <p className="text-sea-ink-soft text-[13px] font-medium mb-3">{error}</p>
+            )}
 
-          <div className="flex gap-2.5 justify-end mt-2">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="h-10 px-[22px] bg-white text-sea-ink hover:bg-foam border-0 rounded-p-sm font-sans font-bold text-[13px] leading-tight cursor-pointer shadow-card transition-colors duration-150"
-            >
-              {t('editExpense.cancel')}
-            </button>
-            <button
-              type="button"
-              onClick={submit}
-              className="h-10 px-[22px] bg-lagoon hover:bg-lagoon-deep text-white border-0 rounded-p-sm font-sans font-bold text-[13px] leading-tight cursor-pointer transition-colors duration-150 whitespace-nowrap"
-            >
-              {t('account.updatePassword')}
-            </button>
-          </div>
+            <div className="flex gap-2.5 justify-end mt-2">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="h-10 px-[22px] bg-white text-sea-ink hover:bg-foam border-0 rounded-p-sm font-sans font-bold text-[13px] leading-tight cursor-pointer shadow-card transition-colors duration-150"
+              >
+                {t('editExpense.cancel')}
+              </button>
+              <button
+                type="submit"
+                className="h-10 px-[22px] bg-lagoon hover:bg-lagoon-deep text-white border-0 rounded-p-sm font-sans font-bold text-[13px] leading-tight cursor-pointer transition-colors duration-150 whitespace-nowrap"
+              >
+                {t('account.updatePassword')}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </>

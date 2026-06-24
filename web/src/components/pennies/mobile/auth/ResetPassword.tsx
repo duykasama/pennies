@@ -37,59 +37,61 @@ export function MobileResetPassword({ onSubmit, onBack, error, loading }: FormPr
     <div className="absolute inset-0 overflow-y-auto bg-bg-base">
       <AuthHeader title={t('auth.resetTitle')} sub={t('auth.resetSub')} />
       <div className="mx-4 bg-white rounded-p-xl p-5 shadow-card">
-        <div className="mb-4">
-          <label className="block font-sans font-bold text-[12px] leading-none text-sea-ink-soft mb-2">
-            {t('auth.resetNewPassword')}
-          </label>
-          <input
-            type="password"
-            className={`${mobileInputCls} ${newPwError ? 'bg-danger-soft border-danger text-danger' : ''}`}
-            value={newPw}
-            onChange={(e) => {
-              setNewPw(e.target.value)
-              if (newPwError) setNewPwError(null)
-            }}
-            placeholder={t('auth.passwordPlaceholder')}
-          />
-          {newPwError ? (
-            <span className="block mt-1.5 font-sans font-medium text-[11px] leading-tight text-danger">
-              {newPwError}
-            </span>
-          ) : (
-            <span className="block mt-1.5 font-sans font-medium text-[11px] leading-snug text-sea-ink-soft">
-              {t('auth.resetPasswordMinLength')}
-            </span>
-          )}
-        </div>
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit() }}>
+          <div className="mb-4">
+            <label className="block font-sans font-bold text-[12px] leading-none text-sea-ink-soft mb-2">
+              {t('auth.resetNewPassword')}
+            </label>
+            <input
+              type="password"
+              className={`${mobileInputCls} ${newPwError ? 'bg-danger-soft border-danger text-danger' : ''}`}
+              value={newPw}
+              onChange={(e) => {
+                setNewPw(e.target.value)
+                if (newPwError) setNewPwError(null)
+              }}
+              placeholder={t('auth.passwordPlaceholder')}
+            />
+            {newPwError ? (
+              <span className="block mt-1.5 font-sans font-medium text-[11px] leading-tight text-danger">
+                {newPwError}
+              </span>
+            ) : (
+              <span className="block mt-1.5 font-sans font-medium text-[11px] leading-snug text-sea-ink-soft">
+                {t('auth.resetPasswordMinLength')}
+              </span>
+            )}
+          </div>
 
-        <div className="mb-4">
-          <label className="block font-sans font-bold text-[12px] leading-none text-sea-ink-soft mb-2">
-            {t('auth.resetConfirmPassword')}
-          </label>
-          <input
-            type="password"
-            className={`${mobileInputCls} ${confirmPwError ? 'bg-danger-soft border-danger text-danger' : ''}`}
-            value={confirmPw}
-            onChange={(e) => {
-              setConfirmPw(e.target.value)
-              if (confirmPwError) setConfirmPwError(null)
-            }}
-            placeholder={t('auth.resetConfirmPlaceholder')}
-          />
-          {confirmPwError && (
-            <span className="block mt-1.5 font-sans font-medium text-[11px] leading-tight text-danger">
-              {confirmPwError}
-            </span>
-          )}
-        </div>
+          <div className="mb-4">
+            <label className="block font-sans font-bold text-[12px] leading-none text-sea-ink-soft mb-2">
+              {t('auth.resetConfirmPassword')}
+            </label>
+            <input
+              type="password"
+              className={`${mobileInputCls} ${confirmPwError ? 'bg-danger-soft border-danger text-danger' : ''}`}
+              value={confirmPw}
+              onChange={(e) => {
+                setConfirmPw(e.target.value)
+                if (confirmPwError) setConfirmPwError(null)
+              }}
+              placeholder={t('auth.resetConfirmPlaceholder')}
+            />
+            {confirmPwError && (
+              <span className="block mt-1.5 font-sans font-medium text-[11px] leading-tight text-danger">
+                {confirmPwError}
+              </span>
+            )}
+          </div>
 
-        {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
+          {error && <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>}
 
-        <div className="mt-1">
-          <PrimaryBtn onClick={handleSubmit} disabled={loading}>
-            {t('auth.resetBtn')}
-          </PrimaryBtn>
-        </div>
+          <div className="mt-1">
+            <PrimaryBtn type="submit" disabled={loading}>
+              {t('auth.resetBtn')}
+            </PrimaryBtn>
+          </div>
+        </form>
       </div>
 
       <div className="text-center py-5 font-sans font-medium text-[13px] text-sea-ink-soft">

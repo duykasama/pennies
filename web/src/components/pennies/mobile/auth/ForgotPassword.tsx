@@ -26,17 +26,19 @@ export default function MobileForgotPassword({ onSubmit, onBack, error, loading 
       </div>
       <AuthHeader title={t('auth.forgotTitle')} sub={t('auth.forgotSub')} />
       <div className="mx-4 bg-white rounded-p-xl p-5 shadow-card">
-        <AuthInput
-          label={t('auth.email')}
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder={t('auth.emailPlaceholder')}
-        />
-        {error && <p className="text-red-500 text-[13px] font-medium mt-2">{error}</p>}
-        <div className="mt-1">
-          <PrimaryBtn onClick={() => onSubmit(email)} disabled={loading}>{t('auth.continueBtn')}</PrimaryBtn>
-        </div>
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(email) }}>
+          <AuthInput
+            label={t('auth.email')}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t('auth.emailPlaceholder')}
+          />
+          {error && <p className="text-red-500 text-[13px] font-medium mt-2">{error}</p>}
+          <div className="mt-1">
+            <PrimaryBtn type="submit" disabled={loading}>{t('auth.continueBtn')}</PrimaryBtn>
+          </div>
+        </form>
       </div>
       <div className="text-center py-5 font-sans font-medium text-[13px] text-sea-ink-soft">
         {t('auth.rememberedIt')}{' '}

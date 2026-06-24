@@ -19,33 +19,35 @@ export default function MobileSignIn({ onSubmit, onGoogle, onSignUp, onForgot, e
     <div className="absolute inset-0 overflow-y-auto bg-bg-base">
       <AuthHeader title={t('auth.signIn')} sub={t('auth.signInSub')} />
       <div className="mx-4 bg-white rounded-p-xl p-5 shadow-card">
-        <AuthInput
-          label={t('auth.email')}
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder={t('auth.emailPlaceholder')}
-        />
-        <AuthInput
-          label={t('auth.password')}
-          type="password"
-          value={pw}
-          onChange={(e) => setPw(e.target.value)}
-          placeholder="••••••••"
-          right={
-            <button
-              type="button"
-              onClick={onForgot}
-              className="font-sans font-bold text-[11px] text-lagoon-deep bg-transparent border-0 cursor-pointer p-0"
-            >
-              {t('auth.forgot')}
-            </button>
-          }
-        />
-        {error && (
-          <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
-        )}
-        <PrimaryBtn onClick={() => onSubmit(email, pw)}>{t('auth.signInBtn')}</PrimaryBtn>
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(email, pw) }}>
+          <AuthInput
+            label={t('auth.email')}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t('auth.emailPlaceholder')}
+          />
+          <AuthInput
+            label={t('auth.password')}
+            type="password"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
+            placeholder="••••••••"
+            right={
+              <button
+                type="button"
+                onClick={onForgot}
+                className="font-sans font-bold text-[11px] text-lagoon-deep bg-transparent border-0 cursor-pointer p-0"
+              >
+                {t('auth.forgot')}
+              </button>
+            }
+          />
+          {error && (
+            <p className="text-red-500 text-[13px] font-medium mb-2">{error}</p>
+          )}
+          <PrimaryBtn type="submit">{t('auth.signInBtn')}</PrimaryBtn>
+        </form>
         <OrDivider />
         <GoogleButton label={t('auth.signInWithGoogle')} onClick={onGoogle} />
       </div>

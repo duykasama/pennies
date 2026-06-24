@@ -41,15 +41,20 @@ export function DesktopField({
 export function DesktopPrimaryBtn({
   children,
   onClick,
+  type = 'button',
+  disabled,
 }: {
   children: React.ReactNode
   onClick?: () => void
+  type?: 'button' | 'submit'
+  disabled?: boolean
 }) {
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
-      className="w-full h-12 bg-lagoon hover:bg-lagoon-deep active:scale-[0.99] text-white border-0 rounded-p-md font-sans font-bold text-[14px] leading-none cursor-pointer transition-all duration-150 ease-out"
+      disabled={disabled}
+      className="w-full h-12 bg-lagoon hover:bg-lagoon-deep active:scale-[0.99] text-white border-0 rounded-p-md font-sans font-bold text-[14px] leading-none cursor-pointer transition-all duration-150 ease-out disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
     >
       {children}
     </button>

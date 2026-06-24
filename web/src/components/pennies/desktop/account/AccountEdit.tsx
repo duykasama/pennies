@@ -52,7 +52,7 @@ function Field({
 function SaveBtn({ onClick, disabled, children }: { onClick: () => void; disabled?: boolean; children: React.ReactNode }) {
   return (
     <button
-      type="button"
+      type="submit"
       onClick={onClick}
       disabled={disabled}
       className="h-10 px-[22px] bg-lagoon hover:bg-lagoon-deep text-white border-0 rounded-p-sm font-sans font-bold text-[13px] leading-tight cursor-pointer transition-colors duration-150 whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-lagoon"
@@ -75,26 +75,32 @@ function NameCard({ user, onSaveName, externalError }: { user: UserProfile; onSa
   async function submit() {
     if (!name.trim()) { setError(t('account.nameError')); return }
     setError(null)
-    await onSaveName(name.trim())
-    setBaseName(name.trim())
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    try {
+      await onSaveName(name.trim())
+      setBaseName(name.trim())
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch {
+      // error surfaced via externalError prop
+    }
   }
 
   return (
     <div className="bg-foam rounded-p-md p-7 shadow-card mb-5">
       <h2 className="m-0 mb-4 font-sans font-bold text-[17px] leading-tight text-sea-ink">{t('account.nameSection')}</h2>
-      <Field
-        label={t('account.fullName')}
-        value={name}
-        onChange={(e) => { setName(e.target.value); setError(null) }}
-        placeholder={t('auth.namePlaceholder')}
-        error={error}
-      />
-      <div className="flex items-center justify-end gap-3 mt-1">
-        {saved && <span className="font-sans font-medium text-[13px] text-success">{t('account.nameSaved')}</span>}
-        <SaveBtn onClick={submit} disabled={!dirty}>{t('account.saveName')}</SaveBtn>
-      </div>
+      <form onSubmit={(e) => { e.preventDefault(); if (dirty) submit() }}>
+        <Field
+          label={t('account.fullName')}
+          value={name}
+          onChange={(e) => { setName(e.target.value); setError(null) }}
+          placeholder={t('auth.namePlaceholder')}
+          error={error}
+        />
+        <div className="flex items-center justify-end gap-3 mt-1">
+          {saved && <span className="font-sans font-medium text-[13px] text-success">{t('account.nameSaved')}</span>}
+          <SaveBtn onClick={submit} disabled={!dirty}>{t('account.saveName')}</SaveBtn>
+        </div>
+      </form>
     </div>
   )
 }
@@ -153,8 +159,12 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
   async function requestCode() {
     if (!/^\S+@\S+\.\S+$/.test(email)) { setError(t('account.emailError')); return }
     setError(null)
-    await onRequestEmail(email.trim())
-    setCodeSent(true)
+    try {
+      await onRequestEmail(email.trim())
+      setCodeSent(true)
+    } catch {
+      // error surfaced via externalError prop
+    }
   }
 
   async function confirmCode() {
@@ -166,6 +176,8 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
       setCode(['', '', '', '', '', ''])
       setCodeSent(false)
       setTimeout(() => setSaved(false), 3000)
+    } catch {
+      // error surfaced via externalError prop
     } finally {
       setLoading(false)
     }
@@ -180,38 +192,40 @@ function EmailCard({ user, onRequestEmail, onConfirmEmail, externalError }: { us
   return (
     <div className="bg-foam rounded-p-md p-7 shadow-card mb-5">
       <h2 className="m-0 mb-4 font-sans font-bold text-[17px] leading-tight text-sea-ink">{t('account.emailSection')}</h2>
-      <Field
-        label={t('auth.email')}
-        type="email"
-        value={email}
-        onChange={handleEmailChange}
-        placeholder={t('auth.emailPlaceholder')}
-        error={error}
-        help={!error && !codeSent ? t('account.confirmEmailNote') : undefined}
-      />
-      {codeSent && (
-        <>
-          <div className="mb-2 font-sans font-bold text-[13px] leading-none text-sea-ink">{t('account.confirmationCode')}</div>
-          <CodeInput value={code} onChange={setCode} />
-          <div className="-mt-2 mb-4 font-sans font-medium text-[12px] leading-tight text-sea-ink-soft">
-            {t('auth.didntGetCode')}{' '}
-            <button
-              type="button"
-              onClick={requestCode}
-              className="bg-transparent border-0 text-lagoon-deep font-bold text-[12px] cursor-pointer p-0 underline"
-            >
-              {t('auth.resendCode')}
-            </button>
-          </div>
-        </>
-      )}
-      <div className="flex items-center justify-end gap-3 mt-1">
-        {saved && <span className="font-sans font-medium text-[13px] text-success">{t('account.emailSaved')}</span>}
-        {!codeSent
-          ? <SaveBtn onClick={requestCode} disabled={!dirty}>{t('account.saveEmail')}</SaveBtn>
-          : <SaveBtn onClick={confirmCode} disabled={!complete || loading}>{t('account.confirmEmail')}</SaveBtn>
-        }
-      </div>
+      <form onSubmit={(e) => { e.preventDefault(); codeSent ? (complete && !loading && confirmCode()) : (dirty && requestCode()) }}>
+        <Field
+          label={t('auth.email')}
+          type="email"
+          value={email}
+          onChange={handleEmailChange}
+          placeholder={t('auth.emailPlaceholder')}
+          error={error}
+          help={!error && !codeSent ? t('account.confirmEmailNote') : undefined}
+        />
+        {codeSent && (
+          <>
+            <div className="mb-2 font-sans font-bold text-[13px] leading-none text-sea-ink">{t('account.confirmationCode')}</div>
+            <CodeInput value={code} onChange={setCode} />
+            <div className="-mt-2 mb-4 font-sans font-medium text-[12px] leading-tight text-sea-ink-soft">
+              {t('auth.didntGetCode')}{' '}
+              <button
+                type="button"
+                onClick={requestCode}
+                className="bg-transparent border-0 text-lagoon-deep font-bold text-[12px] cursor-pointer p-0 underline"
+              >
+                {t('auth.resendCode')}
+              </button>
+            </div>
+          </>
+        )}
+        <div className="flex items-center justify-end gap-3 mt-1">
+          {saved && <span className="font-sans font-medium text-[13px] text-success">{t('account.emailSaved')}</span>}
+          {!codeSent
+            ? <SaveBtn onClick={requestCode} disabled={!dirty}>{t('account.saveEmail')}</SaveBtn>
+            : <SaveBtn onClick={confirmCode} disabled={!complete || loading}>{t('account.confirmEmail')}</SaveBtn>
+          }
+        </div>
+      </form>
     </div>
   )
 }

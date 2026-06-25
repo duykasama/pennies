@@ -10,20 +10,65 @@ import { API_URL, ROUTES } from '#/lib/constants'
 export type SessionUser = { sub: string; email: string; displayName: string }
 export type UserProfile = SessionUser
 
+function decodeSessionUser(accessToken: string): SessionUser {
+  const [, b64] = accessToken.split('.')
+  const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
+  return { sub: payload.sub, email: payload.email, displayName: payload.displayName }
+}
+
+function setAuthCookies(accessToken: string, refreshToken: string) {
+  const secure = process.env.NODE_ENV === 'production'
+  setCookie('auth_token', accessToken, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure,
+    maxAge: 60 * 60,
+    path: '/',
+  })
+  setCookie('refresh_token', refreshToken, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure,
+    maxAge: 60 * 60 * 24 * 30,
+    path: '/',
+  })
+}
+
 export const getSessionFn = createServerFn().handler(
   async (): Promise<SessionUser | null> => {
     const token = getCookie('auth_token')
-    if (!token) return null
-    try {
-      const [, b64] = token.split('.')
-      const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
-      if (payload.exp * 1000 < Date.now()) return null
-      return {
-        sub: payload.sub,
-        email: payload.email,
-        displayName: payload.displayName,
+    if (token) {
+      try {
+        const [, b64] = token.split('.')
+        const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
+        if (payload.exp * 1000 >= Date.now()) {
+          return { sub: payload.sub, email: payload.email, displayName: payload.displayName }
+        }
+      } catch {
+        // fall through to refresh
       }
+    }
+
+    const refreshToken = getCookie('refresh_token')
+    if (!refreshToken) return null
+
+    try {
+      const res = await fetch(`${API_URL}/auth/refresh-token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: refreshToken, accessToken: token ?? undefined }),
+      })
+      if (!res.ok) {
+        deleteCookie('auth_token')
+        deleteCookie('refresh_token')
+        return null
+      }
+      const { accessToken: newAccess, refreshToken: newRefresh } = await res.json()
+      setAuthCookies(newAccess, newRefresh)
+      return decodeSessionUser(newAccess)
     } catch {
+      deleteCookie('auth_token')
+      deleteCookie('refresh_token')
       return null
     }
   },
@@ -43,25 +88,26 @@ export const loginFn = createServerFn({ method: 'POST' })
       console.log('error:', res.ok)
       throw new Error(body?.error ?? 'Invalid credentials')
     }
-    const { accessToken } = await res.json()
-    setCookie('auth_token', accessToken, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60,
-      path: '/',
-    })
-    const [, b64] = accessToken.split('.')
-    const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
-    return {
-      sub: payload.sub,
-      email: payload.email,
-      displayName: payload.displayName,
-    }
+    const { accessToken, refreshToken } = await res.json()
+    setAuthCookies(accessToken, refreshToken)
+    return decodeSessionUser(accessToken)
   })
 
 export const logoutFn = createServerFn({ method: 'POST' }).handler(async () => {
+  const token = getCookie('auth_token')
+  const refreshToken = getCookie('refresh_token')
+  if (token && refreshToken) {
+    await fetch(`${API_URL}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ refreshToken }),
+    }).catch(() => {})
+  }
   deleteCookie('auth_token')
+  deleteCookie('refresh_token')
 })
 
 export const registerFn = createServerFn({ method: 'POST' })
@@ -124,21 +170,9 @@ export const googleLoginFn = createServerFn({ method: 'POST' })
       const body = await res.json().catch(() => ({}))
       throw new Error(body?.error ?? 'Google authentication failed')
     }
-    const { accessToken } = await res.json()
-    setCookie('auth_token', accessToken, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60,
-      path: '/',
-    })
-    const [, b64] = accessToken.split('.')
-    const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
-    return {
-      sub: payload.sub,
-      email: payload.email,
-      displayName: payload.displayName,
-    }
+    const { accessToken, refreshToken } = await res.json()
+    setAuthCookies(accessToken, refreshToken)
+    return decodeSessionUser(accessToken)
   })
 
 export const resendConfirmationFn = createServerFn({ method: 'POST' })

@@ -6,6 +6,8 @@ using Pennies.Auth.Application.Auth.Commands.ConfirmEmailUpdate;
 using Pennies.Auth.Application.Auth.Commands.ForgotPassword;
 using Pennies.Auth.Application.Auth.Commands.GoogleLogin;
 using Pennies.Auth.Application.Auth.Commands.Login;
+using Pennies.Auth.Application.Auth.Commands.Logout;
+using Pennies.Auth.Application.Auth.Commands.RefreshToken;
 using Pennies.Auth.Application.Auth.Commands.Register;
 using Pennies.Auth.Application.Auth.Commands.RequestEmailUpdate;
 using Pennies.Auth.Application.Auth.Commands.ResendConfirmation;
@@ -33,6 +35,7 @@ public static class AuthEndpoints
         group.MapPost("/google/login", GoogleLogin);
         group.MapPost("/forgot-password", ForgotPassword);
         group.MapPost("/reset-password", ResetPassword);
+        group.MapPost("/refresh-token", RefreshToken);
 
         var protectedGroup = app.MapGroup("/auth").WithTags("Auth").RequireAuthorization();
         protectedGroup.MapGet("/profile", GetProfile);
@@ -40,6 +43,7 @@ public static class AuthEndpoints
         protectedGroup.MapPost("/change-password", ChangePassword);
         protectedGroup.MapPost("/request-email-update", RequestEmailUpdate);
         protectedGroup.MapPost("/confirm-email-update", ConfirmEmailUpdate);
+        protectedGroup.MapPost("/logout", Logout);
 
         return app;
     }
@@ -91,6 +95,17 @@ public static class AuthEndpoints
     private static async Task<IResult> ResetPassword(ResetPasswordRequest request, ISender mediator)
     {
         return (await mediator.Send(new ResetPasswordCommand(request.Token, request.NewPassword))).ToHttpResult();
+    }
+
+    private static async Task<IResult> RefreshToken(RefreshTokenRequest request, ISender mediator)
+    {
+        return (await mediator.Send(new RefreshTokenCommand(request.Token, request.AccessToken))).ToHttpResult();
+    }
+
+    private static async Task<IResult> Logout(LogoutRequest request, ClaimsPrincipal user, ISender mediator)
+    {
+        var jti = user.FindFirstValue("jti")!;
+        return (await mediator.Send(new LogoutCommand(jti, request.RefreshToken))).ToHttpResult();
     }
 
     private static async Task<IResult> GetProfile(ClaimsPrincipal user, ISender mediator)
@@ -148,3 +163,5 @@ public sealed record UpdateDisplayNameRequest(string DisplayName);
 public sealed record ChangePasswordRequest(string CurrentPassword, string NewPassword);
 public sealed record RequestEmailUpdateRequest(string NewEmail);
 public sealed record ConfirmEmailUpdateRequest(string Code);
+public sealed record RefreshTokenRequest(string Token, string? AccessToken = null);
+public sealed record LogoutRequest(string RefreshToken);

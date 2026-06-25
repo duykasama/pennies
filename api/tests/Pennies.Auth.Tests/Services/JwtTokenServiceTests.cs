@@ -99,6 +99,28 @@ public class JwtTokenServiceTests
         jwt.ValidTo.Should().BeCloseTo(before.AddHours(1), TimeSpan.FromSeconds(5));
     }
 
+    [Fact]
+    public void GenerateRefreshToken_ReturnsNonEmptyString()
+    {
+        _sut.GenerateRefreshToken().Should().NotBeNullOrEmpty();
+    }
+
+    [Fact]
+    public void GenerateRefreshToken_ProducesDifferentTokensEachCall()
+    {
+        var token1 = _sut.GenerateRefreshToken();
+        var token2 = _sut.GenerateRefreshToken();
+
+        token1.Should().NotBe(token2);
+    }
+
+    [Fact]
+    public void GenerateRefreshToken_Returns88CharBase64String()
+    {
+        // 64 bytes → 88 base-64 chars (with padding)
+        _sut.GenerateRefreshToken().Length.Should().Be(88);
+    }
+
     private static JsonWebToken Parse(string token) => new(token);
 
     private static AuthUser CreateUser() => new()

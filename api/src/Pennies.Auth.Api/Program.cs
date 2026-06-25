@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using FluentValidation;
 using MediatR;
@@ -48,12 +49,18 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddValidatorsFromAssembly(typeof(AssemblyMarker).Assembly);
 
 builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddSingleton<TokenBlacklistService>();
 builder.Services.AddScoped<IEmailConfirmationTokenService, EmailConfirmationTokenService>();
 builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection(GoogleAuthSettings.SectionName));
 builder.Services.AddHttpClient<IGoogleOAuthService, GoogleOAuthService>();
 builder.Services.AddScoped<IPasswordResetTokenService, PasswordResetTokenService>();
 builder.Services.Configure<EmailUpdateSettings>(builder.Configuration.GetSection(EmailUpdateSettings.SectionName));
 builder.Services.AddMessaging(builder.Configuration.GetConnectionString("rabbitmq")!);
+
+if (builder.Configuration.GetConnectionString("redis") is not null)
+    builder.AddRedisDistributedCache("redis");
+else
+    builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddAuthentication()
     .AddJwtBearer(opts =>
@@ -68,6 +75,19 @@ builder.Services.AddAuthentication()
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)),
+        };
+        opts.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async ctx =>
+            {
+                var jti = ctx.Principal?.FindFirstValue("jti");
+                if (jti is not null)
+                {
+                    var blacklist = ctx.HttpContext.RequestServices.GetRequiredService<TokenBlacklistService>();
+                    if (await blacklist.IsBlacklistedAsync(jti, ctx.HttpContext.RequestAborted))
+                        ctx.Fail("Token has been revoked.");
+                }
+            }
         };
     });
 // AddIdentity sets DefaultAuthenticateScheme/DefaultChallengeScheme to its cookie scheme.

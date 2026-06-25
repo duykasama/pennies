@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Pennies.Auth.Application.Auth.DTOs;
 using Pennies.Auth.Application.Common;
 using Pennies.Auth.Application.Entities;
+using Pennies.Auth.Application.Persistence;
+using RefreshTokenEntity = Pennies.Auth.Application.Entities.RefreshToken;
 using Pennies.Auth.Application.Services;
 
 namespace Pennies.Auth.Application.Auth.Commands.GoogleLogin;
@@ -10,7 +12,8 @@ namespace Pennies.Auth.Application.Auth.Commands.GoogleLogin;
 internal sealed class GoogleLoginHandler(
     IGoogleOAuthService googleOAuthService,
     UserManager<AuthUser> userManager,
-    JwtTokenService tokenService)
+    JwtTokenService tokenService,
+    AuthDbContext dbContext)
     : IRequestHandler<GoogleLoginCommand, Result<LoginResponse>>
 {
     private const string LoginProvider = "Google";
@@ -76,7 +79,19 @@ internal sealed class GoogleLoginHandler(
             }
         }
 
-        var token = tokenService.GenerateAccessToken(user);
-        return Result.Success(new LoginResponse(token, DateTime.UtcNow.AddHours(1)));
+        var accessToken = tokenService.GenerateAccessToken(user);
+        var refreshToken = tokenService.GenerateRefreshToken();
+        var refreshTokenExpiresAt = DateTime.UtcNow.AddDays(30);
+
+        dbContext.RefreshTokens.Add(new RefreshTokenEntity
+        {
+            Token = refreshToken,
+            UserId = user.Id,
+            ExpiresAt = refreshTokenExpiresAt,
+            CreatedAt = DateTime.UtcNow,
+        });
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(new LoginResponse(accessToken, DateTime.UtcNow.AddHours(1), refreshToken, refreshTokenExpiresAt));
     }
 }

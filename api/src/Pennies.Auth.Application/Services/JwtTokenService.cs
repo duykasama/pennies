@@ -9,6 +9,28 @@ namespace Pennies.Auth.Application.Services;
 
 public sealed class JwtTokenService(IConfiguration configuration)
 {
+    public string? TryExtractJti(string accessToken)
+    {
+        try { return new JsonWebToken(accessToken).GetPayloadValue<string>(JwtRegisteredClaimNames.Jti); }
+        catch { return null; }
+    }
+
+    public DateTime? TryExtractExpiry(string accessToken)
+    {
+        try
+        {
+            var exp = new JsonWebToken(accessToken).GetPayloadValue<long>(JwtRegisteredClaimNames.Exp);
+            return DateTimeOffset.FromUnixTimeSeconds(exp).UtcDateTime;
+        }
+        catch { return null; }
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var bytes = System.Security.Cryptography.RandomNumberGenerator.GetBytes(64);
+        return Convert.ToBase64String(bytes);
+    }
+
     public string GenerateAccessToken(AuthUser user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!));

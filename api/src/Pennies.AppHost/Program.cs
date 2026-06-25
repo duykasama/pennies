@@ -44,7 +44,9 @@ expensesApi
 authApi
     .WithReference(penniesAuth)
     .WaitFor(penniesAuth)
-    .WithReference(rabbit);
+    .WithReference(rabbit)
+    .WithReference(redis)
+    .WaitFor(redis);
 
 gateway
     .WithReference(expensesApi)

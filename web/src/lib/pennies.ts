@@ -8,6 +8,7 @@ export interface Expense {
   sub: string
   amount: number
   date: string
+  freq: number | null
   updatedAt: string
 }
 
@@ -173,6 +174,10 @@ export interface PeriodSummary {
 export function periodSummary(
   expenses: Expense[],
   todayIso?: string,
+  opts?: {
+    weekFreqIds?: ReadonlySet<number>
+    todayFreqIds?: ReadonlySet<number>
+  },
 ): PeriodSummary {
   const iso = todayIso ?? isoToday()
   const t = pDate(iso)
@@ -193,13 +198,19 @@ export function periodSummary(
     return d >= a && d <= b
   }
   const sum = (arr: Expense[]) => arr.reduce((s, e) => s + e.amount, 0)
+  const isTodayFreq = (e: Expense) =>
+    opts?.todayFreqIds === undefined || e.freq === null || opts.todayFreqIds.has(e.freq)
+  const isWeekFreq = (e: Expense) =>
+    opts?.weekFreqIds === undefined || e.freq === null || opts.weekFreqIds.has(e.freq)
 
-  const todayE = expenses.filter((e) => e.date.slice(0, 10) === iso)
-  const weekE = expenses.filter((e) =>
-    inRange(e.date.slice(0, 10), weekStart, weekEnd),
+  const todayE = expenses.filter(
+    (e) => e.date.slice(0, 10) === iso && isTodayFreq(e),
   )
-  const lweekE = expenses.filter((e) =>
-    inRange(e.date.slice(0, 10), lwStart, lwEnd),
+  const weekE = expenses.filter(
+    (e) => inRange(e.date.slice(0, 10), weekStart, weekEnd) && isWeekFreq(e),
+  )
+  const lweekE = expenses.filter(
+    (e) => inRange(e.date.slice(0, 10), lwStart, lwEnd) && isWeekFreq(e),
   )
   const monthE = expenses.filter((e) => {
     const d = pDate(e.date.slice(0, 10))

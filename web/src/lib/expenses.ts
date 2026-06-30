@@ -3,6 +3,7 @@ import { getCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
 import { API_URL } from '#/lib/constants'
 import type { ApiCategory } from '#/lib/categories'
+import type { ApiFrequency } from '#/lib/frequencies'
 import type { Expense } from '#/lib/pennies'
 
 export interface ApiExpense {
@@ -11,6 +12,7 @@ export interface ApiExpense {
   description: string | null
   amount: number
   category: ApiCategory
+  frequency: ApiFrequency | null
   date: string
   updatedAt: string
 }
@@ -31,6 +33,7 @@ export function mapApiExpense(r: ApiExpense): Expense {
     sub: r.description ?? '',
     amount: r.amount,
     date: r.date,
+    freq: r.frequency?.id ?? null,
     updatedAt: r.updatedAt,
   }
 }
@@ -80,6 +83,7 @@ export const updateExpenseFn = createServerFn({ method: 'POST' })
       description: z.string().nullable(),
       amount: z.number(),
       category: z.number(),
+      frequency: z.number().nullable(),
       date: z.string(),
       updatedAt: z.string(),
     }),
@@ -117,6 +121,7 @@ export const createExpenseFn = createServerFn({ method: 'POST' })
       description: z.string().nullable(),
       amount: z.number(),
       category: z.number(),
+      frequency: z.number().nullable(),
       date: z.string(),
     }),
   )

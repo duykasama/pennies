@@ -6,15 +6,15 @@ using Pennies.Domain.Expenses;
 namespace Pennies.Application.Expenses.Queries.GetExpenseFrequencies;
 
 internal sealed class GetExpenseFrequenciesHandler(IExpenseLookupRepository repository)
-    : IRequestHandler<GetExpenseFrequenciesQuery, Result<IReadOnlyList<LookupResponse>>>
+    : IRequestHandler<GetExpenseFrequenciesQuery, Result<IReadOnlyList<FrequencyResponse>>>
 {
-    public async Task<Result<IReadOnlyList<LookupResponse>>> Handle(
+    public async Task<Result<IReadOnlyList<FrequencyResponse>>> Handle(
         GetExpenseFrequenciesQuery request,
         CancellationToken cancellationToken)
     {
         var items = await repository.GetFrequenciesAsync(request.Language, cancellationToken);
-        return Result.Success<IReadOnlyList<LookupResponse>>(
-            items.Select(f => new LookupResponse(f.Id, ResolveName(f.Translations, request.Language)))
+        return Result.Success<IReadOnlyList<FrequencyResponse>>(
+            items.Select(f => new FrequencyResponse(f.Id, ResolveName(f.Translations, request.Language), f.DisplayOrder))
                 .ToList().AsReadOnly());
     }
 

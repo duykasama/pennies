@@ -79,5 +79,6 @@ public class CreateExpenseValidatorTests
         Description: null,
         Amount: -50.00m,
         Category: ExpenseCategory.Food,
+        Frequency: null,
         Date: DateOnly.FromDateTime(DateTime.UtcNow));
 }

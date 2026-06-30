@@ -72,6 +72,7 @@ public class UpdateExpenseValidatorTests
         Description: null,
         Amount: -50.00m,
         Category: ExpenseCategory.Food,
+        Frequency: null,
         Date: DateOnly.FromDateTime(DateTime.UtcNow),
         UpdatedAt: DateTime.UtcNow);
 }

@@ -99,6 +99,18 @@ public class UpdateExpenseHandlerTests
             .InvalidateAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
+    [Fact]
+    public async Task Handle_ValidCommand_WithFrequency_PersistsFrequency()
+    {
+        var expense = CreateExpense("user-1");
+        _repository.GetByIdAsync(expense.Id, Arg.Any<CancellationToken>()).Returns(expense);
+        var command = ValidCommand(expenseId: expense.Id, updatedAt: expense.UpdatedAt) with { Frequency = 2 };
+
+        await _sut.Handle(command, CancellationToken.None);
+
+        expense.Frequency.Should().Be(2);
+    }
+
     private static UpdateExpenseCommand ValidCommand(
         Guid? expenseId = null,
         string userId = "user-1",
@@ -109,6 +121,7 @@ public class UpdateExpenseHandlerTests
         Description: null,
         Amount: -75.00m,
         Category: ExpenseCategory.Shopping,
+        Frequency: null,
         Date: DateOnly.FromDateTime(DateTime.UtcNow),
         UpdatedAt: updatedAt ?? DateTime.UtcNow);
 

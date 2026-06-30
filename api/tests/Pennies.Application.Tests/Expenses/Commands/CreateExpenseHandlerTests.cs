@@ -48,11 +48,24 @@ public class CreateExpenseHandlerTests
             .InvalidateAsync($"expenses:{command.UserId}:list:*", Arg.Any<CancellationToken>());
     }
 
+    [Fact]
+    public async Task Handle_ValidCommand_WithFrequency_PersistsFrequency()
+    {
+        var command = ValidCommand() with { Frequency = 1 };
+        Expense? captured = null;
+        await _repository.AddAsync(Arg.Do<Expense>(e => captured = e), Arg.Any<CancellationToken>());
+
+        await _sut.Handle(command, CancellationToken.None);
+
+        captured!.Frequency.Should().Be(1);
+    }
+
     private static CreateExpenseCommand ValidCommand() => new(
         UserId: "user-1",
         Title: "Groceries",
         Description: null,
         Amount: -50.00m,
         Category: ExpenseCategory.Food,
+        Frequency: null,
         Date: DateOnly.FromDateTime(DateTime.UtcNow));
 }

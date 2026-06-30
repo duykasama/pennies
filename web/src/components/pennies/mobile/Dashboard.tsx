@@ -11,6 +11,7 @@ import {
   getPrevMonth,
 } from '#/lib/pennies'
 import { useCategories } from '#/hooks/useCategories'
+import { useFrequencies } from '#/hooks/useFrequencies'
 import { ROUTES, SORT, FILTER } from '#/lib/constants'
 import Header from '#/components/pennies/mobile/Header'
 
@@ -216,8 +217,15 @@ export default function Dashboard({
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const categories = useCategories()
+  const frequencies = useFrequencies()
+  const todayFreqIds = new Set(
+    frequencies.filter((f) => f.displayOrder <= 1).map((f) => f.id),
+  )
+  const weekFreqIds = new Set(
+    frequencies.filter((f) => f.displayOrder <= 2).map((f) => f.id),
+  )
 
-  const P = periodSummary(expenses)
+  const P = periodSummary(expenses, undefined, { todayFreqIds, weekFreqIds })
   const monthExp = expenses.filter((e) => e.date.slice(0, 7) === P.monthKey)
   const breakdown = catBreakdown(monthExp, categories)
   const series = monthSeries(expenses, P.monthKey, i18n.language)

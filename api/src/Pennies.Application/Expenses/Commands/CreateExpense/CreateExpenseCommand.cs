@@ -11,4 +11,5 @@ public sealed record CreateExpenseCommand(
     string? Description,
     decimal Amount,
     ExpenseCategory Category,
+    int? Frequency,
     DateOnly Date) : IRequest<Result<ExpenseResponse>>;

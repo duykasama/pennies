@@ -28,6 +28,7 @@ internal sealed class UpdateExpenseHandler(
         expense.Description = command.Description;
         expense.Amount = command.Amount;
         expense.Category = command.Category;
+        expense.Frequency = command.Frequency;
         expense.Date = command.Date;
         expense.UpdatedAt = DateTime.UtcNow;
 

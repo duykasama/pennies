@@ -24,6 +24,7 @@ internal sealed class CreateExpenseHandler(
             Description = request.Description,
             Amount = request.Amount,
             Category = request.Category,
+            Frequency = request.Frequency,
             Date = request.Date,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,

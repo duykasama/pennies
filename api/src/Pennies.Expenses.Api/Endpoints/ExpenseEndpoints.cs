@@ -62,6 +62,7 @@ public static class ExpenseEndpoints
             request.Description,
             request.Amount,
             request.Category,
+            request.Frequency,
             request.Date);
         var result = await mediator.Send(command);
         return result.ToHttpResult(201);
@@ -81,7 +82,7 @@ public static class ExpenseEndpoints
         var command = new UpdateExpenseCommand(
             id, userId,
             request.Title, request.Description, request.Amount,
-            request.Category, request.Date, request.UpdatedAt);
+            request.Category, request.Frequency, request.Date, request.UpdatedAt);
         return (await mediator.Send(command)).ToHttpResult();
     }
 
@@ -106,6 +107,7 @@ public sealed record CreateExpenseRequest(
     string? Description,
     decimal Amount,
     ExpenseCategory Category,
+    int? Frequency,
     DateOnly Date);
 
 public sealed record UpdateExpenseRequest(
@@ -113,5 +115,6 @@ public sealed record UpdateExpenseRequest(
     string? Description,
     decimal Amount,
     ExpenseCategory Category,
+    int? Frequency,
     DateOnly Date,
     DateTime UpdatedAt);

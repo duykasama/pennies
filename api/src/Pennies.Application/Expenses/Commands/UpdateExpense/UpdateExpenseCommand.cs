@@ -12,5 +12,6 @@ public sealed record UpdateExpenseCommand(
     string? Description,
     decimal Amount,
     ExpenseCategory Category,
+    int? Frequency,
     DateOnly Date,
     DateTime UpdatedAt) : IRequest<Result<ExpenseResponse>>;

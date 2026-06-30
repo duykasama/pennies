@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { ExpenseCreate } from '#/lib/pennies'
 import { categoryColor } from '#/lib/categories'
 import { useCategories } from '#/hooks/useCategories'
+import { useFrequencies } from '#/hooks/useFrequencies'
 import { cn } from '#/lib/utils'
 
 interface AddExpenseProps {
@@ -13,10 +14,12 @@ interface AddExpenseProps {
 export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
   const { t } = useTranslation()
   const categories = useCategories()
+  const frequencies = useFrequencies()
   const [amountStr, setAmountStr] = useState('')
   const [desc, setDesc] = useState('')
   const [cat, setCat] = useState<number>(categories[0]?.id ?? 1)
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
+  const [freq, setFreq] = useState<number | null>(frequencies[0]?.id ?? null)
   const [note, setNote] = useState('')
   const [errors, setErrors] = useState<{ amount?: string; desc?: string }>({})
 
@@ -41,6 +44,7 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
       sub: note.trim(),
       amount: -n,
       date,
+      freq,
     }
     onSave(exp)
   }
@@ -156,6 +160,28 @@ export default function AddExpense({ onCancel, onSave }: AddExpenseProps) {
                 onChange={(e) => setDate(e.target.value)}
                 className={inputBase}
               />
+            </div>
+
+            {/* Frequency */}
+            <div className="mb-5">
+              <label className={labelBase}>{t('addExpense.frequency')}</label>
+              <div className="inline-grid grid-cols-4 gap-1 p-1 bg-white rounded-p-sm shadow-card">
+                {frequencies.map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setFreq(f.id)}
+                    className={cn(
+                      'h-9 px-4 rounded-[6px] font-bold text-[13px] leading-none border-0 cursor-pointer transition-colors',
+                      freq === f.id
+                        ? 'bg-lagoon text-white'
+                        : 'bg-transparent text-sea-ink-soft hover:text-sea-ink',
+                    )}
+                  >
+                    {f.name}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Note */}

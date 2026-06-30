@@ -22,6 +22,7 @@ function AddExpensePage() {
         description: exp.sub || null,
         amount: exp.amount,
         category: exp.cat,
+        frequency: exp.freq,
         date: exp.date,
       },
     })

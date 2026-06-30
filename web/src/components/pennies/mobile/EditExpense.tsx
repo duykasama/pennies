@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Expense } from '#/lib/pennies'
 import { useCategories } from '#/hooks/useCategories'
+import { useFrequencies } from '#/hooks/useFrequencies'
 import { CategoryChip } from '#/components/pennies/Chips'
 import { cn } from '#/lib/utils'
 
@@ -20,12 +21,14 @@ export default function EditExpense({
 }: EditExpenseProps) {
   const { t } = useTranslation()
   const categories = useCategories()
+  const frequencies = useFrequencies()
   const [amountStr, setAmountStr] = useState(() =>
     String(Math.abs(expense.amount)),
   )
   const [desc, setDesc] = useState(expense.title)
   const [cat, setCat] = useState(expense.cat)
   const [date, setDate] = useState(expense.date)
+  const [freq, setFreq] = useState<number | null>(expense.freq)
   const [note, setNote] = useState(expense.sub)
   const [errors, setErrors] = useState<{ amount?: string; desc?: string }>({})
 
@@ -46,6 +49,7 @@ export default function EditExpense({
       sub: note.trim(),
       amount: -n,
       date,
+      freq,
     })
   }
 
@@ -150,6 +154,27 @@ export default function EditExpense({
               onChange={(e) => setDate(e.target.value)}
               className={inputBase}
             />
+          </div>
+
+          <div className="mb-4">
+            <label className={labelBase}>{t('editExpense.frequency')}</label>
+            <div className="grid grid-cols-4 gap-1 p-1 bg-foam rounded-p-md">
+              {frequencies.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setFreq(f.id)}
+                  className={cn(
+                    'h-9 rounded-[7px] font-bold text-[12px] leading-none border-0 cursor-pointer transition-colors',
+                    freq === f.id
+                      ? 'bg-lagoon text-white shadow-card'
+                      : 'bg-transparent text-sea-ink-soft hover:text-sea-ink',
+                  )}
+                >
+                  {f.name}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="mb-5">

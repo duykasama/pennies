@@ -106,6 +106,7 @@ function ExpenseDetailPage() {
         description: exp.sub || null,
         amount: exp.amount,
         category: exp.cat,
+        frequency: exp.freq,
         date: exp.date,
         updatedAt: exp.updatedAt,
       },

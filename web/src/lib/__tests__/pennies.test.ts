@@ -11,6 +11,7 @@ import {
   calcMonthTotal,
   calcTopCategory,
   isoCurrentMonth,
+  periodSummary,
 } from '#/lib/pennies'
 import type { Expense } from '#/lib/pennies'
 
@@ -21,6 +22,7 @@ const mkExp = (
   title: 'Food',
   sub: '',
   amount: -10000,
+  freq: 1,
   updatedAt: '',
   ...overrides,
 })
@@ -153,5 +155,116 @@ describe('calcTopCategory', () => {
     const top = calcTopCategory(expenses, '2026-05')
     expect(top).not.toBeNull()
     expect(top!.cat).toBe(7)
+  })
+})
+
+// 2026-06-29 is a Monday — weekStart=2026-06-29, weekEnd=2026-07-05
+// last week: 2026-06-22 to 2026-06-28
+describe('periodSummary — week frequency filter', () => {
+  const TODAY = '2026-06-30' // Tuesday
+  // freq IDs: 1=Daily, 2=Weekly, 3=Yearly, 4=Monthly
+  const WEEK_IDS = new Set([1, 2])
+
+  it('includes daily (freq=1) expenses in this week', () => {
+    const expenses = [
+      mkExp({ id: 'a', date: '2026-06-29', amount: -500, freq: 1 }),
+    ]
+    const P = periodSummary(expenses, TODAY, { weekFreqIds: WEEK_IDS })
+    expect(P.week).toBe(-500)
+    expect(P.weekCount).toBe(1)
+  })
+
+  it('includes weekly (freq=2) expenses in this week', () => {
+    const expenses = [
+      mkExp({ id: 'a', date: '2026-07-01', amount: -300, freq: 2 }),
+    ]
+    const P = periodSummary(expenses, TODAY, { weekFreqIds: WEEK_IDS })
+    expect(P.week).toBe(-300)
+  })
+
+  it('excludes monthly (freq=4) expenses from this week', () => {
+    const expenses = [
+      mkExp({ id: 'a', date: '2026-06-30', amount: -1000, freq: 4 }),
+    ]
+    const P = periodSummary(expenses, TODAY, { weekFreqIds: WEEK_IDS })
+    expect(P.week).toBe(0)
+    expect(P.weekCount).toBe(0)
+  })
+
+  it('excludes yearly (freq=3) expenses from this week', () => {
+    const expenses = [
+      mkExp({ id: 'a', date: '2026-06-30', amount: -2000, freq: 3 }),
+    ]
+    const P = periodSummary(expenses, TODAY, { weekFreqIds: WEEK_IDS })
+    expect(P.week).toBe(0)
+  })
+
+  it('includes null-freq (one-time) expenses in this week', () => {
+    const expenses = [
+      mkExp({ id: 'a', date: '2026-06-30', amount: -700, freq: null }),
+    ]
+    const P = periodSummary(expenses, TODAY, { weekFreqIds: WEEK_IDS })
+    expect(P.week).toBe(-700)
+  })
+
+  it('applies the same filter to last week for a fair weekDelta', () => {
+    const expenses = [
+      mkExp({ id: 'a', date: '2026-06-30', amount: -200, freq: 1 }), // this week daily
+      mkExp({ id: 'b', date: '2026-06-30', amount: -500, freq: 4 }), // this week monthly — excluded
+      mkExp({ id: 'c', date: '2026-06-22', amount: -200, freq: 1 }), // last week daily
+      mkExp({ id: 'd', date: '2026-06-22', amount: -500, freq: 4 }), // last week monthly — excluded
+    ]
+    const P = periodSummary(expenses, TODAY, { weekFreqIds: WEEK_IDS })
+    // both weeks: -200 daily only → 0% delta
+    expect(P.weekDelta).toBe(0)
+  })
+
+  it('without opts all expenses are included (backward compat)', () => {
+    const expenses = [
+      mkExp({ id: 'a', date: '2026-06-30', amount: -500, freq: 4 }),
+      mkExp({ id: 'b', date: '2026-06-30', amount: -300, freq: 1 }),
+    ]
+    const P = periodSummary(expenses, TODAY)
+    expect(P.week).toBe(-800)
+  })
+})
+
+describe('periodSummary — today frequency filter', () => {
+  const TODAY = '2026-06-30'
+  const TODAY_IDS = new Set([1]) // daily only
+
+  it('includes daily (freq=1) expenses today', () => {
+    const expenses = [mkExp({ id: 'a', date: TODAY, amount: -400, freq: 1 })]
+    const P = periodSummary(expenses, TODAY, { todayFreqIds: TODAY_IDS })
+    expect(P.today).toBe(-400)
+    expect(P.todayCount).toBe(1)
+  })
+
+  it('excludes weekly (freq=2) expenses from today', () => {
+    const expenses = [mkExp({ id: 'a', date: TODAY, amount: -300, freq: 2 })]
+    const P = periodSummary(expenses, TODAY, { todayFreqIds: TODAY_IDS })
+    expect(P.today).toBe(0)
+    expect(P.todayCount).toBe(0)
+  })
+
+  it('excludes monthly (freq=4) expenses from today', () => {
+    const expenses = [mkExp({ id: 'a', date: TODAY, amount: -1000, freq: 4 })]
+    const P = periodSummary(expenses, TODAY, { todayFreqIds: TODAY_IDS })
+    expect(P.today).toBe(0)
+  })
+
+  it('includes null-freq (one-time) expenses today', () => {
+    const expenses = [mkExp({ id: 'a', date: TODAY, amount: -600, freq: null })]
+    const P = periodSummary(expenses, TODAY, { todayFreqIds: TODAY_IDS })
+    expect(P.today).toBe(-600)
+  })
+
+  it('without todayFreqIds all expenses today are included', () => {
+    const expenses = [
+      mkExp({ id: 'a', date: TODAY, amount: -400, freq: 1 }),
+      mkExp({ id: 'b', date: TODAY, amount: -300, freq: 4 }),
+    ]
+    const P = periodSummary(expenses, TODAY)
+    expect(P.today).toBe(-700)
   })
 })

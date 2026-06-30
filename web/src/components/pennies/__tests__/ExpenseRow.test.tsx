@@ -17,6 +17,7 @@ const baseExpense: Expense = {
   sub: 'Lunch at pho place',
   amount: -65000,
   date: 'today',
+  freq: 1,
   updatedAt: '2026-06-01T00:00:00Z',
 }
 

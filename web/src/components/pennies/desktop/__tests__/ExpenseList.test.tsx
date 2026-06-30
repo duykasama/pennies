@@ -21,6 +21,7 @@ const TEST_EXPENSES: Expense[] = [
     sub: 'Lunch',
     amount: -65000,
     date: today,
+    freq: 1,
     updatedAt: '2026-06-01T00:00:00Z',
   },
   {
@@ -30,6 +31,7 @@ const TEST_EXPENSES: Expense[] = [
     sub: 'Grab',
     amount: -25000,
     date: today,
+    freq: 1,
     updatedAt: '2026-06-01T00:00:00Z',
   },
   {
@@ -39,6 +41,7 @@ const TEST_EXPENSES: Expense[] = [
     sub: 'Bookstore',
     amount: -320000,
     date: today,
+    freq: 1,
     updatedAt: '2026-06-01T00:00:00Z',
   },
   {
@@ -48,6 +51,7 @@ const TEST_EXPENSES: Expense[] = [
     sub: 'Pharmacy',
     amount: -85000,
     date: yesterday,
+    freq: 1,
     updatedAt: '2026-06-01T00:00:00Z',
   },
   {
@@ -57,6 +61,7 @@ const TEST_EXPENSES: Expense[] = [
     sub: 'Cinema',
     amount: -180000,
     date: yesterday,
+    freq: 1,
     updatedAt: '2026-06-01T00:00:00Z',
   },
   {
@@ -66,6 +71,7 @@ const TEST_EXPENSES: Expense[] = [
     sub: 'Coffee',
     amount: -55000,
     date: older,
+    freq: 1,
     updatedAt: '2026-06-01T00:00:00Z',
   },
   {
@@ -75,6 +81,7 @@ const TEST_EXPENSES: Expense[] = [
     sub: 'Electric',
     amount: -420000,
     date: older,
+    freq: 1,
     updatedAt: '2026-06-01T00:00:00Z',
   },
 ]

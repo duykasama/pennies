@@ -13,7 +13,11 @@ export type UserProfile = SessionUser
 function decodeSessionUser(accessToken: string): SessionUser {
   const [, b64] = accessToken.split('.')
   const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
-  return { sub: payload.sub, email: payload.email, displayName: payload.displayName }
+  return {
+    sub: payload.sub,
+    email: payload.email,
+    displayName: payload.displayName,
+  }
 }
 
 function setAuthCookies(accessToken: string, refreshToken: string) {
@@ -42,7 +46,11 @@ export const getSessionFn = createServerFn().handler(
         const [, b64] = token.split('.')
         const payload = JSON.parse(Buffer.from(b64, 'base64url').toString())
         if (payload.exp * 1000 >= Date.now()) {
-          return { sub: payload.sub, email: payload.email, displayName: payload.displayName }
+          return {
+            sub: payload.sub,
+            email: payload.email,
+            displayName: payload.displayName,
+          }
         }
       } catch {
         // fall through to refresh
@@ -56,14 +64,18 @@ export const getSessionFn = createServerFn().handler(
       const res = await fetch(`${API_URL}/auth/refresh-token`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: refreshToken, accessToken: token ?? undefined }),
+        body: JSON.stringify({
+          token: refreshToken,
+          accessToken: token ?? undefined,
+        }),
       })
       if (!res.ok) {
         deleteCookie('auth_token')
         deleteCookie('refresh_token')
         return null
       }
-      const { accessToken: newAccess, refreshToken: newRefresh } = await res.json()
+      const { accessToken: newAccess, refreshToken: newRefresh } =
+        await res.json()
       setAuthCookies(newAccess, newRefresh)
       return decodeSessionUser(newAccess)
     } catch {

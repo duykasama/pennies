@@ -12,6 +12,7 @@ const BASE_EXPENSE: Expense = {
   sub: 'Bookstore',
   amount: -320000,
   date: '2026-05-13',
+  freq: 1,
   updatedAt: '',
 }
 

@@ -163,6 +163,16 @@ const vi: Translations = {
     backToSignInArrow: 'Đến trang đăng nhập →',
   },
 
+  notFound: {
+    title: 'Không tìm thấy trang',
+    messageMobile:
+      'Không tìm thấy trang này. Các khoản chi của bạn vẫn ở đây.',
+    messageDesktop:
+      'Không tìm thấy trang này — trang có thể đã di chuyển hoặc không tồn tại. Các khoản chi của bạn vẫn ở đây.',
+    backDashboard: 'Về trang chủ →',
+    viewExpenses: 'Xem khoản chi',
+  },
+
   account: {
     title: 'Tài khoản',
     details: 'Thông tin cá nhân',

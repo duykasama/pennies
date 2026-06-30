@@ -5,6 +5,8 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
+import MobileNotFound from '#/components/pennies/mobile/NotFound'
+import DesktopNotFound from '#/components/pennies/desktop/NotFound'
 
 import appCss from '../styles.css?url'
 
@@ -44,6 +46,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     themeStore.setState(() => ({ theme }))
     return { user }
   },
+  notFoundComponent: () => (
+    <>
+      <div className="md:hidden">
+        <MobileNotFound />
+      </div>
+      <div className="hidden md:block">
+        <DesktopNotFound />
+      </div>
+    </>
+  ),
   shellComponent: RootDocument,
 })
 

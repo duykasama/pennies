@@ -161,6 +161,16 @@ const en = {
     backToSignInArrow: 'Go to sign in →',
   },
 
+  notFound: {
+    title: 'Page not found',
+    messageMobile:
+      "We couldn't find that page. Your expenses are right where you left them.",
+    messageDesktop:
+      "We couldn't find that page — it may have moved, or never existed. Your expenses are right where you left them.",
+    backDashboard: 'Back to Dashboard →',
+    viewExpenses: 'View expenses',
+  },
+
   account: {
     title: 'Account',
     details: 'Profile details',

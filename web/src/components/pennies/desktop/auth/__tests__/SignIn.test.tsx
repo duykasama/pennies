@@ -62,7 +62,7 @@ describe('DesktopSignIn', () => {
     })
     fireEvent.click(screen.getByText('Sign in'))
     expect(onSubmit).toHaveBeenCalledOnce()
-    expect(onSubmit).toHaveBeenCalledWith('user@pennies.app')
+    expect(onSubmit).toHaveBeenCalledWith('user@pennies.app', '')
   })
 
   it('calls onSubmit with empty string when email is untouched', () => {
@@ -77,7 +77,7 @@ describe('DesktopSignIn', () => {
       { wrapper: I18nWrapper },
     )
     fireEvent.click(screen.getByText('Sign in'))
-    expect(onSubmit).toHaveBeenCalledWith('')
+    expect(onSubmit).toHaveBeenCalledWith('', '')
   })
 
   it('calls onGoogle when the Google button is clicked', () => {

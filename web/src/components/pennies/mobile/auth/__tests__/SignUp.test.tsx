@@ -50,7 +50,7 @@ describe('MobileSignUp', () => {
     fireEvent.click(screen.getByText('Create account'))
 
     expect(onSubmit).toHaveBeenCalledOnce()
-    expect(onSubmit).toHaveBeenCalledWith('Jane Doe', 'jane@example.com')
+    expect(onSubmit).toHaveBeenCalledWith('Jane Doe', 'jane@example.com', '')
   })
 
   it('calls onSubmit with empty strings when fields are untouched', () => {
@@ -66,7 +66,7 @@ describe('MobileSignUp', () => {
       },
     )
     fireEvent.click(screen.getByText('Create account'))
-    expect(onSubmit).toHaveBeenCalledWith('', '')
+    expect(onSubmit).toHaveBeenCalledWith('', '', '')
   })
 
   it('calls onGoogle when the Google button is clicked', () => {

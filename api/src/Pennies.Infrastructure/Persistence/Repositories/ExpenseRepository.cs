@@ -7,6 +7,8 @@ internal sealed class ExpenseRepository(AppDbContext dbContext) : IExpenseReposi
 {
     public async Task<Expense?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
         await dbContext.Expenses
+            .Include(e => e.Category).ThenInclude(c => c!.Translations)
+            .Include(e => e.Frequency).ThenInclude(f => f!.Translations)
             .FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted, cancellationToken);
 
     public async Task<(IReadOnlyList<Expense> Items, int TotalCount)> ListByUserAsync(
@@ -14,6 +16,8 @@ internal sealed class ExpenseRepository(AppDbContext dbContext) : IExpenseReposi
         CancellationToken cancellationToken = default)
     {
         var query = dbContext.Expenses
+            .Include(e => e.Category).ThenInclude(c => c!.Translations)
+            .Include(e => e.Frequency).ThenInclude(f => f!.Translations)
             .Where(e => e.UserId == userId && !e.IsDeleted);
 
         if (month.HasValue && year.HasValue)

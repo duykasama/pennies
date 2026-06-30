@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Pennies.Application.Expenses.Commands.UpdateExpense;
-using Pennies.Domain.Expenses;
 
 namespace Pennies.Application.Tests.Expenses.Commands;
 
@@ -65,14 +64,22 @@ public class UpdateExpenseValidatorTests
         result.Errors.Should().Contain(e => e.PropertyName == nameof(UpdateExpenseCommand.UpdatedAt));
     }
 
+    [Fact]
+    public void Validate_InvalidCategory_Fails()
+    {
+        var result = _sut.Validate(ValidCommand() with { CategoryId = 0 });
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.PropertyName == nameof(UpdateExpenseCommand.CategoryId));
+    }
+
     private static UpdateExpenseCommand ValidCommand() => new(
         ExpenseId: Guid.NewGuid(),
         UserId: "user-1",
         Title: "Groceries",
         Description: null,
         Amount: -50.00m,
-        Category: ExpenseCategory.Food,
-        Frequency: null,
+        CategoryId: 1,
+        FrequencyId: null,
         Date: DateOnly.FromDateTime(DateTime.UtcNow),
         UpdatedAt: DateTime.UtcNow);
 }

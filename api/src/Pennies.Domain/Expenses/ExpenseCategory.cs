@@ -1,13 +1,11 @@
+using Pennies.Domain.Common;
+
 namespace Pennies.Domain.Expenses;
 
-public enum ExpenseCategory
+public class ExpenseCategory : Entity<int>
 {
-    Food            = 1,
-    Transport       = 2,
-    Shopping        = 3,
-    Entertainment   = 4,
-    Health          = 5,
-    Utilities       = 6,
-    Housing         = 7,
-    Other           = 8,
+    public int DisplayOrder { get; set; }
+    public bool IsDeleted { get; set; }
+    public string Icon { get; set; } = string.Empty;
+    public ICollection<ExpenseCategoryTranslation> Translations { get; set; } = [];
 }

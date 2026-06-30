@@ -2,7 +2,7 @@ using Pennies.Domain.Common;
 
 namespace Pennies.Domain.Expenses;
 
-public class ExpenseFrequencyLookup : Entity<int>
+public class ExpenseFrequency : Entity<int>
 {
     public string Name { get; set; } = default!;
     public int DisplayOrder { get; set; }

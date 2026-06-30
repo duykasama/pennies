@@ -8,7 +8,6 @@ namespace Pennies.Application.Expenses.Commands.UpdateExpense;
 
 internal sealed class UpdateExpenseHandler(
     IExpenseRepository repository,
-    IExpenseLookupRepository lookupRepository,
     ICacheInvalidator cacheInvalidator)
     : IRequestHandler<UpdateExpenseCommand, Result<ExpenseResponse>>
 {
@@ -27,8 +26,8 @@ internal sealed class UpdateExpenseHandler(
         expense.Title = command.Title;
         expense.Description = command.Description;
         expense.Amount = command.Amount;
-        expense.Category = command.Category;
-        expense.Frequency = command.Frequency;
+        expense.CategoryId = command.CategoryId;
+        expense.FrequencyId = command.FrequencyId;
         expense.Date = command.Date;
         expense.UpdatedAt = DateTime.UtcNow;
 
@@ -36,11 +35,7 @@ internal sealed class UpdateExpenseHandler(
         await cacheInvalidator.InvalidateAsync($"expenses:{command.UserId}:list:*", cancellationToken);
         await cacheInvalidator.InvalidateAsync($"expenses:{command.UserId}:item:{command.ExpenseId}", cancellationToken);
 
-        var categories = (await lookupRepository.GetCategoriesAsync(null, cancellationToken))
-            .ToDictionary(c => c.Id);
-        var frequencies = (await lookupRepository.GetFrequenciesAsync(null, cancellationToken))
-            .ToDictionary(f => f.Id);
-
-        return Result.Success(expense.ToResponse(categories, frequencies));
+        var updated = await repository.GetByIdAsync(command.ExpenseId, cancellationToken);
+        return Result.Success(updated!.ToResponse());
     }
 }

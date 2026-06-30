@@ -8,16 +8,11 @@ namespace Pennies.Application.Tests.Expenses.Queries;
 public class GetExpenseByIdHandlerTests
 {
     private readonly IExpenseRepository _repository = Substitute.For<IExpenseRepository>();
-    private readonly IExpenseLookupRepository _lookupRepository = Substitute.For<IExpenseLookupRepository>();
     private readonly GetExpenseByIdHandler _sut;
 
     public GetExpenseByIdHandlerTests()
     {
-        _lookupRepository.GetCategoriesAsync(Arg.Any<string?>(), Arg.Any<CancellationToken>())
-            .Returns(Array.Empty<ExpenseCategoryLookup>() as IReadOnlyList<ExpenseCategoryLookup>);
-        _lookupRepository.GetFrequenciesAsync(Arg.Any<string?>(), Arg.Any<CancellationToken>())
-            .Returns(Array.Empty<ExpenseFrequencyLookup>() as IReadOnlyList<ExpenseFrequencyLookup>);
-        _sut = new GetExpenseByIdHandler(_repository, _lookupRepository);
+        _sut = new GetExpenseByIdHandler(_repository);
     }
 
     [Fact]
@@ -62,7 +57,7 @@ public class GetExpenseByIdHandlerTests
         UserId = userId,
         Title = "Test Expense",
         Amount = -30m,
-        Category = ExpenseCategory.Transport,
+        CategoryId = 2,
         Date = DateOnly.FromDateTime(DateTime.UtcNow),
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow,

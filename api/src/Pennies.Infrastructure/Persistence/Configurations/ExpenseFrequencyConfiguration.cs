@@ -4,9 +4,9 @@ using Pennies.Domain.Expenses;
 
 namespace Pennies.Infrastructure.Persistence.Configurations;
 
-internal sealed class ExpenseFrequencyLookupConfiguration : IEntityTypeConfiguration<ExpenseFrequencyLookup>
+internal sealed class ExpenseFrequencyConfiguration : IEntityTypeConfiguration<ExpenseFrequency>
 {
-    public void Configure(EntityTypeBuilder<ExpenseFrequencyLookup> builder)
+    public void Configure(EntityTypeBuilder<ExpenseFrequency> builder)
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Name).IsRequired().HasMaxLength(50);

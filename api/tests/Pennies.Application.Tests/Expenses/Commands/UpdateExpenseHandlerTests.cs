@@ -9,17 +9,12 @@ namespace Pennies.Application.Tests.Expenses.Commands;
 public class UpdateExpenseHandlerTests
 {
     private readonly IExpenseRepository _repository = Substitute.For<IExpenseRepository>();
-    private readonly IExpenseLookupRepository _lookupRepository = Substitute.For<IExpenseLookupRepository>();
     private readonly ICacheInvalidator _cacheInvalidator = Substitute.For<ICacheInvalidator>();
     private readonly UpdateExpenseHandler _sut;
 
     public UpdateExpenseHandlerTests()
     {
-        _lookupRepository.GetCategoriesAsync(Arg.Any<string?>(), Arg.Any<CancellationToken>())
-            .Returns(Array.Empty<ExpenseCategoryLookup>() as IReadOnlyList<ExpenseCategoryLookup>);
-        _lookupRepository.GetFrequenciesAsync(Arg.Any<string?>(), Arg.Any<CancellationToken>())
-            .Returns(Array.Empty<ExpenseFrequencyLookup>() as IReadOnlyList<ExpenseFrequencyLookup>);
-        _sut = new UpdateExpenseHandler(_repository, _lookupRepository, _cacheInvalidator);
+        _sut = new UpdateExpenseHandler(_repository, _cacheInvalidator);
     }
 
     [Fact]
@@ -104,11 +99,11 @@ public class UpdateExpenseHandlerTests
     {
         var expense = CreateExpense("user-1");
         _repository.GetByIdAsync(expense.Id, Arg.Any<CancellationToken>()).Returns(expense);
-        var command = ValidCommand(expenseId: expense.Id, updatedAt: expense.UpdatedAt) with { Frequency = 2 };
+        var command = ValidCommand(expenseId: expense.Id, updatedAt: expense.UpdatedAt) with { FrequencyId = 2 };
 
         await _sut.Handle(command, CancellationToken.None);
 
-        expense.Frequency.Should().Be(2);
+        expense.FrequencyId.Should().Be(2);
     }
 
     private static UpdateExpenseCommand ValidCommand(
@@ -120,8 +115,8 @@ public class UpdateExpenseHandlerTests
         Title: "Updated Title",
         Description: null,
         Amount: -75.00m,
-        Category: ExpenseCategory.Shopping,
-        Frequency: null,
+        CategoryId: 3,
+        FrequencyId: null,
         Date: DateOnly.FromDateTime(DateTime.UtcNow),
         UpdatedAt: updatedAt ?? DateTime.UtcNow);
 
@@ -134,7 +129,7 @@ public class UpdateExpenseHandlerTests
             UserId = userId,
             Title = "Original Title",
             Amount = -50m,
-            Category = ExpenseCategory.Food,
+            CategoryId = 1,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             CreatedAt = updatedAt,
             UpdatedAt = updatedAt,

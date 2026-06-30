@@ -15,19 +15,16 @@ public sealed record ExpenseResponse(
 
 internal static class ExpenseMappings
 {
-    internal static ExpenseResponse ToResponse(
-        this Expense expense,
-        IReadOnlyDictionary<int, ExpenseCategoryLookup> categories,
-        IReadOnlyDictionary<int, ExpenseFrequencyLookup> frequencies) =>
+    internal static ExpenseResponse ToResponse(this Expense expense) =>
         new(expense.Id,
             expense.Title,
             expense.Description,
             expense.Amount,
-            categories.TryGetValue((int)expense.Category, out var cat)
-                ? new CategoryResponse((int)expense.Category, ResolveDefault(cat.Translations), cat.Icon, cat.DisplayOrder)
-                : new CategoryResponse((int)expense.Category, string.Empty, string.Empty, 0),
-            expense.Frequency.HasValue && frequencies.TryGetValue(expense.Frequency.Value, out var freq)
-                ? new LookupResponse(expense.Frequency.Value, ResolveDefault(freq.Translations))
+            expense.Category is not null
+                ? new CategoryResponse(expense.CategoryId, ResolveDefault(expense.Category.Translations), expense.Category.Icon, expense.Category.DisplayOrder)
+                : new CategoryResponse(expense.CategoryId, string.Empty, string.Empty, 0),
+            expense.FrequencyId.HasValue && expense.Frequency is not null
+                ? new LookupResponse(expense.FrequencyId.Value, ResolveDefault(expense.Frequency.Translations))
                 : null,
             expense.Date,
             expense.CreatedAt,

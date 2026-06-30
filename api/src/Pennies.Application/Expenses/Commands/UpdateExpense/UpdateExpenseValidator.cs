@@ -15,7 +15,7 @@ public sealed class UpdateExpenseValidator : AbstractValidator<UpdateExpenseComm
         RuleFor(x => x.Date)
             .NotEmpty()
             .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.UtcNow));
-        RuleFor(x => x.Category).IsInEnum();
+        RuleFor(x => x.CategoryId).GreaterThan(0);
         RuleFor(x => x.UpdatedAt).NotEmpty();
     }
 }

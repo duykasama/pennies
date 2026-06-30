@@ -8,8 +8,10 @@ public class Expense : Entity
     public string Title { get; set; } = default!;
     public string? Description { get; set; }
     public decimal Amount { get; set; }
-    public ExpenseCategory Category { get; set; }
+    public int CategoryId { get; set; }
+    public ExpenseCategory? Category { get; set; }
     public DateOnly Date { get; set; }
     public bool IsDeleted { get; set; }
-    public int? Frequency { get; set; }
+    public int? FrequencyId { get; set; }
+    public ExpenseFrequency? Frequency { get; set; }
 }

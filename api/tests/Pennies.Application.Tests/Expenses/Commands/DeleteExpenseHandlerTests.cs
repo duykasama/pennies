@@ -84,7 +84,7 @@ public class DeleteExpenseHandlerTests
         UserId = userId,
         Title = "Test",
         Amount = -10m,
-        Category = ExpenseCategory.Food,
+        CategoryId = 1,
         Date = DateOnly.FromDateTime(DateTime.UtcNow),
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow,

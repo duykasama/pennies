@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Pennies.Application.Expenses.Commands.CreateExpense;
-using Pennies.Domain.Expenses;
 
 namespace Pennies.Application.Tests.Expenses.Commands;
 
@@ -60,9 +59,9 @@ public class CreateExpenseValidatorTests
     [Fact]
     public void Validate_InvalidCategory_Fails()
     {
-        var result = _sut.Validate(ValidCommand() with { Category = (ExpenseCategory)0 });
+        var result = _sut.Validate(ValidCommand() with { CategoryId = 0 });
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(CreateExpenseCommand.Category));
+        result.Errors.Should().Contain(e => e.PropertyName == nameof(CreateExpenseCommand.CategoryId));
     }
 
     [Fact]
@@ -78,7 +77,7 @@ public class CreateExpenseValidatorTests
         Title: "Groceries",
         Description: null,
         Amount: -50.00m,
-        Category: ExpenseCategory.Food,
-        Frequency: null,
+        CategoryId: 1,
+        FrequencyId: null,
         Date: DateOnly.FromDateTime(DateTime.UtcNow));
 }

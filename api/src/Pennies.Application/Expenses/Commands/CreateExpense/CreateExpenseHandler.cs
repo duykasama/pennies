@@ -8,7 +8,6 @@ namespace Pennies.Application.Expenses.Commands.CreateExpense;
 
 internal sealed class CreateExpenseHandler(
     IExpenseRepository repository,
-    IExpenseLookupRepository lookupRepository,
     ICacheInvalidator cacheInvalidator)
     : IRequestHandler<CreateExpenseCommand, Result<ExpenseResponse>>
 {
@@ -23,8 +22,8 @@ internal sealed class CreateExpenseHandler(
             Title = request.Title,
             Description = request.Description,
             Amount = request.Amount,
-            Category = request.Category,
-            Frequency = request.Frequency,
+            CategoryId = request.CategoryId,
+            FrequencyId = request.FrequencyId,
             Date = request.Date,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -33,11 +32,7 @@ internal sealed class CreateExpenseHandler(
         await repository.AddAsync(expense, cancellationToken);
         await cacheInvalidator.InvalidateAsync($"expenses:{request.UserId}:list:*", cancellationToken);
 
-        var categories = (await lookupRepository.GetCategoriesAsync(null, cancellationToken))
-            .ToDictionary(c => c.Id);
-        var frequencies = (await lookupRepository.GetFrequenciesAsync(null, cancellationToken))
-            .ToDictionary(f => f.Id);
-
-        return Result.Success(expense.ToResponse(categories, frequencies));
+        var saved = await repository.GetByIdAsync(expense.Id, cancellationToken);
+        return Result.Success(saved!.ToResponse());
     }
 }

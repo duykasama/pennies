@@ -4,9 +4,9 @@ using Pennies.Domain.Expenses;
 
 namespace Pennies.Infrastructure.Persistence.Configurations;
 
-internal sealed class ExpenseCategoryLookupConfiguration : IEntityTypeConfiguration<ExpenseCategoryLookup>
+internal sealed class ExpenseCategoryConfiguration : IEntityTypeConfiguration<ExpenseCategory>
 {
-    public void Configure(EntityTypeBuilder<ExpenseCategoryLookup> builder)
+    public void Configure(EntityTypeBuilder<ExpenseCategory> builder)
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.DisplayOrder).IsRequired();

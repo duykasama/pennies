@@ -26,8 +26,15 @@ internal sealed class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
         builder.Property(e => e.IsDeleted)
             .IsRequired();
 
-        builder.Property(e => e.Category)
-            .HasConversion<int>();
+        builder.Property(e => e.CategoryId)
+            .IsRequired();
 
+        builder.HasOne(e => e.Category)
+            .WithMany()
+            .HasForeignKey(e => e.CategoryId);
+
+        builder.HasOne(e => e.Frequency)
+            .WithMany()
+            .HasForeignKey(e => e.FrequencyId);
     }
 }

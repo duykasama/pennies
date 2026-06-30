@@ -8,8 +8,6 @@ using Pennies.Application.Expenses.Queries.GetExpenseById;
 using Pennies.Application.Expenses.Queries.GetExpenseCategories;
 using Pennies.Application.Expenses.Queries.GetExpenseFrequencies;
 using Pennies.Application.Expenses.Queries.GetExpenses;
-using Pennies.Domain.Expenses;
-
 namespace Pennies.Expenses.Api.Endpoints;
 
 public static class ExpenseEndpoints
@@ -61,8 +59,8 @@ public static class ExpenseEndpoints
             request.Title,
             request.Description,
             request.Amount,
-            request.Category,
-            request.Frequency,
+            request.CategoryId,
+            request.FrequencyId,
             request.Date);
         var result = await mediator.Send(command);
         return result.ToHttpResult(201);
@@ -82,7 +80,7 @@ public static class ExpenseEndpoints
         var command = new UpdateExpenseCommand(
             id, userId,
             request.Title, request.Description, request.Amount,
-            request.Category, request.Frequency, request.Date, request.UpdatedAt);
+            request.CategoryId, request.FrequencyId, request.Date, request.UpdatedAt);
         return (await mediator.Send(command)).ToHttpResult();
     }
 
@@ -106,15 +104,15 @@ public sealed record CreateExpenseRequest(
     string Title,
     string? Description,
     decimal Amount,
-    ExpenseCategory Category,
-    int? Frequency,
+    int CategoryId,
+    int? FrequencyId,
     DateOnly Date);
 
 public sealed record UpdateExpenseRequest(
     string Title,
     string? Description,
     decimal Amount,
-    ExpenseCategory Category,
-    int? Frequency,
+    int CategoryId,
+    int? FrequencyId,
     DateOnly Date,
     DateTime UpdatedAt);

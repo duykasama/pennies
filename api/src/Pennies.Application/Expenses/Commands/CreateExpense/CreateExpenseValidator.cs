@@ -19,8 +19,8 @@ public sealed class CreateExpenseValidator : AbstractValidator<CreateExpenseComm
             .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.UtcNow))
             .WithMessage("Date cannot be in the future.");
 
-        RuleFor(x => x.Category)
-            .IsInEnum();
+        RuleFor(x => x.CategoryId)
+            .GreaterThan(0);
 
         RuleFor(x => x.UserId)
             .NotEmpty();

@@ -5,7 +5,7 @@ using Pennies.Domain.Expenses;
 
 namespace Pennies.Application.Expenses.Queries.GetExpenseById;
 
-internal sealed class GetExpenseByIdHandler(IExpenseRepository repository, IExpenseLookupRepository lookupRepository)
+internal sealed class GetExpenseByIdHandler(IExpenseRepository repository)
     : IRequestHandler<GetExpenseByIdQuery, Result<ExpenseResponse>>
 {
     public async Task<Result<ExpenseResponse>> Handle(
@@ -20,11 +20,6 @@ internal sealed class GetExpenseByIdHandler(IExpenseRepository repository, IExpe
         if (expense.UserId != request.UserId)
             return Result.Failure<ExpenseResponse>(Error.NotFound("Expense not found."));
 
-        var categories = (await lookupRepository.GetCategoriesAsync(null, cancellationToken))
-            .ToDictionary(c => c.Id);
-        var frequencies = (await lookupRepository.GetFrequenciesAsync(null, cancellationToken))
-            .ToDictionary(f => f.Id);
-
-        return Result.Success(expense.ToResponse(categories, frequencies));
+        return Result.Success(expense.ToResponse());
     }
 }
